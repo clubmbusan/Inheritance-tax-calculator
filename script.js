@@ -45,23 +45,15 @@ document.addEventListener('DOMContentLoaded', () => {
         heirContainer.appendChild(newHeir);
     });
 
-    // 공제 금액 자동 계산
-    const relationshipInput = document.getElementById('relationship');
-    const exemptionInput = document.getElementById('exemptionAmount');
-
-    relationshipInput.addEventListener('change', () => {
-        const relationship = relationshipInput.value;
-        let exemption = 0;
-
-        if (relationship === 'spouse') exemption = 3000000000; // 배우자
-        else if (relationship === 'adultChild') exemption = 50000000; // 성년 자녀
-        else if (relationship === 'minorChild') exemption = 20000000 * 20; // 미성년 자녀 (20년 기준)
-        else if (relationship === 'parent') exemption = 50000000; // 부모
-        else if (relationship === 'sibling') exemption = 50000000; // 형제자매
-        else exemption = 10000000; // 기타
-
-        exemptionInput.value = exemption.toLocaleString();
-    });
+    // 공제 금액 자동 계산 함수
+const calculateExemption = (relationship) => {
+    if (relationship === 'spouse') return 3000000000; // 배우자
+    if (relationship === 'adultChild') return 50000000; // 성년 자녀
+    if (relationship === 'minorChild') return 20000000 * 20; // 미성년 자녀
+    if (relationship === 'parent') return 50000000; // 부모
+    if (relationship === 'sibling') return 50000000; // 형제자매
+    return 10000000; // 기타
+};
 
        // 계산하기 버튼 이벤트
     document.getElementById('calculateButton').addEventListener('click', () => {
@@ -95,60 +87,54 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // 상속인별 세금 계산
-        const result = heirs.map(heir => {
-            const heirAssetValue = (assetValue * heir.share) / 100; // 상속받은 재산 금액
-            const exemption = (() => {
-                if (heir.relationship === 'spouse') return 3000000000;
-                if (heir.relationship === 'child') return 50000000;
-                if (heir.relationship === 'other') return 10000000;
-                return 0;
-            })();
+const result = heirs.map(heir => {
+    const heirAssetValue = (assetValue * heir.share) / 100; // 상속받은 재산 금액
+    const exemption = calculateExemption(heir.relationship); // 공제 금액 자동 계산
+    const taxableAmount = Math.max(heirAssetValue - exemption, 0);
 
-            const taxableAmount = Math.max(heirAssetValue - exemption, 0);
-            const tax = (() => {
-                const taxBrackets = [
-                    { limit: 100000000, rate: 0.1, deduction: 0 },
-                    { limit: 500000000, rate: 0.2, deduction: 10000000 },
-                    { limit: 1000000000, rate: 0.3, deduction: 60000000 },
-                    { limit: Infinity, rate: 0.4, deduction: 160000000 }
-                ];
+    const tax = (() => {
+        const taxBrackets = [
+            { limit: 100000000, rate: 0.1, deduction: 0 },
+            { limit: 500000000, rate: 0.2, deduction: 10000000 },
+            { limit: 1000000000, rate: 0.3, deduction: 60000000 },
+            { limit: Infinity, rate: 0.4, deduction: 160000000 }
+        ];
 
-                let totalTax = 0;
-                for (const bracket of taxBrackets) {
-                    if (taxableAmount > bracket.limit) {
-                        totalTax += (bracket.limit) * bracket.rate;
-                    } else {
-                        totalTax += (taxableAmount) * bracket.rate - bracket.deduction;
-                        break;
-                    }
-                }
-                return Math.max(totalTax, 0);
-            })();
+        let totalTax = 0;
+        for (const bracket of taxBrackets) {
+            if (taxableAmount > bracket.limit) {
+                totalTax += (bracket.limit) * bracket.rate;
+            } else {
+                totalTax += (taxableAmount) * bracket.rate - bracket.deduction;
+                break;
+            }
+        }
+        return Math.max(totalTax, 0);
+    })();
 
-            return {
-                name: heir.name,
-                share: heir.share,
-                assetValue: heirAssetValue,
-                exemption,
-                taxableAmount,
-                tax,
-            };
-        });
+    return {
+        name: heir.name,
+        share: heir.share,
+        assetValue: heirAssetValue,
+        exemption,
+        taxableAmount,
+        tax,
+    };
+});
 
-        // 결과 출력
-        const resultDiv = document.getElementById('result');
-        resultDiv.style.display = 'block'; // 계산 결과를 표시하도록 설정
-        resultDiv.innerHTML = `
-            <h3>계산 결과</h3>
-            ${result.map(r => `
-                <p>
-                    <strong>${r.name}</strong><br>
-                    상속 비율: ${r.share}%<br>
-                    상속받은 재산 금액: ${r.assetValue.toLocaleString()} 원<br>
-                    공제 금액: ${r.exemption.toLocaleString()} 원<br>
-                    과세 금액: ${r.taxableAmount.toLocaleString()} 원<br>
-                    상속세: ${r.tax.toLocaleString()} 원
-                </p>
-            `).join('')}
-        `;
-    });
+// 결과 출력
+const resultDiv = document.getElementById('result');
+resultDiv.style.display = 'block'; // 계산 결과를 표시하도록 설정
+resultDiv.innerHTML = `
+    <h3>계산 결과</h3>
+    ${result.map(r => `
+        <p>
+            <strong>${r.name}</strong><br>
+            상속 비율: ${r.share}%<br>
+            상속받은 재산 금액: ${r.assetValue.toLocaleString()} 원<br>
+            공제 금액: ${r.exemption.toLocaleString()} 원<br>
+            과세 금액: ${r.taxableAmount.toLocaleString()} 원<br>
+            상속세: ${r.tax.toLocaleString()} 원
+        </p>
+    `).join('')}
+`;
