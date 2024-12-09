@@ -2,65 +2,101 @@ document.addEventListener('DOMContentLoaded', () => {
     // 금액 입력 필드 콤마 추가 처리
     document.addEventListener('input', (event) => {
         const target = event.target;
-        // 금액 입력 필드만 처리
-        if (['cashAmount', 'realEstateValue', 'stockPrice', 'otherAssetValue', 'myInheritance'].includes(target.id) ||
-            target.classList.contains('amount-input')) {
-            const rawValue = target.value.replace(/[^0-9]/g, ''); // 숫자 이외의 문자 제거
-            if (rawValue === '') {
-                target.value = ''; // 빈 값 처리
-                return;
-            }
-            target.value = parseInt(rawValue, 10).toLocaleString(); // 콤마 추가
+        if (['cashAmount', 'realEstateValue', 'stockPrice', 'otherAssetValue', 'myInheritance'].includes(target.id)) {
+            const rawValue = target.value.replace(/[^0-9]/g, '');
+            target.value = rawValue ? parseInt(rawValue, 10).toLocaleString() : '';
         }
     });
 
-    // 재산 유형 선택 이벤트 리스너
-    const assetType = document.getElementById('assetType');
-    const fields = {
-        cash: document.getElementById('cashInputField'),
-        realEstate: document.getElementById('realEstateInputField'),
-        stock: document.getElementById('stockInputField'),
-        others: document.getElementById('othersInputField'),
+    // 재산 유형 선택 이벤트
+    const assetFields = {
+        cash: document.getElementById('cashField'),
+        realEstate: document.getElementById('realEstateField'),
+        stock: document.getElementById('stockField'),
+        others: document.getElementById('othersField'),
     };
 
-    assetType.addEventListener('change', () => {
-        Object.values(fields).forEach(field => field.style.display = 'none');
-        fields[assetType.value].style.display = 'block';
+    document.getElementById('assetTypeContainer').addEventListener('change', () => {
+        Object.keys(assetFields).forEach(key => {
+            assetFields[key].style.display = document.getElementById(key).checked ? 'block' : 'none';
+        });
+    });
+
+    // 계산 모드 선택
+    document.querySelectorAll('input[name="calculationType"]').forEach(radio => {
+        radio.addEventListener('change', (event) => {
+            const mode = event.target.value;
+            if (mode === 'individual') {
+                document.getElementById('myInheritance').disabled = false;
+                document.getElementById('heirContainer').style.display = 'none';
+            } else {
+                document.getElementById('myInheritance').disabled = true;
+                document.getElementById('heirContainer').style.display = 'block';
+            }
+        });
     });
 
     // 계산하기 버튼 이벤트
     document.getElementById('calculateButton').addEventListener('click', () => {
         const calculationType = document.querySelector('input[name="calculationType"]:checked').value;
 
-        // 재산 유형에 따른 금액 가져오기
+        // 재산 유형에 따른 총 금액 계산
         const assetValue = (() => {
-            if (assetType.value === 'cash') return parseInt(document.getElementById('cashAmount').value.replace(/,/g, '') || '0', 10);
-            if (assetType.value === 'realEstate') return parseInt(document.getElementById('realEstateValue').value.replace(/,/g, '') || '0', 10);
-            if (assetType.value === 'stock') {
+            let total = 0;
+            if (document.getElementById('cash').checked) {
+                total += parseInt(document.getElementById('cashAmount').value.replace(/,/g, '') || '0', 10);
+            }
+            if (document.getElementById('realEstate').checked) {
+                total += parseInt(document.getElementById('realEstateValue').value.replace(/,/g, '') || '0', 10);
+            }
+            if (document.getElementById('stock').checked) {
                 const quantity = parseInt(document.getElementById('stockQuantity').value || '0', 10);
                 const price = parseInt(document.getElementById('stockPrice').value.replace(/,/g, '') || '0', 10);
-                return quantity * price;
+                total += quantity * price;
             }
-            if (assetType.value === 'others') return parseInt(document.getElementById('otherAssetValue').value.replace(/,/g, '') || '0', 10);
-            return 0;
+            if (document.getElementById('others').checked) {
+                total += parseInt(document.getElementById('otherAssetValue').value.replace(/,/g, '') || '0', 10);
+            }
+            return total;
         })();
 
-        // 상속인 정보 수집
-        const heirs = Array.from(document.querySelectorAll('.heir-entry')).map(heir => {
-            const name = heir.querySelector('input[type="text"]').value;
-            const relationship = heir.querySelector('select').value;
-            const share = parseFloat(heir.querySelector('input[type="number"]').value) || 0;
-            return { name, relationship, share };
-        });
+        // 개인 계산 로직
+        if (calculationType === 'individual') {
+            const myInheritance = parseInt(document.getElementById('myInheritance').value.replace(/,/g, '') || '0', 10);
+            const relationship = document.getElementById('relationship').value;
 
-        // 상속인 비율 합계 확인
-        const totalShare = heirs.reduce((sum, heir) => sum + heir.share, 0);
-        if (totalShare > 100) {
-            document.getElementById('result').innerHTML = `<p style="color:red;">상속 비율 합계가 100%를 초과할 수 없습니다.</p>`;
-            return;
+            const exemption = calculateExemption(relationship);
+            const taxableAmount = Math.max(myInheritance - exemption, 0);
+            const tax = calculateTax(taxableAmount);
+
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = `
+                <h3>개인 계산 결과</h3>
+                <p>상속받은 재산 금액: ${myInheritance.toLocaleString()} 원</p>
+                <p>공제 금액: ${exemption.toLocaleString()} 원</p>
+                <p>과세 금액: ${taxableAmount.toLocaleString()} 원</p>
+                <p><strong>상속세: ${tax.toLocaleString()} 원</strong></p>
+            `;
         }
 
-        if (calculationType === 'individual') {
+        // 전체 계산 로직
+        if (calculationType === 'total') {
+            const heirs = Array.from(document.querySelectorAll('.heir-entry')).map(heir => {
+                const name = heir.querySelector('input[type="text"]').value;
+                const relationship = heir.querySelector('select').value;
+                const share = parseFloat(heir.querySelector('input[type="number"]').value) || 0;
+
+                return { name, relationship, share };
+            });
+
+            // 상속인 비율 합계 확인
+            const totalShare = heirs.reduce((sum, heir) => sum + heir.share, 0);
+            if (totalShare > 100) {
+                document.getElementById('result').innerHTML = `<p style="color:red;">상속 비율 합계가 100%를 초과할 수 없습니다.</p>`;
+                return;
+            }
+
             const result = heirs.map(heir => {
                 const heirAssetValue = (assetValue * heir.share) / 100;
                 const exemption = calculateExemption(heir.relationship);
@@ -77,11 +113,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
             });
 
-            // 개인분 결과 출력
             const resultDiv = document.getElementById('result');
             resultDiv.style.display = 'block';
             resultDiv.innerHTML = `
-                <h3>개인분 계산 결과</h3>
+                <h3>전체 계산 결과</h3>
                 ${result.map(r => `
                     <p>
                         <strong>${r.name}</strong><br>
@@ -92,23 +127,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         상속세: ${r.tax.toLocaleString()} 원
                     </p>
                 `).join('')}
-            `;
-        } else if (calculationType === 'total') {
-            const totalTax = heirs.reduce((sum, heir) => {
-                const heirAssetValue = (assetValue * heir.share) / 100;
-                const exemption = calculateExemption(heir.relationship);
-                const taxableAmount = Math.max(heirAssetValue - exemption, 0);
-                const tax = calculateTax(taxableAmount);
-
-                return sum + tax;
-            }, 0);
-
-            // 전체분 결과 출력
-            const resultDiv = document.getElementById('result');
-            resultDiv.style.display = 'block';
-            resultDiv.innerHTML = `
-                <h3>전체분 계산 결과</h3>
-                <p>총 상속세: ${totalTax.toLocaleString()} 원</p>
             `;
         }
     });
