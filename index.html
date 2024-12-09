@@ -1,96 +1,53 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>상속세 계산기 (2024년 기준)</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div class="calculator">
-        <h1>상속세 계산기 (2024년 기준)</h1>
-        <form id="inheritanceForm">
-            <!-- 계산 모드 선택 -->
-            <label for="calculationMode">계산 모드:</label>
-            <select id="calculationMode">
-                <option value="individual" selected>개인분 계산</option>
-                <option value="total">전체분 계산</option>
-            </select>
+/* 전체 스타일 */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 20px;
+}
 
-            <!-- 재산 유형 선택 -->
-            <h2>재산 유형</h2>
-            <div id="assetTypeContainer">
-                <label><input type="checkbox" id="cash" value="cash"> 현금</label>
-                <label><input type="checkbox" id="realEstate" value="realEstate"> 부동산</label>
-                <label><input type="checkbox" id="stock" value="stock"> 주식</label>
-                <label><input type="checkbox" id="others" value="others"> 기타</label>
-            </div>
+.calculator {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
 
-            <!-- 재산 유형별 입력 필드 -->
-            <div id="assetFields">
-                <div id="cashField" class="asset-input" style="display: none;">
-                    <label for="cashAmount">현금 금액 (원):</label>
-                    <input type="text" id="cashAmount" class="amount-input" placeholder="예: 10,000,000">
-                </div>
-                <div id="realEstateField" class="asset-input" style="display: none;">
-                    <label for="realEstateValue">부동산 평가액 (원):</label>
-                    <input type="text" id="realEstateValue" class="amount-input" placeholder="예: 100,000,000">
-                </div>
-                <div id="stockField" class="asset-input" style="display: none;">
-                    <label for="stockQuantity">주식 매수량:</label>
-                    <input type="number" id="stockQuantity" placeholder="예: 100">
-                    <label for="stockPrice">주식 1주당 가격 (원):</label>
-                    <input type="text" id="stockPrice" class="amount-input" placeholder="예: 10,000">
-                </div>
-                <div id="othersField" class="asset-input" style="display: none;">
-                    <label for="otherAssetValue">기타 재산 평가액 (원):</label>
-                    <input type="text" id="otherAssetValue" class="amount-input" placeholder="예: 50,000,000">
-                </div>
-            </div>
+label, h2 {
+    display: block;
+    margin: 10px 0 5px;
+}
 
-            <!-- 개인 상속 분 계산 -->
-            <div id="individualSection">
-                <h2>개인 상속 분 계산</h2>
-                <label for="myInheritance">나의 상속 분 (원):</label>
-                <input type="text" id="myInheritance" class="amount-input" placeholder="예: 200,000,000">
+input, select, button {
+    width: 100%;
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
 
-                <label for="relationship">관계:</label>
-                <select id="relationship">
-                    <option value="spouse">배우자</option>
-                    <option value="adultChild">자녀(성년)</option>
-                    <option value="minorChild">자녀(미성년)</option>
-                    <option value="parent">부모</option>
-                    <option value="sibling">형제자매</option>
-                    <option value="other">기타</option>
-                </select>
-            </div>
+button {
+    background: #4CAF50;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+}
 
-            <!-- 전체 상속 분 계산 -->
-            <div id="totalSection" style="display: none;">
-                <h2>전체 상속 분 계산</h2>
-                <label for="heirContainer">상속인 정보:</label>
-                <div id="heirContainer">
-                    <div class="heir-entry">
-                        <input type="text" placeholder="이름">
-                        <select>
-                            <option value="spouse">배우자</option>
-                            <option value="child">자녀</option>
-                            <option value="other">기타</option>
-                        </select>
-                        <input type="number" placeholder="상속 비율 (%)">
-                    </div>
-                </div>
-                <button type="button" id="addHeirButton">상속인 추가</button>
-            </div>
+button:hover {
+    background: #45a049;
+}
 
-            <!-- 계산하기 버튼 -->
-            <button type="button" id="calculateButton">계산하기</button>
-        </form>
+.asset-input {
+    margin-bottom: 15px;
+}
 
-        <!-- 결과 -->
-        <div id="result"></div>
-    </div>
-
-    <script src="script.js"></script>
-</body>
-</html>
+#result {
+    display: none;
+    padding: 15px;
+    background: #f1f1f1;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-top: 20px;
+}
