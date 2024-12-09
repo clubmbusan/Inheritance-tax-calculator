@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
         exemptionInput.value = exemption.toLocaleString();
     });
 
-    // 계산하기 버튼 이벤트
+       // 계산하기 버튼 이벤트
     document.getElementById('calculateButton').addEventListener('click', () => {
         // 재산 유형에 따른 금액 가져오기
         const assetValue = (() => {
@@ -89,6 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // 상속인 비율 합계 확인
         const totalShare = heirs.reduce((sum, heir) => sum + heir.share, 0);
         if (totalShare > 100) {
+            document.getElementById('result').style.display = 'block'; // 오류 메시지를 표시할 때도 보이도록 설정
             document.getElementById('result').innerHTML = `<p style="color:red;">상속 비율 합계가 100%를 초과할 수 없습니다.</p>`;
             return;
         }
@@ -135,7 +136,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // 결과 출력
-        document.getElementById('result').innerHTML = `
+        const resultDiv = document.getElementById('result');
+        resultDiv.style.display = 'block'; // 계산 결과를 표시하도록 설정
+        resultDiv.innerHTML = `
             <h3>계산 결과</h3>
             ${result.map(r => `
                 <p>
@@ -149,4 +152,3 @@ document.addEventListener('DOMContentLoaded', () => {
             `).join('')}
         `;
     });
-});
