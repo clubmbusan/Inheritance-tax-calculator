@@ -64,7 +64,20 @@
                 <option value="other">기타</option>
             </select>
 
-           <!-- 전체 상속 분 계산 -->
+            <!-- 계산 모드 선택 -->
+            <h2>계산 모드 선택</h2>
+            <div>
+                <label>
+                    <input type="radio" name="calculationType" value="individual" checked>
+                    개인분 계산
+                </label>
+                <label>
+                    <input type="radio" name="calculationType" value="total">
+                    전체분 계산
+                </label>
+            </div>
+
+            <!-- 전체 상속 분 계산 -->
             <h2>전체 상속 분 계산 (옵션)</h2>
             <label for="heirContainer">상속인 정보:</label>
             <div id="heirContainer">
@@ -91,4 +104,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-
