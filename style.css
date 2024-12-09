@@ -1,3 +1,4 @@
+/* 전체 페이지 스타일 */
 body {
     font-family: Arial, sans-serif;
     background-color: #f9f9f9;
@@ -5,6 +6,7 @@ body {
     padding: 0;
 }
 
+/* 계산기 컨테이너 */
 .calculator {
     max-width: 600px;
     margin: 50px auto;
@@ -15,6 +17,7 @@ body {
     box-sizing: border-box;
 }
 
+/* 폼 요소 공통 스타일 */
 form label {
     display: block;
     margin: 10px 0 5px;
@@ -29,6 +32,7 @@ form input, form select {
     box-sizing: border-box;
 }
 
+/* 버튼 스타일 */
 button {
     background-color: #4CAF50;
     color: white;
@@ -46,6 +50,7 @@ button:hover {
     background-color: #45a049;
 }
 
+/* 상속인 정보 입력 필드 스타일 */
 .heir-entry {
     display: flex;
     gap: 10px;
@@ -57,4 +62,58 @@ button:hover {
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 5px;
+    box-sizing: border-box;
+}
+
+/* 추가 재산 유형 입력 필드 */
+#additionalFields > div {
+    display: none;
+}
+
+#additionalFields > div:target {
+    display: block;
+}
+
+/* 결과 출력 스타일 */
+#result {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f1f1f1;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+/* 섹션 헤더 스타일 */
+h2 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* 공제 금액 입력 비활성화 스타일 */
+#exemptionAmount[readonly] {
+    background-color: #e9ecef;
+    color: #6c757d;
+    cursor: not-allowed;
+}
+
+/* 반응형 스타일 */
+@media screen and (max-width: 768px) {
+    .calculator {
+        padding: 15px;
+    }
+
+    button {
+        font-size: 14px;
+    }
+
+    .heir-entry {
+        flex-direction: column;
+    }
+
+    .heir-entry input, .heir-entry select {
+        width: 100%;
+    }
 }
