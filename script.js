@@ -138,3 +138,5 @@ resultDiv.innerHTML = `
         </p>
     `).join('')}
 `;
+ });
+});
