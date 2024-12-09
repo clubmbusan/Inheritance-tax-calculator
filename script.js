@@ -1,4 +1,19 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // 금액 입력 필드 콤마 추가 처리
+    document.addEventListener('input', (event) => {
+        const target = event.target;
+        // 금액 입력 필드만 처리
+        if (['cashAmount', 'realEstateValue', 'stockPrice', 'otherAssetValue', 'myInheritance'].includes(target.id) ||
+            target.classList.contains('amount-input')) {
+            const rawValue = target.value.replace(/[^0-9]/g, ''); // 숫자 이외의 문자 제거
+            if (rawValue === '') {
+                target.value = ''; // 빈 값 처리
+                return;
+            }
+            target.value = parseInt(rawValue, 10).toLocaleString(); // 콤마 추가
+        }
+    });
+
     // 재산 유형 선택 이벤트 리스너
     const assetType = document.getElementById('assetType');
     const fields = {
@@ -8,7 +23,6 @@ document.addEventListener('DOMContentLoaded', () => {
         others: document.getElementById('othersInputField'),
     };
 
-    // 재산 유형 선택 시 입력 필드 전환
     assetType.addEventListener('change', () => {
         Object.values(fields).forEach(field => field.style.display = 'none');
         fields[assetType.value].style.display = 'block';
