@@ -48,7 +48,27 @@
                 </div>
             </div>
 
-            <!-- 상속인 정보 -->
+            <!-- 개인 상속 분 계산 -->
+            <h2>개인 상속 분 계산</h2>
+            <label for="myInheritance">나의 상속 분 (원):</label>
+            <input type="text" id="myInheritance" placeholder="예: 200,000,000">
+
+            <!-- 관계별 공제 -->
+            <label for="relationship">관계:</label>
+            <select id="relationship">
+                <option value="spouse">배우자</option>
+                <option value="adultChild">자녀(성년)</option>
+                <option value="minorChild">자녀(미성년)</option>
+                <option value="parent">부모</option>
+                <option value="sibling">형제자매</option>
+                <option value="other">기타</option>
+            </select>
+
+            <label for="exemptionAmount">공제 금액 (원):</label>
+            <input type="text" id="exemptionAmount" readonly placeholder="자동 계산됨">
+
+            <!-- 전체 상속 분 계산 -->
+            <h2>전체 상속 분 계산 (옵션)</h2>
             <label for="heirContainer">상속인 정보:</label>
             <div id="heirContainer">
                 <div class="heir-entry">
@@ -74,3 +94,4 @@
     <script src="script.js"></script>
 </body>
 </html>
+
