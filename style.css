@@ -33,50 +33,38 @@ form input, form select {
 }
 
 /* 버튼 스타일 */
-button {
+button, .action-button {
     background-color: #4CAF50;
     color: white;
     border: none;
     padding: 10px 20px;
     font-size: 16px;
+    border-radius: 5px;
     cursor: pointer;
-    border-radius: 5px;
-    margin-top: 5px;
-}
-.action-button {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 10px;
-    font-size: 16px;
-    border-radius: 5px;
-    width: 100%;
     margin-top: 10px;
-    cursor: pointer;
     box-sizing: border-box;
 }
 
-.action-button:hover {
-    background-color: #45a049;
-}
-
-button:hover {
+button:hover, .action-button:hover {
     background-color: #45a049;
 }
 
 /* 결과 출력 */
 #result {
     margin-top: 20px;
-    padding: 15px;
-    background-color: #f1f1f1;
+    padding: 20px;
+    background-color: #f8f8f8;
     border: 1px solid #ddd;
     border-radius: 5px;
     display: none;
+    font-size: 14px;
+    line-height: 1.6;
 }
 
 #result h3 {
     margin-top: 0;
     color: #4CAF50;
+    font-size: 18px;
 }
 
 /* 선택된 재산 목록 */
@@ -96,12 +84,39 @@ button:hover {
     background: #ff4c4c;
     color: white;
     border: none;
-    padding: 5px 10px;
-    font-size: 12px;
+    padding: 8px 12px;
+    font-size: 14px;
     cursor: pointer;
-    border-radius: 3px;
+    border-radius: 5px;
 }
 
 #assetList li button:hover {
     background: #e04343;
+}
+
+/* 재산 입력 필드 및 버튼 정렬 */
+.asset-input {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.asset-input input, .asset-input button {
+    flex: 1;
+}
+
+/* 반응형 스타일 */
+@media screen and (max-width: 768px) {
+    .calculator {
+        padding: 15px;
+    }
+
+    button, .action-button {
+        font-size: 14px;
+    }
+
+    #assetList li button {
+        padding: 6px 10px;
+        font-size: 12px;
+    }
 }
