@@ -62,19 +62,32 @@ document.getElementById('addHeirButton').addEventListener('click', () => {
 const relationshipInput = document.getElementById('relationship');
 const exemptionInput = document.getElementById('exemptionAmount');
 
+function calculateExemption(relationship) {
+    let exemption = 500000000; // 기본 공제 5억 원
+
+    if (relationship === 'spouse') {
+        exemption += 3000000000; // 배우자 최대 30억 원
+    } else if (relationship === 'adultChild') {
+        exemption += 50000000; // 성년 자녀 5천만 원
+    } else if (relationship === 'minorChild') {
+        const minorExemption = 20000000 * 20; // 미성년 공제 계산
+        exemption += Math.min(minorExemption, 520000000); // 최대 공제 금액: 5억 2천만 원
+    } else if (relationship === 'parent') {
+        exemption += 50000000; // 부모 5천만 원
+    } else if (relationship === 'sibling') {
+        exemption += 50000000; // 형제자매 5천만 원
+    } else if (relationship === 'other') {
+        exemption += 10000000; // 기타 상속인
+    }
+
+    return exemption;
+}
+
+// 공제 금액 자동 계산 이벤트
 relationshipInput.addEventListener('change', () => {
     const relationship = relationshipInput.value;
-    let exemption = 500000000; // 기본 공제 5억 원 고정 적용
-
-    // 상속인별 추가 공제 계산
-    if (relationship === 'spouse') exemption += 3000000000; // 배우자 최대 30억 원
-    else if (relationship === 'adultChild') exemption += 50000000; // 성년 자녀 5천만 원
-    else if (relationship === 'minorChild') exemption += 20000000 * 20; // 미성년 자녀 (20년 기준)
-    else if (relationship === 'parent') exemption += 50000000; // 부모 5천만 원
-    else if (relationship === 'sibling') exemption += 50000000; // 형제자매 5천만 원
-    else exemption += 10000000; // 기타 상속인 1천만 원
-
-    exemptionInput.value = exemption.toLocaleString();
+    const exemption = calculateExemption(relationship); // 공제 계산 함수 호출
+    exemptionInput.value = exemption.toLocaleString(); // 결과를 입력 필드에 표시
 });
 
     // 계산하기 버튼 이벤트
