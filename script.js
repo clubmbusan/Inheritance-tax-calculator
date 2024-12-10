@@ -106,12 +106,24 @@ relationshipInput.addEventListener('change', () => {
         })();
 
         // 상속인 정보 수집
-        const heirs = Array.from(document.querySelectorAll('.heir-entry')).map(heir => {
-            const name = heir.querySelector('input[type="text"]').value;
-            const relationship = heir.querySelector('select').value;
-            const share = parseFloat(heir.querySelector('input[type="number"]').value) || 0;
-            return { name, relationship, share };
-        });
+      document.getElementById('addPersonalHeirButton').addEventListener('click', () => {
+    const personalContainer = document.getElementById('personalHeirContainer');
+    const newPersonalHeir = document.createElement('div');
+    newPersonalHeir.className = 'personal-heir-entry';
+    newPersonalHeir.innerHTML = `
+        <input type="text" placeholder="이름">
+        <select>
+            <option value="spouse">배우자</option>
+            <option value="adultChild">성년 자녀</option>
+            <option value="minorChild">미성년 자녀</option>
+            <option value="parent">부모</option>
+            <option value="sibling">형제자매</option>
+            <option value="other">기타</option>
+        </select>
+        <input type="number" value="100" disabled placeholder="상속 비율 (%)"> <!-- 지분 100% 고정 -->
+    `;
+    personalContainer.appendChild(newPersonalHeir);
+});
 
         // 상속인 비율 합계 확인
         const totalShare = heirs.reduce((sum, heir) => sum + heir.share, 0);
