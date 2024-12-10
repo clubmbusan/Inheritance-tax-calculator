@@ -32,19 +32,21 @@ form input, form select {
     box-sizing: border-box;
 }
 
-/* 버튼 스타일 */
-button {
+/* 버튼 스타일 통일 */
+button, .action-button, #assetList li button {
     background-color: #4CAF50;
     color: white;
     border: none;
-    padding: 10px 20px;
+    padding: 10px;
     font-size: 16px;
     cursor: pointer;
     border-radius: 5px;
     margin-top: 5px;
+    box-sizing: border-box;
+    width: 100%;
 }
 
-button:hover {
+button:hover, .action-button:hover, #assetList li button:hover {
     background-color: #45a049;
 }
 
@@ -77,15 +79,12 @@ button:hover {
 }
 
 #assetList li button {
-    background: #ff4c4c;
-    color: white;
-    border: none;
     padding: 5px 10px;
     font-size: 12px;
-    cursor: pointer;
-    border-radius: 3px;
+    border-radius: 5px;
+    background-color: #4CAF50;
 }
 
 #assetList li button:hover {
-    background: #e04343;
+    background-color: #45a049;
 }
