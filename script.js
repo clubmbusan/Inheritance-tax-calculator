@@ -151,5 +151,20 @@ const result = heirs.map(heir => {
         exemption,
         taxableAmount,
         tax,
-    };
-});
+    }; // <-- 첫 번째 return 닫힘
+}); // <-- map() 함수 닫힘
+
+// 결과 출력
+document.getElementById('result').innerHTML = `
+    <h3>계산 결과</h3>
+    ${result.map(r => `
+        <p>
+            <strong>${r.name}</strong><br>
+            상속 비율: ${r.share}%<br>
+            상속받은 재산 금액: ${r.assetValue.toLocaleString()} 원<br>
+            공제 금액: ${r.exemption.toLocaleString()} 원<br>
+            과세 금액: ${r.taxableAmount.toLocaleString()} 원<br>
+            상속세: ${r.tax.toLocaleString()} 원
+        </p>
+    `).join('')}
+`; // <-- innerHTML 닫힘
