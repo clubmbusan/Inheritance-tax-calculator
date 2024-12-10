@@ -29,8 +29,17 @@ form input, form select {
     appearance: none; /* 선택 필드의 기본 스타일 제거 */
     background-color: white; /* 선택 필드 배경색 */
     color: #333; /* 선택 필드 텍스트 색상 */
+    line-height: normal; /* 텍스트 줄 높이 통일 */
+    cursor: pointer; /* 드롭다운 선택 가능 표시 */
 }
 
+/* 선택 필드 아이콘 중앙 정렬 (필요시) */
+form select {
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxNiIgd2lkdGg9IjE2IiBoZWlnaHQ9IjE2Ij48cGF0aCBkPSJNOC4wMDYgMTEuOTk5YTEgMSAwIDAgMS0uNzA3LS4yOTdsLTQtNEExIDEgMCAwIDEgNS43MDcuNzA3YTEgMSAwIDAgMSAxLjQxNCAwTCA4IDYuNTg2bDIuODYxLTIuODYxYTEgMSAwIDAgMSAxLjQxNCAwIDEgMSAwIDAgMSAwIDEuNDE0bC00IDRhMSAxIDAgMCAxLS43MDcuMjk3eiIgZmlsbD0iIzMzMyIvPjwvc3ZnPg==');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 12px 12px;
+}
 
 /* 버튼 스타일 */
 button {
@@ -44,6 +53,7 @@ button {
     width: 100%;
     box-sizing: border-box;
     margin-bottom: 10px;
+    transition: background-color 0.3s ease;
 }
 
 button:hover {
@@ -81,6 +91,7 @@ button:hover {
     background-color: #f1f1f1;
     border: 1px solid #ddd;
     border-radius: 5px;
+    line-height: 1.6;
 }
 
 /* 섹션 헤더 스타일 */
