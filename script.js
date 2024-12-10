@@ -91,19 +91,16 @@ relationshipInput.addEventListener('change', () => {
 });
 
     // 계산하기 버튼 이벤트
+   document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('calculateButton').addEventListener('click', () => {
-        // 재산 유형에 따른 금액 가져오기
-        const assetValue = (() => {
-            if (assetType.value === 'cash') return parseInt(document.getElementById('cashAmount').value.replace(/,/g, '') || '0', 10);
-            if (assetType.value === 'realEstate') return parseInt(document.getElementById('realEstateValue').value.replace(/,/g, '') || '0', 10);
-            if (assetType.value === 'stock') {
-                const quantity = parseInt(document.getElementById('stockQuantity').value || '0', 10);
-                const price = parseInt(document.getElementById('stockPrice').value.replace(/,/g, '') || '0', 10);
-                return quantity * price;
-            }
-            if (assetType.value === 'others') return parseInt(document.getElementById('otherAssetValue').value.replace(/,/g, '') || '0', 10);
-            return 0;
-        })();
+        try {
+            console.log('계산하기 버튼 클릭됨');
+            calculateInheritance(); // 통합된 계산 함수 호출
+        } catch (error) {
+            console.error('계산 중 오류 발생:', error);
+        }
+    });
+});
 
         // 상속인 정보 수집
       document.getElementById('addPersonalHeirButton').addEventListener('click', () => {
