@@ -33,21 +33,30 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // 상속인 추가 버튼 이벤트
-    document.getElementById('addHeirButton').addEventListener('click', () => {
-        const heirContainer = document.getElementById('heirContainer');
-        const newHeir = document.createElement('div');
-        newHeir.className = 'heir-entry';
-        newHeir.innerHTML = `
-            <input type="text" placeholder="이름">
-            <select>
-                <option value="spouse">배우자</option>
-                <option value="child">자녀</option>
-                <option value="other">기타</option>
-            </select>
-            <input type="number" placeholder="상속 비율 (%)">
-        `;
-        heirContainer.appendChild(newHeir);
-    });
+   const relationshipOptions = [
+    { value: 'spouse', label: '배우자' },
+    { value: 'adultChild', label: '성년 자녀' },
+    { value: 'minorChild', label: '미성년 자녀' },
+    { value: 'parent', label: '부모' },
+    { value: 'sibling', label: '형제자매' },
+    { value: 'other', label: '기타' },
+];
+
+// 상속인 추가 버튼 이벤트
+document.getElementById('addHeirButton').addEventListener('click', () => {
+    const heirContainer = document.getElementById('heirContainer');
+    const newHeir = document.createElement('div');
+    newHeir.className = 'heir-entry';
+    newHeir.innerHTML = `
+        <input type="text" placeholder="이름">
+        <select>
+            ${relationshipOptions.map(option => `<option value="${option.value}">${option.label}</option>`).join('')}
+        </select>
+        <input type="number" placeholder="상속 비율 (%)">
+    `;
+    heirContainer.appendChild(newHeir);
+});
+
 
     // 공제 금액 자동 계산
 const relationshipInput = document.getElementById('relationship');
