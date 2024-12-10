@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // 팝업 창 요소
+    // 팝업 요소
     const popup = document.getElementById("assetPopup");
     const popupCloseButton = document.getElementById("popupClose");
     const popupConfirmButton = document.getElementById("popupConfirm");
@@ -10,13 +10,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const assetList = document.getElementById("assetList");
     const totalAssetValue = document.getElementById("totalAssetValue");
 
-    // 팝업 열기
+    // 상속인 목록
+    const heirContainer = document.getElementById("heirContainer");
+    const addHeirButton = document.getElementById("addHeirButton");
+
+    // 팝업 열기/닫기
     const openPopup = () => {
         popup.style.display = "block";
         resetPopup();
     };
 
-    // 팝업 닫기
     const closePopup = () => {
         popup.style.display = "none";
     };
@@ -27,13 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
         popupInputFields.innerHTML = generateInputField("cash");
     };
 
-    // 재산 유형에 따른 입력 필드 동적으로 표시
-    popupAssetType.addEventListener("change", (e) => {
-        const assetType = e.target.value;
-        popupInputFields.innerHTML = generateInputField(assetType);
-    });
-
-    // 입력 필드 생성 함수
+    // 재산 유형에 따른 입력 필드 생성
     const generateInputField = (assetType) => {
         switch (assetType) {
             case "cash":
@@ -63,7 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
-    // 팝업 확인 버튼 클릭 시 재산 추가
+    // 팝업 확인 버튼 클릭 시 데이터 추가
     popupConfirmButton.addEventListener("click", () => {
         const assetType = popupAssetType.value;
         let assetAmount = 0;
@@ -98,14 +95,11 @@ document.addEventListener("DOMContentLoaded", () => {
         closePopup();
     });
 
-    // 총합 업데이트 함수
+    // 총합 업데이트
     const updateTotal = (amount) => {
         const currentTotal = parseInt(totalAssetValue.textContent.replace(/,/g, "")) || 0;
         totalAssetValue.textContent = (currentTotal + amount).toLocaleString();
     };
-
-    // 팝업 닫기 버튼 이벤트
-    popupCloseButton.addEventListener("click", closePopup);
 
     // 금액 입력 필드에 콤마 추가
     document.addEventListener("input", (event) => {
@@ -117,4 +111,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // 재산 추가 버튼 이벤트
     document.getElementById("addAssetButton").addEventListener("click", openPopup);
+
+    // 팝업 닫기 버튼 이벤트
+    popupCloseButton.addEventListener("click", closePopup);
+
+    // 상속인 추가 버튼 이벤트
+    addHeirButton.addEventListener("click", () => {
+        const newHeir = document.createElement("div");
+        newHeir.classList.add("heir-entry");
+        newHeir.innerHTML = `
+            <input type="text" placeholder="이름">
+            <select>
+                <option value="spouse">배우자</option>
+                <option value="child">자녀</option>
+                <option value="other">기타</option>
+            </select>
+            <input type="number" placeholder="상속 비율 (%)">
+            <button type="button" class="delete-heir action-button">삭제</button>
+        `;
+        heirContainer.appendChild(newHeir);
+
+        // 삭제 버튼 이벤트
+        newHeir.querySelector(".delete-heir").addEventListener("click", () => {
+            newHeir.remove();
+        });
+    });
 });
