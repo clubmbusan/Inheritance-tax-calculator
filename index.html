@@ -17,30 +17,35 @@
             <option value="group">단체 상속인</option>
         </select>
 
-        <!-- 상속재산 총액 -->
-        <div id="totalInheritanceContainer">
-            <label for="totalInheritance">상속재산 총액 (원):</label>
-            <input type="text" id="totalInheritance" class="input-field amount-input" readonly placeholder="자동 계산됨">
-        </div>
-
-        <!-- 상속인 정보 -->
+        <!-- 개인 모드 -->
         <div id="individualMode" style="display: none;">
+            <h2>개인 상속인 계산</h2>
             <label for="individualRelationship">관계:</label>
             <select id="individualRelationship" class="input-field">
                 <option value="spouse">배우자</option>
                 <option value="child">자녀</option>
                 <option value="other">기타</option>
             </select>
+
+            <label for="assetType">재산 유형:</label>
+            <select id="assetType" class="input-field">
+                <option value="cash">현금</option>
+                <option value="realEstate">부동산</option>
+            </select>
+
+            <div id="assetInputField">
+                <!-- 동적 입력 필드 -->
+            </div>
+
+            <button id="addPropertyButton" class="common-button">재산 추가</button>
         </div>
 
+        <!-- 단체 모드 -->
         <div id="groupMode" style="display: none;">
-            <h2>상속인 정보</h2>
+            <h2>단체 상속인 계산</h2>
             <div id="heirList"></div>
             <button id="addHeirButton" class="common-button">상속인 추가</button>
         </div>
-
-        <!-- 재산 추가 버튼 -->
-        <button id="addPropertyButton" class="common-button">재산 추가</button>
 
         <!-- 계산 버튼 -->
         <button id="calculateButton" class="common-button">계산하기</button>
@@ -56,8 +61,6 @@
         <select id="popupPropertyType" class="input-field">
             <option value="cash">현금</option>
             <option value="realEstate">부동산</option>
-            <option value="stock">주식</option>
-            <option value="other">기타</option>
         </select>
 
         <div id="popupFields">
