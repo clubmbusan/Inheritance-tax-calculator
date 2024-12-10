@@ -1,12 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
     // 금액 입력 필드에 콤마 추가 처리
     document.addEventListener('input', (event) => {
-    const target = event.target;
-    if (target.classList.contains('amount-input')) {
-        const rawValue = target.value.replace(/[^0-9]/g, '');
-        target.value = rawValue ? parseInt(rawValue, 10).toLocaleString() : '';
-    }
-});
+        const target = event.target;
+        if (target.classList.contains('amount-input')) {
+            const rawValue = target.value.replace(/[^0-9]/g, '');
+            target.value = rawValue ? parseInt(rawValue, 10).toLocaleString() : '';
+        }
+    });
 
     // 선택된 재산 목록 및 총합 관리
     const assetList = document.getElementById('assetList');
