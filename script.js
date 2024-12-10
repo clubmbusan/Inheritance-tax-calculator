@@ -168,3 +168,5 @@ document.getElementById('result').innerHTML = `
         </p>
     `).join('')}
 `; // <-- innerHTML 닫힘
+  });
+});
