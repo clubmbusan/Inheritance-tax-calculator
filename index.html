@@ -19,12 +19,13 @@
 
             <!-- 재산 유형 선택 -->
             <h2>재산 유형</h2>
-            <div id="assetTypeContainer">
-                <label><input type="checkbox" id="cash" value="cash"> 현금</label>
-                <label><input type="checkbox" id="realEstate" value="realEstate"> 부동산</label>
-                <label><input type="checkbox" id="stock" value="stock"> 주식</label>
-                <label><input type="checkbox" id="others" value="others"> 기타</label>
-            </div>
+           <label for="assetTypeDropdown">재산 유형:</label>
+           <select id="assetTypeDropdown">
+             <option value="cash" selected>현금</option>
+             <option value="realEstate">부동산</option>
+             <option value="stock">주식</option>
+             <option value="others">기타</option>
+          </select>
 
             <!-- 재산 유형별 입력 필드 -->
             <div id="assetFields">
