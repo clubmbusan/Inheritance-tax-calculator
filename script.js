@@ -98,8 +98,7 @@ relationshipInput.addEventListener('change', () => {
             return;
         }
 
-        // 상속인별 세금 계산
-       // 상속인별 세금 계산
+      // 상속인별 세금 계산
 const result = heirs.map(heir => {
     const heirAssetValue = (assetValue * heir.share) / 100; // 상속받은 재산 금액
     let exemption = 500000000; // 기본 공제 5억 원
@@ -110,8 +109,11 @@ const result = heirs.map(heir => {
     } else if (heir.relationship === 'adultChild') {
         exemption += 50000000; // 성년 자녀 5천만 원
     } else if (heir.relationship === 'minorChild') {
-        const minorExemption = 20000000 * 20; // 미성년 공제 계산
-        exemption += Math.min(minorExemption, 520000000); // 최대 공제 금액: 5억 2천만 원
+        // 미성년 공제 계산
+        console.log(`Processing minorChild: ${JSON.stringify(heir)}`); // 디버깅 코드
+        const minorExemption = 20000000 * (20 - heir.age); // 나이를 고려한 공제 계산
+        exemption += Math.min(minorExemption, 520000000); // 최대 공제 금액 제한
+        console.log(`Minor child exemption: ${minorExemption}, Applied exemption: ${exemption}`); // 디버깅 결과 확인
     } else if (heir.relationship === 'parent') {
         exemption += 50000000; // 부모 5천만 원
     } else if (heir.relationship === 'sibling') {
