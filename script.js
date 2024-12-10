@@ -1,40 +1,44 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // 금액 입력 필드 콤마 추가 처리
-    document.addEventListener('input', (event) => {
-        const target = event.target;
-        // 금액 입력 필드만 처리
-        if (['cashAmount', 'realEstateValue', 'stockPrice', 'otherAssetValue', 'myInheritance'].includes(target.id) ||
-            target.classList.contains('amount-input')) {
-            const rawValue = target.value.replace(/[^0-9]/g, ''); // 숫자 이외의 문자 제거
-            if (rawValue === '') {
-                target.value = ''; // 빈 값 처리
-                return;
-            }
-            const caretPosition = target.selectionStart; // 커서 위치 저장
-            target.value = parseInt(rawValue, 10).toLocaleString(); // 콤마 추가
-            const newCaretPosition = target.value.length - rawValue.length + caretPosition; // 새로운 커서 위치 계산
-            target.setSelectionRange(newCaretPosition, newCaretPosition); // 커서 위치 복원
+    const inheritanceType = document.getElementById('inheritanceType');
+    const personalSection = document.getElementById('personalSection');
+    const groupSection = document.getElementById('groupSection');
+    const addAssetButton = document.getElementById('addAssetButton');
+    const addHeirButton = document.getElementById('addHeirButton');
+    const assetContainer = document.getElementById('assetContainer');
+    const heirContainer = document.getElementById('heirContainer');
+    const calculateButton = document.getElementById('calculateButton');
+    const result = document.getElementById('result');
 
+    // 상속 유형에 따른 섹션 표시
+    inheritanceType.addEventListener('change', () => {
+        if (inheritanceType.value === 'personal') {
+            personalSection.style.display = 'block';
+            groupSection.style.display = 'none';
+        } else {
+            personalSection.style.display = 'none';
+            groupSection.style.display = 'block';
         }
     });
 
-    // 재산 유형 선택 이벤트 리스너
-    const assetType = document.getElementById('assetType');
-    const fields = {
-        cash: document.getElementById('cashInputField'),
-        realEstate: document.getElementById('realEstateInputField'),
-        stock: document.getElementById('stockInputField'),
-        others: document.getElementById('othersInputField'),
-    };
-
-    assetType.addEventListener('change', () => {
-        Object.values(fields).forEach(field => field.style.display = 'none');
-        fields[assetType.value].style.display = 'block';
+    // 재산 추가 버튼
+    addAssetButton.addEventListener('click', () => {
+        const newAsset = document.createElement('div');
+        newAsset.className = 'asset-entry';
+        newAsset.innerHTML = `
+            <label for="assetType">재산 유형:</label>
+            <select class="assetType">
+                <option value="cash">현금</option>
+                <option value="realEstate">부동산</option>
+                <option value="stock">주식</option>
+                <option value="others">기타</option>
+            </select>
+            <input type="text" class="assetValue" placeholder="금액 (원)">
+        `;
+        assetContainer.appendChild(newAsset);
     });
 
-    // 상속인 추가 버튼 이벤트
-    document.getElementById('addHeirButton').addEventListener('click', () => {
-        const heirContainer = document.getElementById('heirContainer');
+    // 상속인 추가 버튼
+    addHeirButton.addEventListener('click', () => {
         const newHeir = document.createElement('div');
         newHeir.className = 'heir-entry';
         newHeir.innerHTML = `
@@ -49,70 +53,90 @@ document.addEventListener('DOMContentLoaded', () => {
         heirContainer.appendChild(newHeir);
     });
 
-    // 공제 금액 자동 계산
-const relationshipInput = document.getElementById('relationship');
-const exemptionInput = document.getElementById('exemptionAmount');
-
-relationshipInput.addEventListener('change', () => {
-    const relationship = relationshipInput.value;
-    let exemption = 500000000; // 기본 공제 5억 원 고정 적용
-
-    // 상속인별 추가 공제 계산
-    if (relationship === 'spouse') exemption += 3000000000; // 배우자 최대 30억 원
-    else if (relationship === 'adultChild') exemption += 50000000; // 성년 자녀 5천만 원
-    else if (relationship === 'minorChild') exemption += 20000000 * 20; // 미성년 자녀 (20년 기준)
-    else if (relationship === 'parent') exemption += 50000000; // 부모 5천만 원
-    else if (relationship === 'sibling') exemption += 50000000; // 형제자매 5천만 원
-    else exemption += 10000000; // 기타 상속인 1천만 원
-
-    exemptionInput.value = exemption.toLocaleString();
-});
-
-    // 계산하기 버튼 이벤트
-    document.getElementById('calculateButton').addEventListener('click', () => {
-        // 재산 유형에 따른 금액 가져오기
-        const assetValue = (() => {
-            if (assetType.value === 'cash') return parseInt(document.getElementById('cashAmount').value.replace(/,/g, '') || '0', 10);
-            if (assetType.value === 'realEstate') return parseInt(document.getElementById('realEstateValue').value.replace(/,/g, '') || '0', 10);
-            if (assetType.value === 'stock') {
-                const quantity = parseInt(document.getElementById('stockQuantity').value || '0', 10);
-                const price = parseInt(document.getElementById('stockPrice').value.replace(/,/g, '') || '0', 10);
-                return quantity * price;
-            }
-            if (assetType.value === 'others') return parseInt(document.getElementById('otherAssetValue').value.replace(/,/g, '') || '0', 10);
-            return 0;
-        })();
-
-        // 상속인 정보 수집
-        const heirs = Array.from(document.querySelectorAll('.heir-entry')).map(heir => {
-            const name = heir.querySelector('input[type="text"]').value;
-            const relationship = heir.querySelector('select').value;
-            const share = parseFloat(heir.querySelector('input[type="number"]').value) || 0;
-            return { name, relationship, share };
+    // 계산하기 버튼
+    calculateButton.addEventListener('click', () => {
+        const assets = Array.from(document.querySelectorAll('.asset-entry')).map(asset => {
+            const type = asset.querySelector('.assetType').value;
+            const value = parseInt(asset.querySelector('.assetValue').value.replace(/,/g, '') || '0', 10);
+            return { type, value };
         });
 
-        // 상속인 비율 합계 확인
-        const totalShare = heirs.reduce((sum, heir) => sum + heir.share, 0);
-        if (totalShare > 100) {
-            document.getElementById('result').innerHTML = `<p style="color:red;">상속 비율 합계가 100%를 초과할 수 없습니다.</p>`;
-            return;
+        const totalAssetValue = assets.reduce((sum, asset) => sum + asset.value, 0);
+
+        if (inheritanceType.value === 'personal') {
+            // 개인분 계산
+            const relationship = document.getElementById('relationshipPersonal').value;
+            let exemption = 500000000; // 기본 공제
+            if (relationship === 'spouse') exemption += 3000000000;
+            else if (relationship === 'adultChild') exemption += 50000000;
+            else if (relationship === 'minorChild') exemption += 20000000 * 20;
+            else if (relationship === 'parent') exemption += 50000000;
+            else if (relationship === 'sibling') exemption += 50000000;
+            else exemption += 10000000;
+
+            const taxableAmount = Math.max(totalAssetValue - exemption, 0);
+            const tax = calculateTax(taxableAmount);
+
+            result.innerHTML = `
+                <h3>계산 결과 (개인분)</h3>
+                <p>총 재산 금액: ${totalAssetValue.toLocaleString()} 원</p>
+                <p>공제 금액: ${exemption.toLocaleString()} 원</p>
+                <p>과세 금액: ${taxableAmount.toLocaleString()} 원</p>
+                <p>상속세: ${tax.toLocaleString()} 원</p>
+            `;
+        } else {
+            // 전체분 계산
+            const heirs = Array.from(document.querySelectorAll('.heir-entry')).map(heir => {
+                const name = heir.querySelector('input[type="text"]').value;
+                const relationship = heir.querySelector('select').value;
+                const share = parseFloat(heir.querySelector('input[type="number"]').value) || 0;
+                return { name, relationship, share };
+            });
+
+            const totalShare = heirs.reduce((sum, heir) => sum + heir.share, 0);
+            if (totalShare > 100) {
+                result.innerHTML = `<p style="color: red;">상속 비율 합계가 100%를 초과할 수 없습니다.</p>`;
+                return;
+            }
+
+            const heirResults = heirs.map(heir => {
+                const heirAssetValue = (totalAssetValue * heir.share) / 100;
+                let exemption = 500000000; // 기본 공제
+                if (heir.relationship === 'spouse') exemption += 3000000000;
+                else if (heir.relationship === 'child') exemption += 50000000;
+                else exemption += 10000000;
+
+                const taxableAmount = Math.max(heirAssetValue - exemption, 0);
+                const tax = calculateTax(taxableAmount);
+
+                return {
+                    name: heir.name,
+                    share: heir.share,
+                    assetValue: heirAssetValue,
+                    exemption,
+                    taxableAmount,
+                    tax,
+                };
+            });
+
+            result.innerHTML = `
+                <h3>계산 결과 (전체분)</h3>
+                ${heirResults.map(r => `
+                    <p>
+                        <strong>${r.name}</strong><br>
+                        상속 비율: ${r.share}%<br>
+                        상속받은 금액: ${r.assetValue.toLocaleString()} 원<br>
+                        공제 금액: ${r.exemption.toLocaleString()} 원<br>
+                        과세 금액: ${r.taxableAmount.toLocaleString()} 원<br>
+                        상속세: ${r.tax.toLocaleString()} 원
+                    </p>
+                `).join('')}
+            `;
         }
+    });
 
-        // 상속인별 세금 계산
-       const result = heirs.map(heir => {
-    const heirAssetValue = (assetValue * heir.share) / 100; // 상속받은 재산 금액
-    let exemption = 500000000; // 기본 공제 5억 원
-
-    // 상속인별 추가 공제
-    if (heir.relationship === 'spouse') exemption += 3000000000; // 배우자 최대 30억 원
-    else if (heir.relationship === 'adultChild') exemption += 50000000; // 성년 자녀 5천만 원
-    else if (heir.relationship === 'minorChild') exemption += 20000000 * 20; // 미성년 자녀 (20년 기준)
-    else if (heir.relationship === 'parent') exemption += 50000000; // 부모 5천만 원
-    else if (heir.relationship === 'sibling') exemption += 50000000; // 형제자매 5천만 원
-    else if (heir.relationship === 'other') exemption += 10000000; // 기타 상속인 1천만 원
-
-    const taxableAmount = Math.max(heirAssetValue - exemption, 0);
-    const tax = (() => {
+    // 상속세 계산 함수
+    function calculateTax(taxableAmount) {
         const taxBrackets = [
             { limit: 100000000, rate: 0.1, deduction: 0 },
             { limit: 500000000, rate: 0.2, deduction: 10000000 },
@@ -123,38 +147,12 @@ relationshipInput.addEventListener('change', () => {
         let totalTax = 0;
         for (const bracket of taxBrackets) {
             if (taxableAmount > bracket.limit) {
-                totalTax += (bracket.limit) * bracket.rate;
+                totalTax += bracket.limit * bracket.rate;
             } else {
-                totalTax += (taxableAmount) * bracket.rate - bracket.deduction;
+                totalTax += taxableAmount * bracket.rate - bracket.deduction;
                 break;
             }
         }
         return Math.max(totalTax, 0);
-    })();
-
-    return {
-        name: heir.name,
-        share: heir.share,
-        assetValue: heirAssetValue,
-        exemption,
-        taxableAmount,
-        tax,
-    };
-});
-
-        // 결과 출력
-        document.getElementById('result').innerHTML = `
-            <h3>계산 결과</h3>
-            ${result.map(r => `
-                <p>
-                    <strong>${r.name}</strong><br>
-                    상속 비율: ${r.share}%<br>
-                    상속받은 재산 금액: ${r.assetValue.toLocaleString()} 원<br>
-                    공제 금액: ${r.exemption.toLocaleString()} 원<br>
-                    과세 금액: ${r.taxableAmount.toLocaleString()} 원<br>
-                    상속세: ${r.tax.toLocaleString()} 원
-                </p>
-            `).join('')}
-        `;
-    });
+    }
 });
