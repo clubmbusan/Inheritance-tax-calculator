@@ -102,6 +102,50 @@ relationshipInput.addEventListener('change', () => {
     });
 });
 
+// ===== 여기 아래에 추가 =====
+
+// 2번 함수 추가
+function calculateInheritance() {
+    const heirs = Array.from(document.querySelectorAll('.heir-entry')).map(heir => {
+        const name = heir.querySelector('input[type="text"]').value || '무명';
+        const relationship = heir.querySelector('select').value || '기타';
+        const share = parseFloat(heir.querySelector('input[type="number"]').value) || 0;
+        return { name, relationship, share };
+    });
+
+    const totalAssetValue = parseFloat(document.getElementById('totalAssetValue').value) || 0; // 총 재산 값
+    console.log('상속인 데이터:', heirs);
+
+    let totalExemption = 500000000; // 기본 공제
+    heirs.forEach(heir => {
+        totalExemption += calculateExemption(heir.relationship); // 관계별 추가 공제
+    });
+
+    const taxableAmount = Math.max(totalAssetValue - totalExemption, 0);
+    console.log('과세 금액:', taxableAmount);
+
+    // 결과 출력
+    document.getElementById('result').innerHTML = `
+        <h3>계산 결과</h3>
+        <p>총 재산: ${totalAssetValue.toLocaleString()} 원</p>
+        <p>공제 금액: ${totalExemption.toLocaleString()} 원</p>
+        <p>과세 금액: ${taxableAmount.toLocaleString()} 원</p>
+    `;
+}
+
+// 3번 함수 추가
+function calculateExemption(relationship) {
+    let exemption = 0;
+    if (relationship === 'spouse') exemption = 3000000000; // 배우자
+    else if (relationship === 'adultChild') exemption = 50000000; // 성년 자녀
+    else if (relationship === 'minorChild') exemption = Math.min(20000000 * 20, 520000000); // 미성년 자녀
+    else if (relationship === 'parent') exemption = 50000000; // 부모
+    else if (relationship === 'sibling') exemption = 50000000; // 형제자매
+    else exemption = 10000000; // 기타 상속인
+    return exemption;
+}
+
+
         // 상속인 정보 수집
       document.getElementById('addPersonalHeirButton').addEventListener('click', () => {
     const personalContainer = document.getElementById('personalHeirContainer');
