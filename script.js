@@ -5,18 +5,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const popupConfirmButton = document.getElementById("popupConfirm");
     const popupAssetType = document.getElementById("popupAssetType");
     const popupInputFields = document.getElementById("popupInputFields");
-    const popupAmountInput = document.getElementById("popupAmount");
 
     // 재산 목록 및 총합
     const assetList = document.getElementById("assetList");
     const totalAssetValue = document.getElementById("totalAssetValue");
 
-    // 팝업 열기/닫기
+    // 팝업 열기
     const openPopup = () => {
         popup.style.display = "block";
         resetPopup();
     };
 
+    // 팝업 닫기
     const closePopup = () => {
         popup.style.display = "none";
     };
@@ -27,13 +27,13 @@ document.addEventListener("DOMContentLoaded", () => {
         popupInputFields.innerHTML = generateInputField("cash");
     };
 
-    // 팝업 내 재산 유형 선택 시 입력 필드 업데이트
+    // 재산 유형에 따른 입력 필드 동적으로 표시
     popupAssetType.addEventListener("change", (e) => {
         const assetType = e.target.value;
         popupInputFields.innerHTML = generateInputField(assetType);
     });
 
-    // 재산 유형에 따른 입력 필드 생성
+    // 입력 필드 생성 함수
     const generateInputField = (assetType) => {
         switch (assetType) {
             case "cash":
@@ -63,12 +63,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
-    // 팝업 확인 버튼 클릭 시 데이터 추가
+    // 팝업 확인 버튼 클릭 시 재산 추가
     popupConfirmButton.addEventListener("click", () => {
         const assetType = popupAssetType.value;
         let assetAmount = 0;
 
-        // 재산 유형에 따라 입력값 가져오기
         if (assetType === "stock") {
             const quantity = parseInt(document.getElementById("popupStockQuantity").value || "0", 10);
             const price = parseInt(document.getElementById("popupStockPrice").value.replace(/,/g, "") || "0", 10);
@@ -77,30 +76,25 @@ document.addEventListener("DOMContentLoaded", () => {
             assetAmount = parseInt(document.getElementById("popupAmount").value.replace(/,/g, "") || "0", 10);
         }
 
-        // 입력값 검증
         if (!assetAmount || isNaN(assetAmount) || assetAmount <= 0) {
             alert("올바른 금액을 입력하세요.");
             return;
         }
 
-        // 재산 목록에 추가
         const listItem = document.createElement("li");
         listItem.innerHTML = `
             ${popupAssetType.options[popupAssetType.selectedIndex].text}: ${assetAmount.toLocaleString()} 원
-            <button type="button" class="delete-asset">삭제</button>
+            <button type="button" class="delete-asset action-button">삭제</button>
         `;
         assetList.appendChild(listItem);
 
-        // 총합 업데이트
         updateTotal(assetAmount);
 
-        // 삭제 버튼 이벤트 추가
         listItem.querySelector(".delete-asset").addEventListener("click", () => {
             updateTotal(-assetAmount);
             listItem.remove();
         });
 
-        // 팝업 닫기
         closePopup();
     });
 
@@ -110,17 +104,17 @@ document.addEventListener("DOMContentLoaded", () => {
         totalAssetValue.textContent = (currentTotal + amount).toLocaleString();
     };
 
-    // 추가 버튼 이벤트
-    document.getElementById("addAssetButton").addEventListener("click", openPopup);
-
     // 팝업 닫기 버튼 이벤트
     popupCloseButton.addEventListener("click", closePopup);
 
-    // 금액 입력 필드 콤마 추가
+    // 금액 입력 필드에 콤마 추가
     document.addEventListener("input", (event) => {
         if (event.target.classList.contains("amount-input")) {
             const rawValue = event.target.value.replace(/[^0-9]/g, "");
             event.target.value = rawValue ? parseInt(rawValue, 10).toLocaleString() : "";
         }
     });
+
+    // 재산 추가 버튼 이벤트
+    document.getElementById("addAssetButton").addEventListener("click", openPopup);
 });
