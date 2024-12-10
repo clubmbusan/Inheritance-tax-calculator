@@ -109,11 +109,9 @@ const result = heirs.map(heir => {
     } else if (heir.relationship === 'adultChild') {
         exemption += 50000000; // 성년 자녀 5천만 원
     } else if (heir.relationship === 'minorChild') {
-        // 미성년 공제 계산
-        console.log(`Processing minorChild: ${JSON.stringify(heir)}`); // 디버깅 코드
-        const minorExemption = 20000000 * (20 - heir.age); // 나이를 고려한 공제 계산
-        exemption += Math.min(minorExemption, 520000000); // 최대 공제 금액 제한
-        console.log(`Minor child exemption: ${minorExemption}, Applied exemption: ${exemption}`); // 디버깅 결과 확인
+        // 미성년 공제 로직 단순화
+        const minorExemption = 20000000 * 20; // 최대 미성년 공제 (20년 기준)
+        exemption += Math.min(minorExemption, 520000000); // 최대 공제 금액: 5억 2천만 원
     } else if (heir.relationship === 'parent') {
         exemption += 50000000; // 부모 5천만 원
     } else if (heir.relationship === 'sibling') {
@@ -151,8 +149,8 @@ const result = heirs.map(heir => {
         exemption,
         taxableAmount,
         tax,
-    }; // <-- 첫 번째 return 닫힘
-}); // <-- map() 함수 닫힘
+    };
+});
 
 // 결과 출력
 document.getElementById('result').innerHTML = `
