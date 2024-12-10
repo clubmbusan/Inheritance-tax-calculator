@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>상속세 계산기 (2024년 기준)</title>
+    <title>상속세 계산기</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -47,27 +47,17 @@
                         <option value="others">기타</option>
                     </select>
                     <div id="popupInputFields">
-                        <!-- 입력 필드가 동적으로 표시됨 -->
+                        <!-- 동적 입력 필드 -->
                     </div>
                 </div>
                 <button type="button" id="popupConfirmButton" class="action-button">확인</button>
                 <button type="button" id="popupCancelButton" class="action-button">취소</button>
             </div>
 
-            <!-- 전체 계산 모드: 상속인 정보 -->
+            <!-- 상속인 정보 -->
             <div id="totalSection" style="display: none;">
                 <h2>상속인 정보</h2>
-                <div id="heirContainer">
-                    <div class="heir-entry">
-                        <input type="text" placeholder="이름">
-                        <select>
-                            <option value="spouse">배우자</option>
-                            <option value="child">자녀</option>
-                            <option value="other">기타</option>
-                        </select>
-                        <input type="number" placeholder="상속 비율 (%)">
-                    </div>
-                </div>
+                <div id="heirContainer"></div>
                 <button type="button" id="addHeirButton" class="action-button">상속인 추가</button>
             </div>
 
