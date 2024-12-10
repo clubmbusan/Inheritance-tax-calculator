@@ -1,4 +1,4 @@
-/* 전체 페이지 스타일 */
+/* 공통 스타일 */
 body {
     font-family: Arial, sans-serif;
     background-color: #f9f9f9;
@@ -6,7 +6,6 @@ body {
     padding: 0;
 }
 
-/* 계산기 컨테이너 */
 .calculator {
     max-width: 600px;
     margin: 50px auto;
@@ -14,119 +13,29 @@ body {
     background: #fff;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    box-sizing: border-box;
 }
 
-/* 폼 요소 공통 스타일 */
-form label {
+label {
     display: block;
-    margin: 10px 0 5px;
+    margin-bottom: 5px;
 }
 
-form input, form select {
+input, select, button {
     width: 100%;
-    padding: 10px;
     margin-bottom: 15px;
-    border: 1px solid #ddd;
+    padding: 10px;
     border-radius: 5px;
     box-sizing: border-box;
 }
 
 /* 버튼 스타일 */
-button, .action-button {
+button.action-button {
     background-color: #4CAF50;
     color: white;
     border: none;
-    padding: 10px;
-    font-size: 16px;
-    border-radius: 5px;
     cursor: pointer;
-    box-sizing: border-box;
 }
 
-button:hover, .action-button:hover {
+button.action-button:hover {
     background-color: #45a049;
-}
-
-/* 팝업 창 스타일 */
-.popup {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    width: 90%;
-    max-width: 400px;
-    z-index: 1000;
-}
-
-.popup h2 {
-    margin-top: 0;
-    font-size: 18px;
-    color: #333;
-}
-
-.popup button {
-    margin-top: 10px;
-}
-
-.popup button + button {
-    margin-left: 10px;
-}
-
-/* 선택된 재산 목록 */
-#assetList {
-    list-style: none;
-    padding: 0;
-    margin: 10px 0;
-}
-
-#assetList li {
-    margin: 5px 0;
-    display: flex;
-    justify-content: space-between;
-}
-
-#assetList li button {
-    background: #ff4c4c;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    font-size: 12px;
-    cursor: pointer;
-    border-radius: 3px;
-}
-
-#assetList li button:hover {
-    background: #e04343;
-}
-
-/* 결과 출력 */
-#result {
-    margin-top: 20px;
-    padding: 15px;
-    background-color: #f1f1f1;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    display: none;
-}
-
-#result h3 {
-    margin-top: 0;
-    color: #4CAF50;
-}
-
-/* 반응형 스타일 */
-@media screen and (max-width: 768px) {
-    .calculator {
-        padding: 15px;
-    }
-
-    .popup {
-        width: 100%;
-        max-width: 300px;
-    }
 }
