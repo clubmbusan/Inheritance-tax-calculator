@@ -99,19 +99,29 @@ relationshipInput.addEventListener('change', () => {
         }
 
         // 상속인별 세금 계산
-       const result = heirs.map(heir => {
+       // 상속인별 세금 계산
+const result = heirs.map(heir => {
     const heirAssetValue = (assetValue * heir.share) / 100; // 상속받은 재산 금액
     let exemption = 500000000; // 기본 공제 5억 원
 
     // 상속인별 추가 공제
-    if (heir.relationship === 'spouse') exemption += 3000000000; // 배우자 최대 30억 원
-    else if (heir.relationship === 'adultChild') exemption += 50000000; // 성년 자녀 5천만 원
-    else if (heir.relationship === 'minorChild') exemption += 20000000 * 20; // 미성년 자녀 (20년 기준)
-    else if (heir.relationship === 'parent') exemption += 50000000; // 부모 5천만 원
-    else if (heir.relationship === 'sibling') exemption += 50000000; // 형제자매 5천만 원
-    else if (heir.relationship === 'other') exemption += 10000000; // 기타 상속인 1천만 원
+    if (heir.relationship === 'spouse') {
+        exemption += 3000000000; // 배우자 최대 30억 원
+    } else if (heir.relationship === 'adultChild') {
+        exemption += 50000000; // 성년 자녀 5천만 원
+    } else if (heir.relationship === 'minorChild') {
+        const minorExemption = 20000000 * 20; // 미성년 공제 계산
+        exemption += Math.min(minorExemption, 520000000); // 최대 공제 금액: 5억 2천만 원
+    } else if (heir.relationship === 'parent') {
+        exemption += 50000000; // 부모 5천만 원
+    } else if (heir.relationship === 'sibling') {
+        exemption += 50000000; // 형제자매 5천만 원
+    } else if (heir.relationship === 'other') {
+        exemption += 10000000; // 기타 상속인
+    }
 
     const taxableAmount = Math.max(heirAssetValue - exemption, 0);
+
     const tax = (() => {
         const taxBrackets = [
             { limit: 100000000, rate: 0.1, deduction: 0 },
@@ -140,21 +150,4 @@ relationshipInput.addEventListener('change', () => {
         taxableAmount,
         tax,
     };
-});
-
-        // 결과 출력
-        document.getElementById('result').innerHTML = `
-            <h3>계산 결과</h3>
-            ${result.map(r => `
-                <p>
-                    <strong>${r.name}</strong><br>
-                    상속 비율: ${r.share}%<br>
-                    상속받은 재산 금액: ${r.assetValue.toLocaleString()} 원<br>
-                    공제 금액: ${r.exemption.toLocaleString()} 원<br>
-                    과세 금액: ${r.taxableAmount.toLocaleString()} 원<br>
-                    상속세: ${r.tax.toLocaleString()} 원
-                </p>
-            `).join('')}
-        `;
-    });
 });
