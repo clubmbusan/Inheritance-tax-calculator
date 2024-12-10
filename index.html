@@ -18,37 +18,19 @@
             </select>
 
             <!-- 재산 유형 선택 -->
-           <label for="assetTypeDropdown">재산 유형:</label>
-           <select id="assetTypeDropdown">
-             <option value="cash" selected>현금</option>
-             <option value="realEstate">부동산</option>
-             <option value="stock">주식</option>
-             <option value="others">기타</option>
-          </select>
-
-            <!-- 재산 유형별 입력 필드 -->
-            <div id="assetFields">
-                <div id="cashField" class="asset-input" style="display: none;">
-                    <label for="cashAmount">현금 금액 (원):</label>
-                    <input type="text" id="cashAmount" class="amount-input" placeholder="예: 10,000,000">
-                </div>
-                <div id="realEstateField" class="asset-input" style="display: none;">
-                    <label for="realEstateValue">부동산 평가액 (원):</label>
-                    <input type="text" id="realEstateValue" class="amount-input" placeholder="예: 100,000,000">
-                </div>
-                <div id="stockField" class="asset-input" style="display: none;">
-                    <label for="stockQuantity">주식 매수량:</label>
-                    <input type="number" id="stockQuantity" placeholder="예: 100">
-                    <label for="stockPrice">주식 1주당 가격 (원):</label>
-                    <input type="text" id="stockPrice" class="amount-input" placeholder="예: 10,000">
-                </div>
-                <div id="othersField" class="asset-input" style="display: none;">
-                    <label for="otherAssetValue">기타 재산 평가액 (원):</label>
-                    <input type="text" id="otherAssetValue" class="amount-input" placeholder="예: 50,000,000">
-                </div>
+            <h2>재산 유형</h2>
+            <div id="assetTypeContainer">
+                <label for="assetTypeDropdown">재산 유형:</label>
+                <select id="assetTypeDropdown">
+                    <option value="cash" selected>현금</option>
+                    <option value="realEstate">부동산</option>
+                    <option value="stock">주식</option>
+                    <option value="others">기타</option>
+                </select>
+                <button type="button" id="addAssetButton">추가</button>
             </div>
 
-            <!-- 선택된 재산 목록 및 총합 -->
+            <!-- 선택된 재산 목록 -->
             <h3>선택된 재산 목록</h3>
             <ul id="assetList"></ul>
             <p><strong>총 재산 금액:</strong> <span id="totalAssetValue">0</span> 원</p>
@@ -58,7 +40,6 @@
                 <h2>개인 상속 분 계산</h2>
                 <label for="myInheritance">나의 상속 분 (원):</label>
                 <input type="text" id="myInheritance" class="amount-input" placeholder="예: 200,000,000">
-
                 <label for="relationship">관계:</label>
                 <select id="relationship">
                     <option value="spouse">배우자</option>
