@@ -10,7 +10,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 target.value = ''; // 빈 값 처리
                 return;
             }
+            const caretPosition = target.selectionStart; // 커서 위치 저장
             target.value = parseInt(rawValue, 10).toLocaleString(); // 콤마 추가
+            const newCaretPosition = target.value.length - rawValue.length + caretPosition; // 새로운 커서 위치 계산
+            target.setSelectionRange(newCaretPosition, newCaretPosition); // 커서 위치 복원
+
         }
     });
 
