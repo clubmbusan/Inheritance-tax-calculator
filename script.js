@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const calculateButton = document.getElementById('calculateButton');
     const result = document.getElementById('result');
 
-    // 상속 유형에 따른 섹션 표시
+    // 상속 유형에 따른 섹션 표시/숨김
     inheritanceType.addEventListener('change', () => {
         if (inheritanceType.value === 'personal') {
             personalSection.style.display = 'block';
