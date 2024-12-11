@@ -1,3 +1,33 @@
+function updateAssetFields(assetType, container) {
+    const cashField = container.querySelector('.cashField');
+    const realEstateField = container.querySelector('.realEstateField');
+    const stockQuantityField = container.querySelector('.stockQuantityField');
+    const stockPriceField = container.querySelector('.stockPriceField');
+    const stockTotalField = container.querySelector('.stockTotalField');
+    const othersField = container.querySelector('.othersField');
+
+    // 모든 필드 숨기기
+    cashField.style.display = 'none';
+    realEstateField.style.display = 'none';
+    stockQuantityField.style.display = 'none';
+    stockPriceField.style.display = 'none';
+    stockTotalField.style.display = 'none';
+    othersField.style.display = 'none';
+
+    // 선택된 재산 유형에 따라 필드 표시
+    if (assetType === 'cash') {
+        cashField.style.display = 'block';
+    } else if (assetType === 'realEstate') {
+        realEstateField.style.display = 'block';
+    } else if (assetType === 'stock') {
+        stockQuantityField.style.display = 'block';
+        stockPriceField.style.display = 'block';
+        stockTotalField.style.display = 'block';
+    } else if (assetType === 'others') {
+        othersField.style.display = 'block';
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const inheritanceType = document.getElementById('inheritanceType');
     const personalSection = document.getElementById('personalSection');
