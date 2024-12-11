@@ -9,13 +9,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const calculateButton = document.getElementById('calculateButton');
     const result = document.getElementById('result');
 
- // 숫자에 콤마를 추가하는 함수 (수정된 버전)
+   // 숫자에 콤마를 추가하는 함수
 function formatNumberWithCommas(value) {
     const numericValue = value.replace(/[^0-9]/g, ''); // 숫자 외 문자 제거
     return parseInt(numericValue || '0', 10).toLocaleString(); // 콤마 추가
 }
 
-// 금액 필드 입력 시 콤마 포맷팅 적용 함수
+// 입력 필드에 콤마 추가 이벤트 등록 함수
 function addCommaFormatting(inputField) {
     inputField.addEventListener('input', () => {
         const numericValue = inputField.value.replace(/,/g, ''); // 기존 콤마 제거
