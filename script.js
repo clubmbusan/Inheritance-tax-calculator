@@ -9,6 +9,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const calculateButton = document.getElementById('calculateButton');
     const result = document.getElementById('result');
 
+    // 상단 필드: 재산 유형 변경 이벤트 등록
+    const topAssetType = document.querySelector('.assetType'); // 상단 재산 유형 필드
+    const topAssetContainer = document.querySelector('.asset-entry'); // 상단 컨테이너
+
+    if (topAssetType && topAssetContainer) {
+        topAssetType.addEventListener('change', (event) => {
+            updateAssetFields(event.target.value, topAssetContainer);
+        });
+    }
+});
+
     // 숫자에 콤마를 추가하는 함수
     function formatNumberWithCommas(value) {
         return parseInt(value.replace(/[^0-9]/g, '') || '0', 10).toLocaleString();
