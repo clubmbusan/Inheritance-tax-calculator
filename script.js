@@ -128,7 +128,6 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
         heirContainer.appendChild(newHeir);
     });
-});
 
     // 계산하기 버튼
     calculateButton.addEventListener('click', () => {
