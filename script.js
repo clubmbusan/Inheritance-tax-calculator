@@ -9,6 +9,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const calculateButton = document.getElementById('calculateButton');
     const result = document.getElementById('result');
 
+    // 최상단 현금 금액 필드
+    const cashAmountField = document.getElementById('cashAmount');
+    addCommaFormatting(cashAmountField); // 콤마 추가 함수 연결
+  
     // 상속 유형에 따른 섹션 표시/숨김
     inheritanceType.addEventListener('change', () => {
         if (inheritanceType.value === 'personal') {
