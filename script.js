@@ -85,6 +85,11 @@ document.addEventListener('DOMContentLoaded', () => {
         addCommaFormatting(newAsset.querySelector('.realEstateField'));
         addCommaFormatting(newAsset.querySelector('.othersField'));
 
+        // 재산 유형 선택 이벤트
+        const assetTypeSelect = newAsset.querySelector('.assetType');
+        assetTypeSelect.addEventListener('change', () => {
+            updateAssetFields(assetTypeSelect.value, newAsset);
+        });
         // 주식 계산 로직
         const stockQuantityField = newAsset.querySelector('.stockQuantityField');
         const stockPriceField = newAsset.querySelector('.stockPriceField');
