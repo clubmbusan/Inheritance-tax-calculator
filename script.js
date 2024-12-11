@@ -9,16 +9,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const calculateButton = document.getElementById('calculateButton');
     const result = document.getElementById('result');
 
-    // 상단 필드: 재산 유형 변경 이벤트 등록
-    const topAssetType = document.querySelector('.assetType'); // 상단 재산 유형 필드
-    const topAssetContainer = document.querySelector('.asset-entry'); // 상단 컨테이너
-
-    if (topAssetType && topAssetContainer) {
-        topAssetType.addEventListener('change', (event) => {
-            updateAssetFields(event.target.value, topAssetContainer);
-        });
-    }
-
     // 숫자에 콤마를 추가하는 함수
     function formatNumberWithCommas(value) {
         return parseInt(value.replace(/[^0-9]/g, '') || '0', 10).toLocaleString();
@@ -34,40 +24,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 재산 유형에 따른 입력 필드 표시/숨김 함수
-    function updateAssetFields(assetType, container) {
-        const cashField = container.querySelector('.cashField');
-        const realEstateField = container.querySelector('.realEstateField');
-        const stockQuantityField = container.querySelector('.stockQuantityField');
-        const stockPriceField = container.querySelector('.stockPriceField');
-        const stockTotalField = container.querySelector('.stockTotalField');
-        const othersField = container.querySelector('.othersField');
-
-        cashField.style.display = 'none';
-        realEstateField.style.display = 'none';
-        stockQuantityField.style.display = 'none';
-        stockPriceField.style.display = 'none';
-        stockTotalField.style.display = 'none';
-        othersField.style.display = 'none';
-
-        if (assetType === 'cash') {
-            cashField.style.display = 'block';
-        } else if (assetType === 'realEstate') {
-            realEstateField.style.display = 'block';
-        } else if (assetType === 'stock') {
-            stockQuantityField.style.display = 'block';
-            stockPriceField.style.display = 'block';
-            stockTotalField.style.display = 'block';
-        } else if (assetType === 'others') {
-            othersField.style.display = 'block';
-        }
-    }
-
     // 초기화: 모든 .assetValue 필드에 이벤트 등록
     document.querySelectorAll('.assetValue').forEach(addCommaFormatting);
-}); // DOMContentLoaded 닫는 중괄호 및 소괄호
-   
-// 재산 항목 생성
+
+    // 재산 항목 생성
     function createAssetEntry() {
         const newAsset = document.createElement('div');
         newAsset.className = 'asset-entry';
@@ -110,35 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // 재산 추가 버튼 이벤트
-    addAssetButton.addEventListener('click', () => {
-    const newAsset = document.createElement('div');
-    newAsset.className = 'asset-entry';
-    newAsset.innerHTML = `
-        <label for="assetType">재산 유형:</label>
-        <select class="assetType">
-            <option value="cash" selected>현금</option>
-            <option value="realEstate">부동산</option>
-            <option value="stock">주식</option>
-            <option value="others">기타</option>
-        </select>
-        <div class="assetFields">
-            <input type="text" class="cashField assetValue" placeholder="금액 (원)" style="display: block;">
-            <input type="text" class="realEstateField assetValue" placeholder="평가액 (원)" style="display: none;">
-            <input type="number" class="stockQuantityField" placeholder="주식 매수" style="display: none;">
-            <input type="text" class="stockPriceField" placeholder="주당 가격 (원)" style="display: none;">
-            <input type="text" class="stockTotalField" placeholder="금액 (원)" style="display: none;" readonly>
-            <input type="text" class="othersField assetValue" placeholder="기타 금액 (원)" style="display: none;">
-        </div>
-    `;
-
-    assetContainer.appendChild(newAsset);
-
-    // 재산 유형 선택 이벤트 연결
-    const newAssetType = newAsset.querySelector('.assetType');
-    newAssetType.addEventListener('change', (event) => {
-        updateAssetFields(event.target.value, newAsset);
-    });
-});
+    addAssetButton.addEventListener('click', createAssetEntry);
 
     // 상속인 항목 생성
     addHeirButton.addEventListener('click', () => {
