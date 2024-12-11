@@ -106,6 +106,21 @@ document.addEventListener('DOMContentLoaded', () => {
             updateAssetFields(event.target.value, newAsset);
         });
 
+        // 주식 관련 필드 업데이트
+const stockQuantityField = newAsset.querySelector('.stockQuantityField');
+const stockPriceField = newAsset.querySelector('.stockPriceField');
+const stockTotalField = newAsset.querySelector('.stockTotalField');
+
+const updateStockTotal = () => {
+    const quantity = parseInt(stockQuantityField.value || '0', 10);
+    const price = parseInt(stockPriceField.value.replace(/,/g, '') || '0', 10);
+    const total = quantity * price;
+    stockTotalField.value = total.toLocaleString(); // 주식 총 금액 자동 계산
+};
+
+stockQuantityField.addEventListener('input', updateStockTotal);
+stockPriceField.addEventListener('input', updateStockTotal);
+
         // 콤마 추가 이벤트 등록
         const cashField = newAsset.querySelector('.cashField');
         const realEstateField = newAsset.querySelector('.realEstateField');
