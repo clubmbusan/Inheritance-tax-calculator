@@ -190,22 +190,22 @@ document.addEventListener('DOMContentLoaded', () => {
         const relationship = document.getElementById('relationshipPersonal').value;
         let exemption = 500000000; // 기본 공제
 
-        // 관계에 따른 추가 공제
-        if (relationship === 'spouse') {
-            exemption += 3000000000; // 배우자 공제
-        } else if (relationship === 'adultChild') {
-            exemption += 50000000; // 성년 자녀 공제
-        } else if (relationship === 'minorChild') {
-            const fixedAge = 10; // 미성년자 고정 나이 설정
-            const ageAdjustment = Math.max(0, 20 - fixedAge); // 20 - 고정 나이
-            exemption += 20000000 * ageAdjustment; // 미성년 추가 공제
-        } else if (relationship === 'parent') {
-            exemption += 50000000; // 부모 공제
-        } else if (relationship === 'sibling') {
-            exemption += 50000000; // 형제자매 공제
-        } else {
-            exemption += 10000000; // 기타 공제
-        }
+                     // 관계에 따른 추가 공제
+if (relationship === 'spouse') {
+    exemption += 3000000000; // 배우자 공제
+} else if (relationship === 'adultChild') {
+    exemption += 50000000; // 성년 자녀 공제
+} else if (relationship === 'minorChild') {
+    const fixedAge = 10; // 고정된 나이 (예: 10세)
+    const additionalExemption = 20000000 * (20 - fixedAge); // 추가 공제
+    exemption = 500000000 + additionalExemption; // 기본 공제 + 추가 공제
+} else if (relationship === 'parent') {
+    exemption += 50000000; // 부모 공제
+} else if (relationship === 'sibling') {
+    exemption += 50000000; // 형제자매 공제
+} else {
+    exemption += 10000000; // 기타 공제
+}
 
         // 과세 금액 및 상속세 계산
         const taxableAmount = Math.max(totalAssetValue - exemption, 0);
