@@ -3,12 +3,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const personalSection = document.getElementById('personalSection');
     const groupSection = document.getElementById('groupSection');
     const addAssetButton = document.getElementById('addAssetButton');
-    const addHeirButton = document.getElementById('addHeirButton');
+    const addHeirButton = document.getElementById('addHeirButton'); // 상속인 추가 버튼
     const assetContainer = document.getElementById('assetContainer');
-    const heirContainer = document.getElementById('heirContainer');
-    const calculateButton = document.getElementById('calculateButton');
+    const heirContainer = document.getElementById('heirContainer'); // 상속인 컨테이너
+    const calculateButton = document.getElementById('calculateButton'); // 계산하기 버튼
     const result = document.getElementById('result');
-
+  
     // 상속 유형에 따른 섹션 표시/숨김
     inheritanceType.addEventListener('change', () => {
         if (inheritanceType.value === 'personal') {
@@ -20,7 +20,36 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 재산 추가 버튼
+    // 재산 유형 선택 시 필드 업데이트 함수 정의
+    function updateAssetFields(assetType, container) {
+        // 필드들 선택
+        const cashField = container.querySelector('.cashField');
+        const realEstateField = container.querySelector('.realEstateField');
+        const stockQuantityField = container.querySelector('.stockQuantityField');
+        const stockPriceField = container.querySelector('.stockPriceField');
+        const othersField = container.querySelector('.othersField');
+
+        // 모든 필드를 숨김
+        cashField.style.display = 'none';
+        realEstateField.style.display = 'none';
+        stockQuantityField.style.display = 'none';
+        stockPriceField.style.display = 'none';
+        othersField.style.display = 'none';
+
+        // 선택한 유형에 따라 표시
+        if (assetType === 'cash') {
+            cashField.style.display = 'block';
+        } else if (assetType === 'realEstate') {
+            realEstateField.style.display = 'block';
+        } else if (assetType === 'stock') {
+            stockQuantityField.style.display = 'block';
+            stockPriceField.style.display = 'block';
+        } else if (assetType === 'others') {
+            othersField.style.display = 'block';
+        }
+    }
+
+    // 재산 추가 버튼 이벤트
     addAssetButton.addEventListener('click', () => {
         const newAsset = document.createElement('div');
         newAsset.className = 'asset-entry';
@@ -57,6 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
             updateAssetFields(assetType, parentContainer); // 필드 변경 로직 호출
         }
     });
+});
 
     // 상속인 추가 버튼
     addHeirButton.addEventListener('click', () => {
