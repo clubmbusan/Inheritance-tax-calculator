@@ -65,6 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 초기화: 모든 .assetValue 필드에 이벤트 등록
     document.querySelectorAll('.assetValue').forEach(addCommaFormatting);
+
 }); // DOMContentLoaded 닫는 중괄호 및 소괄호
    
 // 재산 항목 생성
