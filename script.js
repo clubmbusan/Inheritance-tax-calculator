@@ -4,13 +4,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const groupSection = document.getElementById('groupSection');
     const addAssetButton = document.getElementById('addAssetButton');
     const assetContainer = document.getElementById('assetContainer');
-    const calculateButton = document.getElementById('calculateButton');
     const addHeirButton = document.getElementById('addHeirButton');
     const heirContainer = document.getElementById('heirContainer');
+    const calculateButton = document.getElementById('calculateButton');
     const result = document.getElementById('result');
+
+    console.log("스크립트 로드 완료"); // 스크립트 로드 확인용 메시지
 
     // 상속 유형에 따른 섹션 표시/숨김
     inheritanceType.addEventListener('change', () => {
+        console.log("상속 유형 변경 이벤트 발생");
         if (inheritanceType.value === 'personal') {
             personalSection.style.display = 'block';
             groupSection.style.display = 'none';
@@ -48,6 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 재산 추가 버튼 이벤트
     addAssetButton.addEventListener('click', () => {
+        console.log("재산 추가 버튼 클릭됨");
         const newAsset = document.createElement('div');
         newAsset.className = 'asset-entry';
         newAsset.innerHTML = `
@@ -70,12 +74,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const newAssetType = newAsset.querySelector('.assetType');
         newAssetType.addEventListener('change', (event) => {
+            console.log("재산 유형 변경 이벤트 발생");
             updateAssetFields(event.target.value, newAsset);
         });
     });
 
     // 초기화: 기존 재산 항목에 필드 변경 이벤트 추가
     assetContainer.addEventListener('change', (event) => {
+        console.log("재산 유형 필드 변경 이벤트 발생");
         if (event.target.classList.contains('assetType')) {
             const assetType = event.target.value;
             const parentContainer = event.target.closest('.asset-entry');
@@ -85,6 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 상속인 추가 버튼 이벤트
     addHeirButton.addEventListener('click', () => {
+        console.log("상속인 추가 버튼 클릭됨");
         const newHeir = document.createElement('div');
         newHeir.className = 'heir-entry';
         newHeir.innerHTML = `
@@ -101,6 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 계산하기 버튼 이벤트
     calculateButton.addEventListener('click', () => {
+        console.log("계산하기 버튼 클릭됨");
         result.innerHTML = `<p>계산 버튼 클릭됨. 계산 로직을 추가하세요.</p>`;
     });
 });
