@@ -42,14 +42,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const stockPriceField = container.querySelector('.stockPriceField');
         const othersField = container.querySelector('.othersField');
 
-        // 모든 필드 숨김
         cashField.style.display = 'none';
         realEstateField.style.display = 'none';
         stockQuantityField.style.display = 'none';
         stockPriceField.style.display = 'none';
         othersField.style.display = 'none';
 
-        // 선택된 유형만 표시
         if (assetType === 'cash') {
             cashField.style.display = 'block';
             addCommaFormatting(cashField); // 콤마 추가
@@ -88,13 +86,12 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
         assetContainer.appendChild(newAsset);
 
-        // 새로 추가된 재산 유형 드롭다운 이벤트
         const newAssetType = newAsset.querySelector('.assetType');
         newAssetType.addEventListener('change', (event) => {
             updateAssetFields(event.target.value, newAsset);
         });
 
-        // 각 필드에 콤마 추가 이벤트 연결
+        // 각 금액 필드에 콤마 추가 이벤트 연결
         const cashField = newAsset.querySelector('.cashField');
         const realEstateField = newAsset.querySelector('.realEstateField');
         const stockPriceField = newAsset.querySelector('.stockPriceField');
@@ -115,9 +112,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 계산하기 버튼 이벤트 (기존 계산 로직 추가 가능)
+    // 계산하기 버튼 이벤트
     calculateButton.addEventListener('click', () => {
-        console.log('계산 버튼 클릭됨'); // 계산 로직 추가
+        console.log('계산 버튼 클릭됨');
     });
 
     // 상속인 추가 버튼 이벤트
