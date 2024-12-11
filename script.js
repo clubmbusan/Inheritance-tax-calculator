@@ -57,6 +57,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // 초기화: 모든 .assetValue 필드에 이벤트 등록
     document.querySelectorAll('.assetValue').forEach(addCommaFormatting);
 
+    // 상단 드롭다운 이벤트 추가
+     const topAssetTypeSelect = document.querySelector('.topAssetType'); // 상단 드롭다운 클래스/ID
+     const topAssetContainer = document.querySelector('.topAssetContainer'); // 상단 입력 필드 컨테이너
+     if (topAssetTypeSelect) {
+        topAssetTypeSelect.addEventListener('change', () => {
+            updateAssetFields(topAssetTypeSelect.value, topAssetContainer);
+         });
+     }
+
     // 재산 항목 생성
     function createAssetEntry() {
         const newAsset = document.createElement('div');
