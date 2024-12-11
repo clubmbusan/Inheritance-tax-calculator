@@ -9,34 +9,40 @@ document.addEventListener('DOMContentLoaded', () => {
     const calculateButton = document.getElementById('calculateButton');
     const result = document.getElementById('result');
 
-    // 콤마 추가 함수 (중복 제거)
+   // 숫자에 콤마를 추가하는 함수
 function formatNumberWithCommas(value) {
     const numericValue = value.replace(/[^0-9]/g, ''); // 숫자 외 문자 제거
-    return parseInt(numericValue || '0', 10).toLocaleString();
+    return parseInt(numericValue || '0', 10).toLocaleString(); // 콤마 추가
 }
 
-// 입력 필드에 콤마 추가 이벤트 등록
+// 입력 필드에 콤마 추가 이벤트 등록 함수
 function addCommaFormatting(inputField) {
     inputField.addEventListener('input', () => {
-        inputField.value = formatNumberWithCommas(inputField.value);
+        const numericValue = inputField.value.replace(/,/g, ''); // 기존 콤마 제거
+        if (!isNaN(numericValue)) {
+            inputField.value = parseInt(numericValue || '0', 10).toLocaleString(); // 콤마 추가
+        }
     });
 }
 
-// DOMContentLoaded 이후 적용
+// DOMContentLoaded 이후 모든 입력 필드에 콤마 추가
 document.addEventListener('DOMContentLoaded', () => {
-    // 상단 입력 필드와 재산 추가 필드에 콤마 추가
-    const allFields = document.querySelectorAll('.assetValue'); // 모든 금액 입력 필드 선택
+    // 모든 assetValue 클래스를 가진 입력 필드 선택
+    const allFields = document.querySelectorAll('.assetValue');
+
+    // 각 필드에 콤마 추가 이벤트 등록
     allFields.forEach(addCommaFormatting);
 
-    // 상속 유형에 따른 섹션 표시/숨김
-    inheritanceType.addEventListener('change', () => {
-        if (inheritanceType.value === 'personal') {
-            personalSection.style.display = 'block';
-            groupSection.style.display = 'none';
-        } else {
-            personalSection.style.display = 'none';
-            groupSection.style.display = 'block';
-        }
+    // 재산 추가 버튼 클릭 시 동적 필드 생성 및 콤마 이벤트 등록
+    addAssetButton.addEventListener('click', () => {
+        const newField = document.createElement('input');
+        newField.type = 'text';
+        newField.className = 'assetValue'; // assetValue 클래스를 추가
+        newField.placeholder = '금액 (원)';
+        assetContainer.appendChild(newField);
+
+        // 새로 추가된 필드에 콤마 추가 이벤트 등록
+        addCommaFormatting(newField);
     });
 });
 
