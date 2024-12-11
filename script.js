@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return parseInt(numericValue || '0', 10).toLocaleString();
     }
 
-    // 금액 필드 이벤트 리스너 설정 함수
+    // 금액 필드 이벤트 리스너 추가 함수
     function addCommaFormatting(inputField) {
         inputField.addEventListener('input', () => {
             const formattedValue = formatNumberWithCommas(inputField.value);
@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 재산 유형 선택 시 필드 업데이트 함수 정의
+    // 재산 유형 선택 시 필드 업데이트 함수
     function updateAssetFields(assetType, container) {
         const cashField = container.querySelector('.cashField');
         const realEstateField = container.querySelector('.realEstateField');
@@ -42,12 +42,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const stockPriceField = container.querySelector('.stockPriceField');
         const othersField = container.querySelector('.othersField');
 
+        // 모든 필드 숨김
         cashField.style.display = 'none';
         realEstateField.style.display = 'none';
         stockQuantityField.style.display = 'none';
         stockPriceField.style.display = 'none';
         othersField.style.display = 'none';
 
+        // 선택된 유형만 표시
         if (assetType === 'cash') {
             cashField.style.display = 'block';
             addCommaFormatting(cashField); // 콤마 추가
@@ -86,12 +88,13 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
         assetContainer.appendChild(newAsset);
 
+        // 새로 추가된 재산 유형 드롭다운 이벤트
         const newAssetType = newAsset.querySelector('.assetType');
         newAssetType.addEventListener('change', (event) => {
             updateAssetFields(event.target.value, newAsset);
         });
 
-        // 콤마 추가 이벤트 설정
+        // 각 필드에 콤마 추가 이벤트 연결
         const cashField = newAsset.querySelector('.cashField');
         const realEstateField = newAsset.querySelector('.realEstateField');
         const stockPriceField = newAsset.querySelector('.stockPriceField');
