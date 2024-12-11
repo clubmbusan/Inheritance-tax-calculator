@@ -3,7 +3,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const personalSection = document.getElementById('personalSection');
     const groupSection = document.getElementById('groupSection');
     const addAssetButton = document.getElementById('addAssetButton');
+    const addHeirButton = document.getElementById('addHeirButton'); // 상속인 추가 버튼
     const assetContainer = document.getElementById('assetContainer');
+    const heirContainer = document.getElementById('heirContainer'); // 상속인 컨테이너
+    const calculateButton = document.getElementById('calculateButton'); // 계산하기 버튼
     const result = document.getElementById('result');
 
     // 상속 유형에 따른 섹션 표시/숨김
@@ -49,17 +52,17 @@ document.addEventListener('DOMContentLoaded', () => {
         // 선택된 유형만 표시
         if (assetType === 'cash') {
             cashField.style.display = 'block';
-            addCommaFormatting(cashField);
+            addCommaFormatting(cashField); // 콤마 추가
         } else if (assetType === 'realEstate') {
             realEstateField.style.display = 'block';
-            addCommaFormatting(realEstateField);
+            addCommaFormatting(realEstateField); // 콤마 추가
         } else if (assetType === 'stock') {
             stockQuantityField.style.display = 'block';
             stockPriceField.style.display = 'block';
-            addCommaFormatting(stockPriceField);
+            addCommaFormatting(stockPriceField); // 콤마 추가
         } else if (assetType === 'others') {
             othersField.style.display = 'block';
-            addCommaFormatting(othersField);
+            addCommaFormatting(othersField); // 콤마 추가
         }
     }
 
@@ -111,9 +114,13 @@ document.addEventListener('DOMContentLoaded', () => {
             updateAssetFields(assetType, parentContainer);
         }
     });
-});
 
-    // 상속인 추가 버튼
+    // 계산하기 버튼 이벤트 (기존 계산 로직 추가 가능)
+    calculateButton.addEventListener('click', () => {
+        console.log('계산 버튼 클릭됨'); // 계산 로직 추가
+    });
+
+    // 상속인 추가 버튼 이벤트
     addHeirButton.addEventListener('click', () => {
         const newHeir = document.createElement('div');
         newHeir.className = 'heir-entry';
@@ -128,6 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
         heirContainer.appendChild(newHeir);
     });
+});
 
     // 계산하기 버튼
     calculateButton.addEventListener('click', () => {
