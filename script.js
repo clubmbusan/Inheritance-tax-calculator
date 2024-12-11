@@ -94,6 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <input type="text" class="realEstateField assetValue" placeholder="평가액 (원)" style="display: none;">
                 <input type="number" class="stockQuantityField" placeholder="주식 수량" style="display: none;">
                 <input type="text" class="stockPriceField" placeholder="주당 가격 (원)" style="display: none;">
+                <input type="text" class="stockTotalField assetValue" placeholder="금액 (원)" style="display: none;" readonly>
                 <input type="text" class="othersField assetValue" placeholder="금액 (원)" style="display: none;">
             </div>
         `;
