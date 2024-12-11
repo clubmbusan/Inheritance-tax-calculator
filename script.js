@@ -24,47 +24,26 @@ function addCommaFormatting(inputField) {
         }
     });
 }
+
 // DOMContentLoaded 이후 모든 입력 필드에 콤마 추가
 document.addEventListener('DOMContentLoaded', () => {
-    // 초기화: 모든 .assetValue 클래스를 가진 필드에 이벤트 등록
+    // 모든 assetValue 클래스를 가진 입력 필드 선택
     const allFields = document.querySelectorAll('.assetValue');
-    allFields.forEach(field => addCommaFormatting(field));
+
+    // 각 필드에 콤마 추가 이벤트 등록
+    allFields.forEach(addCommaFormatting);
 
     // 재산 추가 버튼 클릭 시 동적 필드 생성 및 콤마 이벤트 등록
-    const addAssetButton = document.getElementById('addAssetButton');
-    const assetContainer = document.getElementById('assetContainer'); // 추가 재산이 삽입될 컨테이너
-    if (addAssetButton) {
-        addAssetButton.addEventListener('click', () => {
-            const newField = document.createElement('div');
-            newField.className = 'asset-entry';
-            newField.innerHTML = `
-                <label for="assetType">재산 유형:</label>
-                <select class="assetType">
-                    <option value="cash" selected>현금</option>
-                    <option value="realEstate">부동산</option>
-                    <option value="stock">주식</option>
-                    <option value="others">기타</option>
-                </select>
-                <div class="assetFields">
-                    <input type="text" class="cashField assetValue" placeholder="금액 (원)" style="display: block;">
-                    <input type="text" class="realEstateField assetValue" placeholder="평가액 (원)" style="display: none;">
-                    <input type="number" class="stockQuantityField" placeholder="주식 수량" style="display: none;">
-                    <input type="text" class="stockPriceField" placeholder="주당 가격 (원)" style="display: none;">
-                    <input type="text" class="stockTotalField" placeholder="금액 (원)" style="display: none;" readonly>
-                    <input type="text" class="othersField assetValue" placeholder="금액 (원)" style="display: none;">
-                </div>
-            `;
-            assetContainer.appendChild(newField);
+    addAssetButton.addEventListener('click', () => {
+        const newField = document.createElement('input');
+        newField.type = 'text';
+        newField.className = 'assetValue'; // assetValue 클래스를 추가
+        newField.placeholder = '금액 (원)';
+        assetContainer.appendChild(newField);
 
-            // 새로 추가된 필드에 콤마 이벤트 등록
-            const newCashField = newField.querySelector('.cashField');
-            const realEstateField = newField.querySelector('.realEstateField');
-            const othersField = newField.querySelector('.othersField');
-            addCommaFormatting(newCashField);
-            addCommaFormatting(realEstateField);
-            addCommaFormatting(othersField);
-        });
-    }
+        // 새로 추가된 필드에 콤마 추가 이벤트 등록
+        addCommaFormatting(newField);
+    });
 });
 
     // 금액 필드 이벤트 리스너 추가 함수
