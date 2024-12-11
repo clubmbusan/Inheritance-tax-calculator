@@ -9,11 +9,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const calculateButton = document.getElementById('calculateButton');
     const result = document.getElementById('result');
 
-    console.log("스크립트 로드 완료"); // 스크립트 로드 확인용 메시지
-
     // 상속 유형에 따른 섹션 표시/숨김
     inheritanceType.addEventListener('change', () => {
-        console.log("상속 유형 변경 이벤트 발생");
         if (inheritanceType.value === 'personal') {
             personalSection.style.display = 'block';
             groupSection.style.display = 'none';
@@ -22,6 +19,20 @@ document.addEventListener('DOMContentLoaded', () => {
             groupSection.style.display = 'block';
         }
     });
+
+    // 숫자 입력 필드에 콤마 추가 함수
+    function formatNumberWithCommas(value) {
+        const numericValue = value.replace(/[^0-9]/g, ''); // 숫자 외 문자 제거
+        return parseInt(numericValue || '0', 10).toLocaleString();
+    }
+
+    // 금액 필드 이벤트 리스너 추가 함수
+    function addCommaFormatting(inputField) {
+        inputField.addEventListener('input', () => {
+            const formattedValue = formatNumberWithCommas(inputField.value);
+            inputField.value = formattedValue;
+        });
+    }
 
     // 재산 유형 선택 시 필드 업데이트
     function updateAssetFields(assetType, container) {
@@ -39,19 +50,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (assetType === 'cash') {
             cashField.style.display = 'block';
+            addCommaFormatting(cashField); // 콤마 추가
         } else if (assetType === 'realEstate') {
             realEstateField.style.display = 'block';
+            addCommaFormatting(realEstateField); // 콤마 추가
         } else if (assetType === 'stock') {
             stockQuantityField.style.display = 'block';
             stockPriceField.style.display = 'block';
+            addCommaFormatting(stockPriceField); // 콤마 추가
         } else if (assetType === 'others') {
             othersField.style.display = 'block';
+            addCommaFormatting(othersField); // 콤마 추가
         }
     }
 
     // 재산 추가 버튼 이벤트
     addAssetButton.addEventListener('click', () => {
-        console.log("재산 추가 버튼 클릭됨");
         const newAsset = document.createElement('div');
         newAsset.className = 'asset-entry';
         newAsset.innerHTML = `
@@ -72,16 +86,26 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
         assetContainer.appendChild(newAsset);
 
+        // 새로 추가된 재산 유형 드롭다운에 이벤트 추가
         const newAssetType = newAsset.querySelector('.assetType');
         newAssetType.addEventListener('change', (event) => {
-            console.log("재산 유형 변경 이벤트 발생");
             updateAssetFields(event.target.value, newAsset);
         });
+
+        // 콤마 추가 이벤트 등록
+        const cashField = newAsset.querySelector('.cashField');
+        const realEstateField = newAsset.querySelector('.realEstateField');
+        const stockPriceField = newAsset.querySelector('.stockPriceField');
+        const othersField = newAsset.querySelector('.othersField');
+
+        addCommaFormatting(cashField);
+        addCommaFormatting(realEstateField);
+        addCommaFormatting(stockPriceField);
+        addCommaFormatting(othersField);
     });
 
     // 초기화: 기존 재산 항목에 필드 변경 이벤트 추가
     assetContainer.addEventListener('change', (event) => {
-        console.log("재산 유형 필드 변경 이벤트 발생");
         if (event.target.classList.contains('assetType')) {
             const assetType = event.target.value;
             const parentContainer = event.target.closest('.asset-entry');
@@ -91,7 +115,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 상속인 추가 버튼 이벤트
     addHeirButton.addEventListener('click', () => {
-        console.log("상속인 추가 버튼 클릭됨");
         const newHeir = document.createElement('div');
         newHeir.className = 'heir-entry';
         newHeir.innerHTML = `
@@ -105,6 +128,8 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
         heirContainer.appendChild(newHeir);
     });
+});
+
 
     // 계산하기 버튼 이벤트
     calculateButton.addEventListener('click', () => {
