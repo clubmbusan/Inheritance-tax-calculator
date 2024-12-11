@@ -3,10 +3,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const personalSection = document.getElementById('personalSection');
     const groupSection = document.getElementById('groupSection');
     const addAssetButton = document.getElementById('addAssetButton');
-    const addHeirButton = document.getElementById('addHeirButton'); // 상속인 추가 버튼
     const assetContainer = document.getElementById('assetContainer');
-    const heirContainer = document.getElementById('heirContainer'); // 상속인 컨테이너
-    const calculateButton = document.getElementById('calculateButton'); // 계산하기 버튼
+    const calculateButton = document.getElementById('calculateButton');
+    const addHeirButton = document.getElementById('addHeirButton');
+    const heirContainer = document.getElementById('heirContainer');
     const result = document.getElementById('result');
 
     // 상속 유형에 따른 섹션 표시/숨김
@@ -20,21 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 숫자 입력 필드에 콤마 추가 함수
-    function formatNumberWithCommas(value) {
-        const numericValue = value.replace(/[^0-9]/g, ''); // 숫자 외 문자 제거
-        return parseInt(numericValue || '0', 10).toLocaleString();
-    }
-
-    // 금액 필드 이벤트 리스너 추가 함수
-    function addCommaFormatting(inputField) {
-        inputField.addEventListener('input', () => {
-            const formattedValue = formatNumberWithCommas(inputField.value);
-            inputField.value = formattedValue;
-        });
-    }
-
-    // 재산 유형 선택 시 필드 업데이트 함수
+    // 재산 유형 선택 시 필드 업데이트
     function updateAssetFields(assetType, container) {
         const cashField = container.querySelector('.cashField');
         const realEstateField = container.querySelector('.realEstateField');
@@ -50,17 +36,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (assetType === 'cash') {
             cashField.style.display = 'block';
-            addCommaFormatting(cashField); // 콤마 추가
         } else if (assetType === 'realEstate') {
             realEstateField.style.display = 'block';
-            addCommaFormatting(realEstateField); // 콤마 추가
         } else if (assetType === 'stock') {
             stockQuantityField.style.display = 'block';
             stockPriceField.style.display = 'block';
-            addCommaFormatting(stockPriceField); // 콤마 추가
         } else if (assetType === 'others') {
             othersField.style.display = 'block';
-            addCommaFormatting(othersField); // 콤마 추가
         }
     }
 
@@ -90,17 +72,6 @@ document.addEventListener('DOMContentLoaded', () => {
         newAssetType.addEventListener('change', (event) => {
             updateAssetFields(event.target.value, newAsset);
         });
-
-        // 각 금액 필드에 콤마 추가 이벤트 연결
-        const cashField = newAsset.querySelector('.cashField');
-        const realEstateField = newAsset.querySelector('.realEstateField');
-        const stockPriceField = newAsset.querySelector('.stockPriceField');
-        const othersField = newAsset.querySelector('.othersField');
-
-        addCommaFormatting(cashField);
-        addCommaFormatting(realEstateField);
-        addCommaFormatting(stockPriceField);
-        addCommaFormatting(othersField);
     });
 
     // 초기화: 기존 재산 항목에 필드 변경 이벤트 추가
@@ -112,10 +83,27 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // 상속인 추가 버튼 이벤트
+    addHeirButton.addEventListener('click', () => {
+        const newHeir = document.createElement('div');
+        newHeir.className = 'heir-entry';
+        newHeir.innerHTML = `
+            <input type="text" placeholder="이름">
+            <select>
+                <option value="spouse">배우자</option>
+                <option value="child">자녀</option>
+                <option value="other">기타</option>
+            </select>
+            <input type="number" placeholder="상속 비율 (%)">
+        `;
+        heirContainer.appendChild(newHeir);
+    });
+
     // 계산하기 버튼 이벤트
     calculateButton.addEventListener('click', () => {
-        console.log('계산 버튼 클릭됨');
+        result.innerHTML = `<p>계산 버튼 클릭됨. 계산 로직을 추가하세요.</p>`;
     });
+});
 
     // 상속인 추가 버튼 이벤트
     addHeirButton.addEventListener('click', () => {
