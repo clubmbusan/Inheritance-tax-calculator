@@ -129,31 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
         heirContainer.appendChild(newHeir);
     });
 });
-
-
-    // 계산하기 버튼 이벤트
-    calculateButton.addEventListener('click', () => {
-        console.log("계산하기 버튼 클릭됨");
-        result.innerHTML = `<p>계산 버튼 클릭됨. 계산 로직을 추가하세요.</p>`;
-    });
-});
-
-    // 상속인 추가 버튼 이벤트
-    addHeirButton.addEventListener('click', () => {
-        const newHeir = document.createElement('div');
-        newHeir.className = 'heir-entry';
-        newHeir.innerHTML = `
-            <input type="text" placeholder="이름">
-            <select>
-                <option value="spouse">배우자</option>
-                <option value="child">자녀</option>
-                <option value="other">기타</option>
-            </select>
-            <input type="number" placeholder="상속 비율 (%)">
-        `;
-        heirContainer.appendChild(newHeir);
-    });
-
+ 
     // 계산하기 버튼
     calculateButton.addEventListener('click', () => {
         const assets = Array.from(document.querySelectorAll('.asset-entry')).map(asset => {
