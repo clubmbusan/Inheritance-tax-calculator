@@ -124,7 +124,6 @@ stockPriceField.addEventListener('input', updateStockTotal);
         // 콤마 추가 이벤트 등록
         const cashField = newAsset.querySelector('.cashField');
         const realEstateField = newAsset.querySelector('.realEstateField');
-        const stockPriceField = newAsset.querySelector('.stockPriceField');
         const othersField = newAsset.querySelector('.othersField');
 
         addCommaFormatting(cashField);
