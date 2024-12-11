@@ -10,8 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const result = document.getElementById('result');
 
     // 상단 필드: 재산 유형 변경 이벤트 등록
-    const topAssetType = document.querySelector('.assetType');
-    const topAssetContainer = document.querySelector('.asset-entry');
+    const topAssetType = document.querySelector('.assetType'); // 상단 재산 유형 필드
+    const topAssetContainer = document.querySelector('.asset-entry'); // 상단 컨테이너
 
     if (topAssetType && topAssetContainer) {
         topAssetType.addEventListener('change', (event) => {
@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 초기화: 모든 .assetValue 필드에 이벤트 등록
     document.querySelectorAll('.assetValue').forEach(addCommaFormatting);
 
-}); // DOMContentLoaded 닫는 중괄호
+}); // DOMContentLoaded 닫는 중괄호 및 소괄호
    
 // 재산 항목 생성
     function createAssetEntry() {
