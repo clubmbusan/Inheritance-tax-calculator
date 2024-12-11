@@ -49,33 +49,50 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 재산 유형 선택 시 필드 업데이트
     function updateAssetFields(assetType, container) {
-        const cashField = container.querySelector('.cashField');
-        const realEstateField = container.querySelector('.realEstateField');
-        const stockQuantityField = container.querySelector('.stockQuantityField');
-        const stockPriceField = container.querySelector('.stockPriceField');
-        const othersField = container.querySelector('.othersField');
+    const cashField = container.querySelector('.cashField');
+    const realEstateField = container.querySelector('.realEstateField');
+    const stockQuantityField = container.querySelector('.stockQuantityField');
+    const stockPriceField = container.querySelector('.stockPriceField');
+    const stockTotalField = container.querySelector('.stockTotalField'); // 총액 필드 추가
+    const othersField = container.querySelector('.othersField');
 
-        cashField.style.display = 'none';
-        realEstateField.style.display = 'none';
-        stockQuantityField.style.display = 'none';
-        stockPriceField.style.display = 'none';
-        othersField.style.display = 'none';
+    cashField.style.display = 'none';
+    realEstateField.style.display = 'none';
+    stockQuantityField.style.display = 'none';
+    stockPriceField.style.display = 'none';
+    stockTotalField.style.display = 'none'; // 기본 숨김 처리
+    othersField.style.display = 'none';
 
-        if (assetType === 'cash') {
-            cashField.style.display = 'block';
-            addCommaFormatting(cashField); // 콤마 추가
-        } else if (assetType === 'realEstate') {
-            realEstateField.style.display = 'block';
-            addCommaFormatting(realEstateField); // 콤마 추가
-        } else if (assetType === 'stock') {
-            stockQuantityField.style.display = 'block';
-            stockPriceField.style.display = 'block';
-            addCommaFormatting(stockPriceField); // 콤마 추가
-        } else if (assetType === 'others') {
-            othersField.style.display = 'block';
-            addCommaFormatting(othersField); // 콤마 추가
-        }
+    if (assetType === 'cash') {
+        cashField.style.display = 'block';
+        addCommaFormatting(cashField);
+    } else if (assetType === 'realEstate') {
+        realEstateField.style.display = 'block';
+        addCommaFormatting(realEstateField);
+    } else if (assetType === 'stock') {
+        stockQuantityField.style.display = 'block';
+        stockPriceField.style.display = 'block';
+        stockTotalField.style.display = 'block'; // 주식 유형에 총액 필드 표시
+        addCommaFormatting(stockPriceField);
+        addCommaFormatting(stockTotalField);
+
+        // 주식 총액 자동 계산
+        stockQuantityField.addEventListener('input', () => {
+            const quantity = parseInt(stockQuantityField.value || '0', 10);
+            const price = parseInt(stockPriceField.value.replace(/,/g, '') || '0', 10);
+            stockTotalField.value = formatNumberWithCommas((quantity * price).toString());
+        });
+
+        stockPriceField.addEventListener('input', () => {
+            const quantity = parseInt(stockQuantityField.value || '0', 10);
+            const price = parseInt(stockPriceField.value.replace(/,/g, '') || '0', 10);
+            stockTotalField.value = formatNumberWithCommas((quantity * price).toString());
+        });
+    } else if (assetType === 'others') {
+        othersField.style.display = 'block';
+        addCommaFormatting(othersField);
     }
+}
 
     // 재산 추가 버튼 이벤트
     addAssetButton.addEventListener('click', () => {
