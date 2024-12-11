@@ -9,14 +9,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const calculateButton = document.getElementById('calculateButton');
     const result = document.getElementById('result');
 
-   // 최상단 현금 금액 필드
-    const cashAmountField = document.getElementById('cashAmount');
-    if (cashAmountField) { // 필드가 존재하는 경우에만 콤마 추가
-        addCommaFormatting(cashAmountField);
-    } else {
-        console.warn("cashAmountField가 null입니다. HTML에 해당 요소가 있는지 확인하세요.");
+    // 콤마 추가 함수
+    function formatNumberWithCommas(value) {
+        const numericValue = value.replace(/[^0-9]/g, ''); // 숫자 외 문자 제거
+        return parseInt(numericValue || '0', 10).toLocaleString();
     }
-  
+
+    // 입력 필드에 콤마 추가
+    function addCommaFormatting(inputField) {
+        inputField.addEventListener('input', () => {
+            inputField.value = formatNumberWithCommas(inputField.value);
+        });
+    }
+   
     // 상속 유형에 따른 섹션 표시/숨김
     inheritanceType.addEventListener('change', () => {
         if (inheritanceType.value === 'personal') {
