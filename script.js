@@ -80,45 +80,66 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 }
 
-    // 재산 추가 버튼 이벤트
-    addAssetButton.addEventListener('click', () => {
-        const newAsset = document.createElement('div');
-        newAsset.className = 'asset-entry';
-        newAsset.innerHTML = `
-            <label for="assetType">재산 유형:</label>
-            <select class="assetType">
-                <option value="cash" selected>현금</option>
-                <option value="realEstate">부동산</option>
-                <option value="stock">주식</option>
-                <option value="others">기타</option>
-            </select>
-            <div class="assetFields">
-                <input type="text" class="cashField assetValue" placeholder="금액 (원)" style="display: block;">
-                <input type="text" class="realEstateField assetValue" placeholder="평가액 (원)" style="display: none;">
-                <input type="number" class="stockQuantityField" placeholder="주식 수량" style="display: none;">
-                <input type="text" class="stockPriceField" placeholder="주당 가격 (원)" style="display: none;">
-                <input type="text" class="othersField assetValue" placeholder="금액 (원)" style="display: none;">
-            </div>
-        `;
-        assetContainer.appendChild(newAsset);
+      // 재산 추가 버튼 이벤트
+addAssetButton.addEventListener('click', () => {
+    const newAsset = document.createElement('div');
+    newAsset.className = 'asset-entry';
+    newAsset.innerHTML = `
+        <label for="assetType">재산 유형:</label>
+        <select class="assetType">
+            <option value="cash" selected>현금</option>
+            <option value="realEstate">부동산</option>
+            <option value="stock">주식</option>
+            <option value="others">기타</option>
+        </select>
+        <div class="assetFields">
+            <input type="text" class="cashField assetValue" placeholder="금액 (원)" style="display: block;">
+            <input type="text" class="realEstateField assetValue" placeholder="평가액 (원)" style="display: none;">
+            <input type="number" class="stockQuantityField" placeholder="주식 수량" style="display: none;">
+            <input type="text" class="stockPriceField" placeholder="주당 가격 (원)" style="display: none;">
+            <input type="text" class="stockTotalField" placeholder="총 금액 (원, 자동 계산)" readonly style="display: none;">
+            <input type="text" class="othersField assetValue" placeholder="금액 (원)" style="display: none;">
+        </div>
+    `;
+    assetContainer.appendChild(newAsset);
 
-        // 새로 추가된 재산 유형 드롭다운에 이벤트 추가
-        const newAssetType = newAsset.querySelector('.assetType');
-        newAssetType.addEventListener('change', (event) => {
-            updateAssetFields(event.target.value, newAsset);
+    // 새로 추가된 재산 유형 드롭다운 이벤트 추가
+    const newAssetType = newAsset.querySelector('.assetType');
+    newAssetType.addEventListener('change', () => {
+        updateAssetFields(newAssetType.value, newAsset);
+    });
+
+    // 주식 필드의 총 금액 자동 계산
+    const stockQuantityField = newAsset.querySelector('.stockQuantityField');
+    const stockPriceField = newAsset.querySelector('.stockPriceField');
+    const stockTotalField = newAsset.querySelector('.stockTotalField');
+
+    if (stockQuantityField && stockPriceField && stockTotalField) {
+        stockQuantityField.addEventListener('input', () => {
+            const quantity = parseInt(stockQuantityField.value || '0', 10);
+            const price = parseInt(stockPriceField.value.replace(/,/g, '') || '0', 10);
+            stockTotalField.value = (quantity * price).toLocaleString();
         });
 
-        // 콤마 추가 이벤트 등록
-        const cashField = newAsset.querySelector('.cashField');
-        const realEstateField = newAsset.querySelector('.realEstateField');
-        const stockPriceField = newAsset.querySelector('.stockPriceField');
-        const othersField = newAsset.querySelector('.othersField');
+        stockPriceField.addEventListener('input', () => {
+            const quantity = parseInt(stockQuantityField.value || '0', 10);
+            const price = parseInt(stockPriceField.value.replace(/,/g, '') || '0', 10);
+            stockTotalField.value = (quantity * price).toLocaleString();
+        });
 
-        addCommaFormatting(cashField);
-        addCommaFormatting(realEstateField);
-        addCommaFormatting(stockPriceField);
-        addCommaFormatting(othersField);
-    });
+        addCommaFormatting(stockPriceField); // 주당 가격 필드에 콤마 추가
+    }
+
+    // 콤마 추가 이벤트 등록
+    const cashField = newAsset.querySelector('.cashField');
+    const realEstateField = newAsset.querySelector('.realEstateField');
+    const othersField = newAsset.querySelector('.othersField');
+
+    addCommaFormatting(cashField);
+    addCommaFormatting(realEstateField);
+    addCommaFormatting(stockPriceField);
+    addCommaFormatting(othersField);
+});
 
     // 초기화: 기존 재산 항목에 필드 변경 이벤트 추가
     assetContainer.addEventListener('change', (event) => {
