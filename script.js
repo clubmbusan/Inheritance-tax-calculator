@@ -179,7 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const totalAssetValue = assets.reduce((sum, asset) => sum + asset.value, 0);
 result.innerHTML = `<p>총 재산 금액: ${totalAssetValue.toLocaleString()} 원</p>`;
     });
-});
+
     // 개인분 또는 전체분 계산
     if (inheritanceType.value === 'personal') {
         const relationship = document.getElementById('relationshipPersonal').value;
