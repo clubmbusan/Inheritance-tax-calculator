@@ -3,10 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const personalSection = document.getElementById('personalSection');
     const groupSection = document.getElementById('groupSection');
     const addAssetButton = document.getElementById('addAssetButton');
-    const addHeirButton = document.getElementById('addHeirButton');
     const assetContainer = document.getElementById('assetContainer');
-    const heirContainer = document.getElementById('heirContainer');
-    const calculateButton = document.getElementById('calculateButton');
     const result = document.getElementById('result');
 
     // 상속 유형에 따른 섹션 표시/숨김
@@ -52,17 +49,17 @@ document.addEventListener('DOMContentLoaded', () => {
         // 선택된 유형만 표시
         if (assetType === 'cash') {
             cashField.style.display = 'block';
-            addCommaFormatting(cashField); // 콤마 추가
+            addCommaFormatting(cashField);
         } else if (assetType === 'realEstate') {
             realEstateField.style.display = 'block';
-            addCommaFormatting(realEstateField); // 콤마 추가
+            addCommaFormatting(realEstateField);
         } else if (assetType === 'stock') {
             stockQuantityField.style.display = 'block';
             stockPriceField.style.display = 'block';
-            addCommaFormatting(stockPriceField); // 콤마 추가
+            addCommaFormatting(stockPriceField);
         } else if (assetType === 'others') {
             othersField.style.display = 'block';
-            addCommaFormatting(othersField); // 콤마 추가
+            addCommaFormatting(othersField);
         }
     }
 
