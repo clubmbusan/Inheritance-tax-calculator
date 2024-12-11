@@ -3,10 +3,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const personalSection = document.getElementById('personalSection');
     const groupSection = document.getElementById('groupSection');
     const addAssetButton = document.getElementById('addAssetButton');
-    const addHeirButton = document.getElementById('addHeirButton'); // 상속인 추가 버튼
+    const addHeirButton = document.getElementById('addHeirButton');    // 상속인 추가 버튼
     const assetContainer = document.getElementById('assetContainer');
-    const heirContainer = document.getElementById('heirContainer'); // 상속인 컨테이너
-    const calculateButton = document.getElementById('calculateButton'); // 계산하기 버튼
+    const heirContainer = document.getElementById('heirContainer');     // 상속인 컨테이너
+    const calculateButton = document.getElementById('calculateButton');   // 계산하기 버튼 
     const result = document.getElementById('result');
   
     // 상속 유형에 따른 섹션 표시/숨김
@@ -28,15 +28,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const stockQuantityField = container.querySelector('.stockQuantityField');
         const stockPriceField = container.querySelector('.stockPriceField');
         const othersField = container.querySelector('.othersField');
-
-        // 모든 필드를 숨김
+      
+        // 모든 필드를 숨김  
         cashField.style.display = 'none';
         realEstateField.style.display = 'none';
         stockQuantityField.style.display = 'none';
         stockPriceField.style.display = 'none';
         othersField.style.display = 'none';
 
-        // 선택한 유형에 따라 표시
+         // 선택한 유형에 따라 표시
         if (assetType === 'cash') {
             cashField.style.display = 'block';
         } else if (assetType === 'realEstate') {
@@ -71,7 +71,6 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
         assetContainer.appendChild(newAsset);
 
-        // 새로 추가된 재산 유형 드롭다운에 이벤트 추가
         const newAssetType = newAsset.querySelector('.assetType');
         newAssetType.addEventListener('change', (event) => {
             updateAssetFields(event.target.value, newAsset);
@@ -83,10 +82,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (event.target.classList.contains('assetType')) {
             const assetType = event.target.value;
             const parentContainer = event.target.closest('.asset-entry');
-            updateAssetFields(assetType, parentContainer); // 필드 변경 로직 호출
+            updateAssetFields(assetType, parentContainer);
         }
     });
-});
 
     // 상속인 추가 버튼
     addHeirButton.addEventListener('click', () => {
@@ -115,9 +113,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const totalAssetValue = assets.reduce((sum, asset) => sum + asset.value, 0);
 
         if (inheritanceType.value === 'personal') {
-            // 개인분 계산
+             // 개인분 계산
             const relationship = document.getElementById('relationshipPersonal').value;
-            let exemption = 500000000; // 기본 공제
+            let exemption = 500000000;  // 기본 공제
             if (relationship === 'spouse') exemption += 3000000000;
             else if (relationship === 'adultChild') exemption += 50000000;
             else if (relationship === 'minorChild') exemption += 20000000 * 20;
@@ -136,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <p>상속세: ${tax.toLocaleString()} 원</p>
             `;
         } else {
-            // 전체분 계산
+            전체분 계산
             const heirs = Array.from(document.querySelectorAll('.heir-entry')).map(heir => {
                 const name = heir.querySelector('input[type="text"]').value;
                 const relationship = heir.querySelector('select').value;
@@ -152,7 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const heirResults = heirs.map(heir => {
                 const heirAssetValue = (totalAssetValue * heir.share) / 100;
-                let exemption = 500000000; // 기본 공제
+                let exemption = 500000000;
                 if (heir.relationship === 'spouse') exemption += 3000000000;
                 else if (heir.relationship === 'child') exemption += 50000000;
                 else exemption += 10000000;
@@ -181,11 +179,12 @@ document.addEventListener('DOMContentLoaded', () => {
                         과세 금액: ${r.taxableAmount.toLocaleString()} 원<br>
                         상속세: ${r.tax.toLocaleString()} 원
                     </p>
-                `).join('')}`;
+                `).join('')}
+            `;
         }
     });
-
-    // 상속세 계산 함수
+    
+// 상속세 계산 함수
     function calculateTax(taxableAmount) {
         const taxBrackets = [
             { limit: 100000000, rate: 0.1, deduction: 0 },
