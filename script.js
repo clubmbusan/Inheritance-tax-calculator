@@ -134,14 +134,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 <p>상속세: ${tax.toLocaleString()} 원</p>
             `;
         } else {
-            전체분 계산
-            const heirs = Array.from(document.querySelectorAll('.heir-entry')).map(heir => {
-                const name = heir.querySelector('input[type="text"]').value;
-                const relationship = heir.querySelector('select').value;
-                const share = parseFloat(heir.querySelector('input[type="number"]').value) || 0;
-                return { name, relationship, share };
-            });
-
+    // 전체분 계산
+    const heirs = Array.from(document.querySelectorAll('.heir-entry')).map(heir => {
+        const name = heir.querySelector('input[type="text"]').value;
+        const relationship = heir.querySelector('select').value;
+        const share = parseFloat(heir.querySelector('input[type="number"]').value) || 0;
+        return { name, relationship, share };
+    });
+      
             const totalShare = heirs.reduce((sum, heir) => sum + heir.share, 0);
             if (totalShare > 100) {
                 result.innerHTML = `<p style="color: red;">상속 비율 합계가 100%를 초과할 수 없습니다.</p>`;
