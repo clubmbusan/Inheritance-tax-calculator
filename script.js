@@ -102,7 +102,35 @@ function updateAssetFields(assetType, container) {
     }
 
     // 재산 추가 버튼 이벤트
-    addAssetButton.addEventListener('click', createAssetEntry);
+    addAssetButton.addEventListener('click', () => {
+    const newAsset = document.createElement('div');
+    newAsset.className = 'asset-entry';
+    newAsset.innerHTML = `
+        <label for="assetType">재산 유형:</label>
+        <select class="assetType">
+            <option value="cash" selected>현금</option>
+            <option value="realEstate">부동산</option>
+            <option value="stock">주식</option>
+            <option value="others">기타</option>
+        </select>
+        <div class="assetFields">
+            <input type="text" class="cashField assetValue" placeholder="금액 (원)" style="display: block;">
+            <input type="text" class="realEstateField assetValue" placeholder="평가액 (원)" style="display: none;">
+            <input type="number" class="stockQuantityField" placeholder="주식 매수" style="display: none;">
+            <input type="text" class="stockPriceField" placeholder="주당 가격 (원)" style="display: none;">
+            <input type="text" class="stockTotalField" placeholder="금액 (원)" style="display: none;" readonly>
+            <input type="text" class="othersField assetValue" placeholder="기타 금액 (원)" style="display: none;">
+        </div>
+    `;
+
+    assetContainer.appendChild(newAsset);
+
+    // 재산 유형 선택 이벤트 연결
+    const newAssetType = newAsset.querySelector('.assetType');
+    newAssetType.addEventListener('change', (event) => {
+        updateAssetFields(event.target.value, newAsset);
+    });
+});
 
     // 상속인 항목 생성
     addHeirButton.addEventListener('click', () => {
