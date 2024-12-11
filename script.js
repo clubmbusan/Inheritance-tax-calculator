@@ -18,7 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
             updateAssetFields(event.target.value, topAssetContainer);
         });
     }
-});
 
     // 숫자에 콤마를 추가하는 함수
     function formatNumberWithCommas(value) {
