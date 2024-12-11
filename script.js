@@ -9,19 +9,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const calculateButton = document.getElementById('calculateButton');
     const result = document.getElementById('result');
 
-    // 콤마 추가 함수
-    function formatNumberWithCommas(value) {
-        const numericValue = value.replace(/[^0-9]/g, ''); // 숫자 외 문자 제거
-        return parseInt(numericValue || '0', 10).toLocaleString();
-    }
+    // 콤마 추가 함수 (중복 제거)
+function formatNumberWithCommas(value) {
+    const numericValue = value.replace(/[^0-9]/g, ''); // 숫자 외 문자 제거
+    return parseInt(numericValue || '0', 10).toLocaleString();
+}
 
-    // 입력 필드에 콤마 추가
-    function addCommaFormatting(inputField) {
-        inputField.addEventListener('input', () => {
-            inputField.value = formatNumberWithCommas(inputField.value);
-        });
-    }
-   
+// 입력 필드에 콤마 추가 이벤트 등록
+function addCommaFormatting(inputField) {
+    inputField.addEventListener('input', () => {
+        inputField.value = formatNumberWithCommas(inputField.value);
+    });
+}
+
+// DOMContentLoaded 이후 적용
+document.addEventListener('DOMContentLoaded', () => {
+    // 상단 입력 필드와 재산 추가 필드에 콤마 추가
+    const allFields = document.querySelectorAll('.assetValue'); // 모든 금액 입력 필드 선택
+    allFields.forEach(addCommaFormatting);
+
     // 상속 유형에 따른 섹션 표시/숨김
     inheritanceType.addEventListener('change', () => {
         if (inheritanceType.value === 'personal') {
@@ -32,12 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
             groupSection.style.display = 'block';
         }
     });
-
-    // 숫자 입력 필드에 콤마 추가 함수
-    function formatNumberWithCommas(value) {
-        const numericValue = value.replace(/[^0-9]/g, ''); // 숫자 외 문자 제거
-        return parseInt(numericValue || '0', 10).toLocaleString();
-    }
+});
 
     // 금액 필드 이벤트 리스너 추가 함수
     function addCommaFormatting(inputField) {
