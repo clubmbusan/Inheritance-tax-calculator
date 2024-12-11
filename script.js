@@ -190,22 +190,22 @@ document.addEventListener('DOMContentLoaded', () => {
         const relationship = document.getElementById('relationshipPersonal').value;
         let exemption = 500000000; // 기본 공제
 
-                     // 관계에 따른 추가 공제
-if (relationship === 'spouse') {
-    exemption += 3000000000; // 배우자 공제
-} else if (relationship === 'adultChild') {
-    exemption += 50000000; // 성년 자녀 공제
-} else if (relationship === 'minorChild') {
-    const fixedAge = 10; // 고정된 나이 (예: 10세)
-    const additionalExemption = 20000000 * (20 - fixedAge); // 추가 공제
-    exemption = 500000000 + additionalExemption; // 기본 공제 + 추가 공제
-} else if (relationship === 'parent') {
-    exemption += 50000000; // 부모 공제
-} else if (relationship === 'sibling') {
-    exemption += 50000000; // 형제자매 공제
-} else {
-    exemption += 10000000; // 기타 공제
-}
+        // 관계에 따른 추가 공제
+        if (relationship === 'spouse') {
+            exemption += 3000000000; // 배우자 공제
+        } else if (relationship === 'adultChild') {
+            exemption += 50000000; // 성년 자녀 공제
+        } else if (relationship === 'minorChild') {
+            const fixedAge = 10; // 고정된 나이 (예: 10세)
+            const additionalExemption = 20000000 * (20 - fixedAge); // 추가 공제
+            exemption = 500000000 + additionalExemption; // 기본 공제 + 추가 공제
+        } else if (relationship === 'parent') {
+            exemption += 50000000; // 부모 공제
+        } else if (relationship === 'sibling') {
+            exemption += 50000000; // 형제자매 공제
+        } else {
+            exemption += 10000000; // 기타 공제
+        }
 
         // 과세 금액 및 상속세 계산
         const taxableAmount = Math.max(totalAssetValue - exemption, 0);
@@ -224,22 +224,22 @@ if (relationship === 'spouse') {
             const name = heir.querySelector('input[type="text"]').value;
             const relationship = heir.querySelector('select').value;
             const share = parseFloat(heir.querySelector('input[type="number"]').value) || 0;
-            return { name, relationship, share };
-        });
-
-        const totalShare = heirs.reduce((sum, heir) => sum + heir.share, 0);
-        if (totalShare > 100) {
-            result.innerHTML = `<p style="color: red;">상속 비율 합계가 100%를 초과할 수 없습니다.</p>`;
-            return;
-        }
-
-        const heirResults = heirs.map(heir => {
-            const heirAssetValue = (totalAssetValue * heir.share) / 100;
+            const heirAssetValue = (totalAssetValue * share) / 100;
             let exemption = 500000000; // 기본 공제
-            if (heir.relationship === 'spouse') {
+
+            // 관계에 따른 추가 공제
+            if (relationship === 'spouse') {
                 exemption += 3000000000; // 배우자 공제
-            } else if (heir.relationship === 'child') {
-                exemption += 50000000; // 자녀 공제
+            } else if (relationship === 'adultChild') {
+                exemption += 50000000; // 성년 자녀 공제
+            } else if (relationship === 'minorChild') {
+                const fixedAge = 10; // 고정된 나이
+                const additionalExemption = 20000000 * (20 - fixedAge); // 추가 공제
+                exemption = 500000000 + additionalExemption; // 기본 공제 + 추가 공제
+            } else if (relationship === 'parent') {
+                exemption += 50000000; // 부모 공제
+            } else if (relationship === 'sibling') {
+                exemption += 50000000; // 형제자매 공제
             } else {
                 exemption += 10000000; // 기타 공제
             }
@@ -248,8 +248,8 @@ if (relationship === 'spouse') {
             const tax = calculateTax(taxableAmount);
 
             return {
-                name: heir.name,
-                share: heir.share,
+                name,
+                share,
                 assetValue: heirAssetValue,
                 exemption,
                 taxableAmount,
@@ -259,6 +259,7 @@ if (relationship === 'spouse') {
 
         result.innerHTML = `
             <h3>계산 결과 (전체분)</h3>
+            총 상속 금액: ${totalAssetValue.toLocaleString()} 원
             ${heirResults.map(r => `
                 <p>
                     <strong>${r.name}</strong><br>
@@ -292,5 +293,4 @@ function calculateTax(taxableAmount) {
     }
     return Math.max(totalTax, 0);
 }
-
 });
