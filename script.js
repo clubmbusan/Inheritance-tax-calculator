@@ -9,9 +9,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const calculateButton = document.getElementById('calculateButton');
     const result = document.getElementById('result');
 
-    // 최상단 현금 금액 필드
+   // 최상단 현금 금액 필드
     const cashAmountField = document.getElementById('cashAmount');
-    addCommaFormatting(cashAmountField); // 콤마 추가 함수 연결
+    if (cashAmountField) { // 필드가 존재하는 경우에만 콤마 추가
+        addCommaFormatting(cashAmountField);
+    } else {
+        console.warn("cashAmountField가 null입니다. HTML에 해당 요소가 있는지 확인하세요.");
+    }
   
     // 상속 유형에 따른 섹션 표시/숨김
     inheritanceType.addEventListener('change', () => {
