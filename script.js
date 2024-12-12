@@ -119,8 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const price = parseInt(stockPriceField.value.replace(/,/g, '') || '0', 10);
           stockTotalField.value = formatNumberWithCommas((quantity * price).toString());
          }
-      }
-
+    
     // 재산 추가 버튼 이벤트
     addAssetButton.addEventListener('click', createAssetEntry);
 
