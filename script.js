@@ -92,12 +92,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // 추가 필드에 이벤트 등록
         addCommaFormatting(newAsset.querySelector('.cashField'));
         addCommaFormatting(newAsset.querySelector('.realEstateField'));
+        addCommaFormatting(newAsset.querySelector('.stockPriceField'));
         addCommaFormatting(newAsset.querySelector('.othersField'));
-
-         // [추가] 주당 가격과 주식 수량에도 콤마 이벤트 등록
-         addCommaFormatting(newAsset.querySelector('.stockPriceField'));
-         addCommaFormatting(newAsset.querySelector('.stockQuantityField'));
-       
+        
        // 재산 유형 선택 이벤트 등록
          const assetTypeSelect = newAsset.querySelector('.assetType');
          assetTypeSelect.addEventListener('change', (event) => {
