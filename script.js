@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 재산 유형에 따라 필드를 동적으로 표시 (여기에 추가)
+    // 재산 유형에 따라 필드를 동적으로 표시
     function handleAssetTypeChange(assetTypeSelect) {
         const assetFields = assetTypeSelect.closest('.asset-entry').querySelector('.assetFields');
         const cashField = assetFields.querySelector('.cashField');
@@ -64,14 +64,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // 초기화: 모든 .assetValue 필드에 이벤트 등록
     document.querySelectorAll('.assetValue').forEach(addCommaFormatting);
 
-    // 초기화: 모든 .assetType 필드에 이벤트 등록 (여기 추가)
+    // 초기화: 모든 .assetType 필드에 이벤트 등록
     document.querySelectorAll('.assetType').forEach(select => {
         select.addEventListener('change', () => handleAssetTypeChange(select));
     });
-
-    // 나머지 초기화 및 이벤트 등록 로직...
 });
-    // 재산 항목 생성
+    
+ // 재산 항목 생성
 function createAssetEntry() {
     const newAsset = document.createElement('div');
     newAsset.className = 'asset-entry';
@@ -95,9 +94,9 @@ function createAssetEntry() {
     assetContainer.appendChild(newAsset);
 
     const assetTypeSelect = newAsset.querySelector('.assetType');
-    assetTypeSelect.addEventListener('change', () => handleAssetTypeChange(assetTypeSelect)); // 필드 동적 표시 이벤트
+    assetTypeSelect.addEventListener('change', () => handleAssetTypeChange(assetTypeSelect));
 
-    // 기존 로직: 콤마 추가 이벤트 등록
+    // 콤마 이벤트 등록
     addCommaFormatting(newAsset.querySelector('.cashField'));
     addCommaFormatting(newAsset.querySelector('.realEstateField'));
     addCommaFormatting(newAsset.querySelector('.othersField'));
@@ -115,7 +114,7 @@ function createAssetEntry() {
         stockTotalField.value = formatNumberWithCommas((quantity * price).toString());
     }
 }
-
+   
 // 재산 추가 버튼 이벤트
 addAssetButton.addEventListener('click', createAssetEntry);
 
