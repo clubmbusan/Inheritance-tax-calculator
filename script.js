@@ -1,5 +1,3 @@
-
-
 document.addEventListener('DOMContentLoaded', () => {
     const inheritanceType = document.getElementById('inheritanceType');
     const personalSection = document.getElementById('personalSection');
@@ -25,6 +23,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+    
+    // 재산 유형 변경 이벤트
+    firstAssetTypeSelect.addEventListener('change', () => {
+        updateAssetFields(firstAssetTypeSelect.value, firstAssetEntry);
+    });
+    
 function updateAssetFields(assetType, container) {
     const cashField = container.querySelector('.cashField');
     const realEstateField = container.querySelector('.realEstateField');
