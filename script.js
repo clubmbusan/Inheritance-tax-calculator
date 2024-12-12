@@ -105,13 +105,9 @@ function updateAssetFields(assetType, container) {
         const stockQuantityField = newAsset.querySelector('.stockQuantityField');
         const stockPriceField = newAsset.querySelector('.stockPriceField');
         const stockTotalField = newAsset.querySelector('.stockTotalField');
-
         stockQuantityField.addEventListener('input', updateStockTotal);
-        stockPriceField.addEventListener('input', () => {
-        updateStockTotal();
-        addCommaFormatting(stockPriceField); // 콤마 적용
-        });
-
+        stockPriceField.addEventListener('input', updateStockTotal);
+        
         function updateStockTotal() {
             const quantity = parseInt(stockQuantityField.value || '0', 10);
             const price = parseInt(stockPriceField.value.replace(/,/g, '') || '0', 10);
