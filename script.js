@@ -9,6 +9,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const calculateButton = document.getElementById('calculateButton');
     const result = document.getElementById('result');
 
+    // 초기화: 모든 .assetValue 필드에 이벤트 등록
+    document.querySelectorAll('.assetValue').forEach(addCommaFormatting);
+
+    // 초기화: 모든 .assetType 필드에 이벤트 등록
+    document.querySelectorAll('.assetType').forEach(select => {
+        select.addEventListener('change', () => handleAssetTypeChange(select));
+    });
+
     // 숫자에 콤마를 추가하는 함수
     function formatNumberWithCommas(value) {
         return parseInt(value.replace(/[^0-9]/g, '') || '0', 10).toLocaleString();
@@ -61,14 +69,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // 초기화: 모든 .assetValue 필드에 이벤트 등록
-    document.querySelectorAll('.assetValue').forEach(addCommaFormatting);
-
-    // 초기화: 모든 .assetType 필드에 이벤트 등록
-    document.querySelectorAll('.assetType').forEach(select => {
-        select.addEventListener('change', () => handleAssetTypeChange(select));
-    });
-
     // 재산 항목 생성
     function createAssetEntry() {
         const newAsset = document.createElement('div');
@@ -113,10 +113,9 @@ document.addEventListener('DOMContentLoaded', () => {
             stockTotalField.value = formatNumberWithCommas((quantity * price).toString());
         }
     }
-});
-   
-// 재산 추가 버튼 이벤트
-addAssetButton.addEventListener('click', createAssetEntry);
+
+        // 재산 추가 버튼 이벤트
+    addAssetButton.addEventListener('click', createAssetEntry);
 
     // 상속인 항목 생성
     addHeirButton.addEventListener('click', () => {
@@ -162,7 +161,7 @@ addAssetButton.addEventListener('click', createAssetEntry);
         }
     });
 
-    // 개인 모드 계산
+    // 개인 모드 계산 함수
     function calculatePersonalMode(totalAssetValue) {
         const relationship = document.getElementById('relationshipPersonal').value;
         let exemption = 500000000; // 기본 공제
@@ -183,7 +182,7 @@ addAssetButton.addEventListener('click', createAssetEntry);
         `;
     }
 
-    // 전체 모드 계산
+    // 전체 모드 계산 함수
     function calculateGroupMode(totalAssetValue) {
         const heirs = Array.from(document.querySelectorAll('.heir-entry')).map(heir => {
             const name = heir.querySelector('input[type="text"]').value;
@@ -237,3 +236,4 @@ addAssetButton.addEventListener('click', createAssetEntry);
         return Math.max(totalTax, 0);
     }
 });
+                      
