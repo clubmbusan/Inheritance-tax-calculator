@@ -8,7 +8,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const heirContainer = document.getElementById('heirContainer');
     const calculateButton = document.getElementById('calculateButton');
     const result = document.getElementById('result');
-     
+
+    // 초기 드롭다운에 이벤트 등록
+    document.querySelectorAll('.assetType').forEach((selectElement) => {
+      selectElement.addEventListener('change', (event) => {
+        const assetType = event.target.value;
+        const container = event.target.closest('.asset-entry');
+        updateAssetFields(assetType, container);
+      });
+   });
+
     // 숫자에 콤마를 추가하는 함수
     function formatNumberWithCommas(value) {
         return parseInt(value.replace(/[^0-9]/g, '') || '0', 10).toLocaleString();
@@ -90,13 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
         assetTypeSelect.addEventListener('change', () => {
             updateAssetFields(assetTypeSelect.value, newAsset);
         });
-       
-        // 새 드롭다운 이벤트 연결
-        const newAssetTypeSelect = newAsset.querySelector('.assetType');
-        newAssetTypeSelect.addEventListener('change', () => {
-            updateAssetFields(newAssetTypeSelect.value, newAsset);
-        });
-        
+                    
         // 주식 계산 로직
         const stockQuantityField = newAsset.querySelector('.stockQuantityField');
         const stockPriceField = newAsset.querySelector('.stockPriceField');
