@@ -94,7 +94,8 @@ function updateAssetFields(assetType, container) {
         addCommaFormatting(newAsset.querySelector('.cashField'));
         addCommaFormatting(newAsset.querySelector('.realEstateField'));
         addCommaFormatting(newAsset.querySelector('.othersField'));
-       
+        addCommaFormatting(newAsset.querySelector('.stockPriceField')); // 주당 가격에 콤마 추가
+     
         // 재산 유형 선택 이벤트
         const assetTypeSelect = newAsset.querySelector('.assetType');
         assetTypeSelect.addEventListener('change', () => {
@@ -104,8 +105,12 @@ function updateAssetFields(assetType, container) {
         const stockQuantityField = newAsset.querySelector('.stockQuantityField');
         const stockPriceField = newAsset.querySelector('.stockPriceField');
         const stockTotalField = newAsset.querySelector('.stockTotalField');
+
         stockQuantityField.addEventListener('input', updateStockTotal);
-        stockPriceField.addEventListener('input', updateStockTotal);
+        stockPriceField.addEventListener('input', () => {
+        updateStockTotal();
+        addCommaFormatting(stockPriceField); // 콤마 적용
+        });
 
         function updateStockTotal() {
             const quantity = parseInt(stockQuantityField.value || '0', 10);
