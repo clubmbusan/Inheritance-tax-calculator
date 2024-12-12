@@ -9,6 +9,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const calculateButton = document.getElementById('calculateButton');
     const result = document.getElementById('result');
 
+    // 상속 유형 버튼 클릭 시 애니메이션 제거
+    const inheritanceTypeButton = document.getElementById('inheritanceType');
+    if (inheritanceTypeButton) {
+        inheritanceTypeButton.addEventListener('click', () => {
+            inheritanceTypeButton.style.animation = 'none'; // 애니메이션 중지
+        });
+    }
+    
     // DOM 요소 확인
     if (!calculateButton || !inheritanceType || !result) {
         console.error('필요한 DOM 요소가 없습니다. HTML을 확인하세요.');
