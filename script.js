@@ -8,19 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const heirContainer = document.getElementById('heirContainer');
     const calculateButton = document.getElementById('calculateButton');
     const result = document.getElementById('result');
-
-  / 초기 드롭다운 이벤트 연결
-    const initialAssetTypeSelect = document.querySelector('#assetContainer .assetType');
-    const initialAssetEntry = document.querySelector('#assetContainer .asset-entry');
-
-    if (initialAssetTypeSelect && initialAssetEntry) {
-    initialAssetTypeSelect.addEventListener('change', () => {
-        updateAssetFields(initialAssetTypeSelect.value, initialAssetEntry);
-    });
-} else {
-    console.error('초기 드롭다운 또는 재산 항목 컨테이너를 찾을 수 없습니다.');
-}
-    
+     
     // 숫자에 콤마를 추가하는 함수
     function formatNumberWithCommas(value) {
         return parseInt(value.replace(/[^0-9]/g, '') || '0', 10).toLocaleString();
