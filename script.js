@@ -94,11 +94,17 @@ document.addEventListener('DOMContentLoaded', () => {
         addCommaFormatting(newAsset.querySelector('.realEstateField'));
         addCommaFormatting(newAsset.querySelector('.othersField'));
 
-        // 재산 유형 선택 이벤트
-        const assetTypeSelect = newAsset.querySelector('.assetType');
-        assetTypeSelect.addEventListener('change', () => {
-            updateAssetFields(assetTypeSelect.value, newAsset);
-        });
+         // [추가] 주당 가격과 주식 수량에도 콤마 이벤트 등록
+         addCommaFormatting(newAsset.querySelector('.stockPriceField'));
+         addCommaFormatting(newAsset.querySelector('.stockQuantityField'));
+       
+       // 재산 유형 선택 이벤트 등록
+         const assetTypeSelect = newAsset.querySelector('.assetType');
+         assetTypeSelect.addEventListener('change', (event) => {
+         const assetType = event.target.value;
+         const container = event.target.closest('.asset-entry');
+         updateAssetFields(assetType, container);
+       });
                     
         // 주식 계산 로직
         const stockQuantityField = newAsset.querySelector('.stockQuantityField');
@@ -111,8 +117,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const quantity = parseInt(stockQuantityField.value || '0', 10);
             const price = parseInt(stockPriceField.value.replace(/,/g, '') || '0', 10);
             stockTotalField.value = formatNumberWithCommas((quantity * price).toString());
-        }
-    }
+
+        function updateStockTotal() {
+          // [수정] 콤마를 제거하고 계산
+          const quantity = parseInt(stockQuantityField.value.replace(/,/g, '') || '0', 10);
+          const price = parseInt(stockPriceField.value.replace(/,/g, '') || '0', 10);
+          stockTotalField.value = formatNumberWithCommas((quantity * price).toString());
+         }
+      }
 
     // 재산 추가 버튼 이벤트
     addAssetButton.addEventListener('click', createAssetEntry);
