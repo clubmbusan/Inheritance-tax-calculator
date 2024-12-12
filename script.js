@@ -16,59 +16,58 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.assetType').forEach(select => {
         select.addEventListener('change', () => handleAssetTypeChange(select));
     });
-});
 
-// 숫자에 콤마를 추가하는 함수
-function formatNumberWithCommas(value) {
-    return parseInt(value.replace(/[^0-9]/g, '') || '0', 10).toLocaleString();
-}
-
-// 입력 필드에 콤마 추가 이벤트 등록
-function addCommaFormatting(inputField) {
-    inputField.addEventListener('input', () => {
-        const numericValue = inputField.value.replace(/,/g, '');
-        if (!isNaN(numericValue)) {
-            inputField.value = parseInt(numericValue || '0', 10).toLocaleString(); // 콤마 추가
-        }
-    });
-}
-
-// 재산 유형 변경에 따른 필드 표시 함수 (필요하다면 정의)
-function handleAssetTypeChange(select) {
-    const assetFields = select.closest('.asset-entry').querySelector('.assetFields');
-    const cashField = assetFields.querySelector('.cashField');
-    const realEstateField = assetFields.querySelector('.realEstateField');
-    const stockQuantityField = assetFields.querySelector('.stockQuantityField');
-    const stockPriceField = assetFields.querySelector('.stockPriceField');
-    const stockTotalField = assetFields.querySelector('.stockTotalField');
-    const othersField = assetFields.querySelector('.othersField');
-
-    // 모든 필드 숨기기
-    cashField.style.display = 'none';
-    realEstateField.style.display = 'none';
-    stockQuantityField.style.display = 'none';
-    stockPriceField.style.display = 'none';
-    stockTotalField.style.display = 'none';
-    othersField.style.display = 'none';
-
-    // 선택된 유형에 따라 표시
-    switch (select.value) {
-        case 'cash':
-            cashField.style.display = 'block';
-            break;
-        case 'realEstate':
-            realEstateField.style.display = 'block';
-            break;
-        case 'stock':
-            stockQuantityField.style.display = 'block';
-            stockPriceField.style.display = 'block';
-            stockTotalField.style.display = 'block';
-            break;
-        case 'others':
-            othersField.style.display = 'block';
-            break;
+    // 숫자에 콤마를 추가하는 함수
+    function formatNumberWithCommas(value) {
+        return parseInt(value.replace(/[^0-9]/g, '') || '0', 10).toLocaleString();
     }
-}
+
+    // 입력 필드에 콤마 추가 이벤트 등록
+    function addCommaFormatting(inputField) {
+        inputField.addEventListener('input', () => {
+            const numericValue = inputField.value.replace(/,/g, '');
+            if (!isNaN(numericValue)) {
+                inputField.value = formatNumberWithCommas(numericValue);
+            }
+        });
+    }
+
+    // 재산 유형에 따라 필드를 동적으로 표시
+    function handleAssetTypeChange(assetTypeSelect) {
+        const assetFields = assetTypeSelect.closest('.asset-entry').querySelector('.assetFields');
+        const cashField = assetFields.querySelector('.cashField');
+        const realEstateField = assetFields.querySelector('.realEstateField');
+        const stockQuantityField = assetFields.querySelector('.stockQuantityField');
+        const stockPriceField = assetFields.querySelector('.stockPriceField');
+        const stockTotalField = assetFields.querySelector('.stockTotalField');
+        const othersField = assetFields.querySelector('.othersField');
+
+        // 모든 필드 숨기기
+        cashField.style.display = 'none';
+        realEstateField.style.display = 'none';
+        stockQuantityField.style.display = 'none';
+        stockPriceField.style.display = 'none';
+        stockTotalField.style.display = 'none';
+        othersField.style.display = 'none';
+
+        // 선택된 유형에 따라 표시
+        switch (assetTypeSelect.value) {
+            case 'cash':
+                cashField.style.display = 'block';
+                break;
+            case 'realEstate':
+                realEstateField.style.display = 'block';
+                break;
+            case 'stock':
+                stockQuantityField.style.display = 'block';
+                stockPriceField.style.display = 'block';
+                stockTotalField.style.display = 'block';
+                break;
+            case 'others':
+                othersField.style.display = 'block';
+                break;
+        }
+    }
 
     // 재산 항목 생성
     function createAssetEntry() {
