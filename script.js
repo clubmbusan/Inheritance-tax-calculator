@@ -227,7 +227,7 @@ function calculateGroupMode(totalAssetValue) {
     `;
 }
 
-// 상속세 계산 함수
+// 상속세 계산 함수 (누진 공제 반영)
 function calculateTax(taxableAmount) {
     const taxBrackets = [
         { limit: 100000000, rate: 0.1, deduction: 0 },
@@ -237,16 +237,13 @@ function calculateTax(taxableAmount) {
         { limit: Infinity, rate: 0.5, deduction: 460000000 }
     ];
 
-    let totalTax = 0;
     for (const bracket of taxBrackets) {
-        if (taxableAmount > bracket.limit) {
-            totalTax += bracket.limit * bracket.rate;
-        } else {
-            totalTax += taxableAmount * bracket.rate - bracket.deduction;
-            break;
+        if (taxableAmount <= bracket.limit) {
+            return Math.max((taxableAmount * bracket.rate) - bracket.deduction, 0);
         }
     }
-    return Math.max(totalTax, 0); // 음수 방지
+
+    return 0; // 기본 반환값
 }
 
 // 숫자 포맷 함수
