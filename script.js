@@ -215,17 +215,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 전체 모드 계산 함수
  function calculateGroupMode(totalAssetValue) {
-    const heirs = Array.from(document.querySelectorAll('.heir-entry')).map(heir => {
-        const name = heir.querySelector('input[type="text"]').value || "이름 없음";
+    const heirs = Array.from(document.querySelectorAll('.heir-entry')).map((heir, index) => {
+        const name = heir.querySelector('input[type="text"]').value || `상속인 ${index + 1}`;
         const relationship = heir.querySelector('select').value || "기타";
-        const share = parseFloat(heir.querySelector('input[type="number"]').value) || 0;
+        const shareField = heir.querySelector('input[type="number"]');
+        const share = parseFloat(shareField.value) || 0;
 
-        // 상속인의 상속 재산 금액 계산
+        // 상속 비율이 입력되지 않은 경우 경고 표시
+        if (!shareField.value || share === 0) {
+            alert(`${name}의 상속 비율이 입력되지 않았습니다. 비율을 입력 후 다시 시도해주세요.`);
+            throw new Error("상속 비율 누락");
+        }
+
+        // 상속인의 상속 금액 계산
         const heirAssetValue = (totalAssetValue * share) / 100;
 
-        let exemption = 500000000; // 기본 공제: 5억 원
+        // 공제 계산
+        let exemption = 500000000; // 기본 공제
 
-        // 관계에 따른 공제 계산
         if (relationship === 'spouse') {
             exemption += 3000000000; // 배우자 공제
         } else if (relationship === 'adultChild') {
@@ -240,17 +247,14 @@ document.addEventListener('DOMContentLoaded', () => {
             exemption += 10000000; // 기타 공제
         }
 
-        // 과세 금액 및 상속세 계산
         const taxableAmount = Math.max(heirAssetValue - exemption, 0);
         const tax = calculateTax(taxableAmount);
 
         return { name, share, assetValue: heirAssetValue, exemption, taxableAmount, tax };
     });
 
-    // 상속 재산 합계 계산
     const totalInheritedAssets = heirs.reduce((sum, heir) => sum + heir.assetValue, 0);
 
-    // 결과 표시
     result.innerHTML = `
         <h3>계산 결과 (전체 모드)</h3>
         <p><strong>상속 재산 합계:</strong> ${formatNumberWithCommas(totalInheritedAssets.toString())} 원</p>
