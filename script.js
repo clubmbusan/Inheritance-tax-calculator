@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // 주요 DOM 요소
     const inheritanceType = document.getElementById('inheritanceType');
     const personalSection = document.getElementById('personalSection');
     const groupSection = document.getElementById('groupSection');
@@ -24,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-     // 재산 유형에 따라 필드를 표시/숨김
+    // 필드 표시/숨김 함수
     function updateAssetFields(assetType, container) {
         const cashField = container.querySelector('.cashField');
         const realEstateField = container.querySelector('.realEstateField');
@@ -34,38 +35,42 @@ document.addEventListener('DOMContentLoaded', () => {
         const othersField = container.querySelector('.othersField');
 
         // 모든 필드 숨기기
-        cashField.style.display = 'none';
-        realEstateField.style.display = 'none';
-        stockQuantityField.style.display = 'none';
-        stockPriceField.style.display = 'none';
-        stockTotalField.style.display = 'none';
-        othersField.style.display = 'none';
+        if (cashField) cashField.style.display = 'none';
+        if (realEstateField) realEstateField.style.display = 'none';
+        if (stockQuantityField) stockQuantityField.style.display = 'none';
+        if (stockPriceField) stockPriceField.style.display = 'none';
+        if (stockTotalField) stockTotalField.style.display = 'none';
+        if (othersField) othersField.style.display = 'none';
 
-        // 선택된 재산 유형에 따라 필드 표시
-        if (assetType === 'cash') {
+        // 선택된 유형에 따라 필드 표시
+        if (assetType === 'cash' && cashField) {
             cashField.style.display = 'block';
-        } else if (assetType === 'realEstate') {
+        } else if (assetType === 'realEstate' && realEstateField) {
             realEstateField.style.display = 'block';
         } else if (assetType === 'stock') {
-            stockQuantityField.style.display = 'block';
-            stockPriceField.style.display = 'block';
-            stockTotalField.style.display = 'block';
-        } else if (assetType === 'others') {
+            if (stockQuantityField) stockQuantityField.style.display = 'block';
+            if (stockPriceField) stockPriceField.style.display = 'block';
+            if (stockTotalField) stockTotalField.style.display = 'block';
+        } else if (assetType === 'others' && othersField) {
             othersField.style.display = 'block';
         }
     }
-    
-    // 초기화: 모든 .assetValue 필드에 이벤트 등록
-    document.querySelectorAll('.assetValue').forEach(addCommaFormatting);
 
-    // 상단 드롭다운 이벤트 추가
-     const topAssetTypeSelect = document.querySelector('.topAssetType'); // 상단 드롭다운 클래스/ID
-     const topAssetContainer = document.querySelector('.topAssetContainer'); // 상단 입력 필드 컨테이너
-     if (topAssetTypeSelect) {
+    // 상단 드롭다운 초기화 및 이벤트 리스너 추가
+    const topAssetTypeSelect = document.querySelector('.topAssetType'); // 상단 드롭다운 클래스
+    const topAssetContainer = document.querySelector('.topAssetContainer'); // 상단 입력 필드 컨테이너
+
+    if (topAssetTypeSelect && topAssetContainer) {
         topAssetTypeSelect.addEventListener('change', () => {
             updateAssetFields(topAssetTypeSelect.value, topAssetContainer);
-         });
-     }
+        });
+
+        // 초기 선택 상태에 따른 필드 표시
+        updateAssetFields(topAssetTypeSelect.value, topAssetContainer);
+    }
+
+    // 초기화: 모든 .assetValue 필드에 이벤트 등록
+    document.querySelectorAll('.assetValue').forEach(addCommaFormatting);
 
     // 재산 항목 생성
     function createAssetEntry() {
@@ -100,6 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
         assetTypeSelect.addEventListener('change', () => {
             updateAssetFields(assetTypeSelect.value, newAsset);
         });
+
         // 주식 계산 로직
         const stockQuantityField = newAsset.querySelector('.stockQuantityField');
         const stockPriceField = newAsset.querySelector('.stockPriceField');
@@ -146,7 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
             groupSection.style.display = 'block';
         }
     });
-
+    
     // 계산 로직
     calculateButton.addEventListener('click', () => {
         const totalAssetValue = Array.from(document.querySelectorAll('.assetValue')).reduce((sum, field) => {
