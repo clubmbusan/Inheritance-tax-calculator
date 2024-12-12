@@ -98,6 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // 콤마 이벤트 등록
         addCommaFormatting(newAsset.querySelector('.cashField'));
         addCommaFormatting(newAsset.querySelector('.realEstateField'));
+        addCommaFormatting(newAsset.querySelector('.stockPriceField'));
         addCommaFormatting(newAsset.querySelector('.othersField'));
 
         // 주식 계산 로직
