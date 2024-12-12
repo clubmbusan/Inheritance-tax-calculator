@@ -13,10 +13,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const initialAssetTypeSelect = document.querySelector('#assetContainer .assetType');
     const initialAssetEntry = document.querySelector('#assetContainer .asset-entry');
 
-    // 초기 드롭다운에 change 이벤트 연결
+    if (initialAssetTypeSelect && initialAssetEntry) {
     initialAssetTypeSelect.addEventListener('change', () => {
         updateAssetFields(initialAssetTypeSelect.value, initialAssetEntry);
     });
+} else {
+    console.error('초기 드롭다운 또는 재산 항목 컨테이너를 찾을 수 없습니다.');
+}
     
     // 숫자에 콤마를 추가하는 함수
     function formatNumberWithCommas(value) {
