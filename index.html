@@ -20,26 +20,6 @@
             <!-- 재산 유형 및 금액 -->
             <div id="assetContainer">
     <h2>상속 재산</h2>
-    <div class="asset-entry">
-        <label for="assetType">재산 유형:</label>
-        <select class="assetType">
-            <option value="cash" selected>현금</option>
-            <option value="realEstate">부동산</option>
-            <option value="stock">주식</option>
-            <option value="others">기타</option>
-        </select>
-        <div class="assetFields">
-            <!-- 현금 입력 -->
-            <input type="text" class="cashField assetValue" placeholder="금액 (원)" style="display: block;">
-            <!-- 부동산 입력 -->
-            <input type="text" class="realEstateField assetValue" placeholder="평가액 (원)" style="display: none;">
-            <!-- 주식 입력 -->
-            <input type="number" class="stockQuantityField" placeholder="주식 수량" style="display: none;">
-            <input type="text" class="stockPriceField" placeholder="주당 가격 (원)" style="display: none;">
-            <input type="text" class="stockTotalField" placeholder="금액 (원)" style="display: none;">
-            <!-- 기타 입력 -->
-            <input type="text" class="othersField assetValue" placeholder="금액 (원)" style="display: none;">
-        </div>
     </div>
     <button type="button" id="addAssetButton">재산 추가</button>
 </div>
