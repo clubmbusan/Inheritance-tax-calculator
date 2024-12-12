@@ -214,7 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // 전체 모드 계산 함수
-    function calculateGroupMode(totalAssetValue) {
+   function calculateGroupMode(totalAssetValue) {
     const heirs = Array.from(document.querySelectorAll('.heir-entry')).map(heir => {
         const name = heir.querySelector('input[type="text"]').value;
         const relationship = heir.querySelector('select').value;
@@ -244,7 +244,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return { name, share, assetValue: heirAssetValue, exemption, taxableAmount, tax };
     });
 
-    // 상속 재산 합계 계산
+    // 상속 재산 합계 계산 (heirs 배열 생성 후)
     const totalInheritedAssets = heirs.reduce((sum, heir) => sum + heir.assetValue, 0);
 
     // 결과 표시
