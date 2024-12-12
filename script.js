@@ -8,7 +8,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const heirContainer = document.getElementById('heirContainer');
     const calculateButton = document.getElementById('calculateButton');
     const result = document.getElementById('result');
-
+ 
+    // 초기 주식 입력 필드에 콤마 이벤트 등록
+    const initialStockPriceField = document.querySelector('.stockPriceField');
+    if (initialStockPriceField) {
+        addCommaFormatting(initialStockPriceField); // 초기 필드 이벤트 등록
+    }
+    
     // 초기화: 모든 .assetValue 필드에 이벤트 등록
     document.querySelectorAll('.assetValue').forEach(addCommaFormatting);
 
