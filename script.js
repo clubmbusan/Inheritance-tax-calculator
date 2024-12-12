@@ -215,37 +215,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 전체 모드 계산 함수
     function calculateGroupMode(totalAssetValue) {
-      const heirs = Array.from(document.querySelectorAll('.heir-entry')).map(heir => {
-         const name = heir.querySelector('input[type="text"]').value;
-         const relationship = heir.querySelector('select').value;
-         const share = parseFloat(heir.querySelector('input[type="number"]').value) || 0;
-         const heirAssetValue = (totalAssetValue * share) / 100;
+    const heirs = Array.from(document.querySelectorAll('.heir-entry')).map(heir => {
+        const name = heir.querySelector('input[type="text"]').value;
+        const relationship = heir.querySelector('select').value;
+        const share = parseFloat(heir.querySelector('input[type="number"]').value) || 0;
+        const heirAssetValue = (totalAssetValue * share) / 100;
 
-        let exemption = 500000000; // 기본 공제
+        let exemption = 500000000; // 기본 공제: 5억 원
 
+        // 관계에 따른 공제 계산
         if (relationship === 'spouse') {
-           exemption += 3000000000; // 배우자 공제: 30억
+            exemption += 3000000000; // 배우자 공제: 30억
         } else if (relationship === 'adultChild') {
-           exemption +=  50000000; // 성년 자녀 공제: 5천만 원
+            exemption += 50000000; // 성년 자녀 추가 공제: 5천만 원
         } else if (relationship === 'minorChild') {
-           exemption += 20000000; // 미성년 자녀 공제: 2천만 원 
+            exemption += 20000000; // 미성년 자녀 추가 공제: 2천만 원
         } else if (relationship === 'parent') {
-           exemption += 50000000; // 부모 공제: 5천만 원
+            exemption += 50000000; // 부모 추가 공제: 5천만 원
         } else if (relationship === 'sibling') {
-           exemption += 50000000; // 형제자매 공제: 5천만 원
+            exemption += 10000000; // 형제자매 추가 공제: 1천만 원
         } else {
-           exemption += 10000000; // 기타 공제: 1천만 원
+            exemption += 10000000; // 기타 추가 공제: 1천만 원
         }
 
-         const taxableAmount = Math.max(heirAssetValue - exemption, 0); // 과세 금액 계산
-         const tax = calculateTax(taxableAmount); // 상속세 계산
+        const taxableAmount = Math.max(heirAssetValue - exemption, 0);
+        const tax = calculateTax(taxableAmount);
 
-         return { name, share, assetValue: heirAssetValue, exemption, taxableAmount, tax };
+        return { name, share, assetValue: heirAssetValue, exemption, taxableAmount, tax };
     });
 
+    // 상속 재산 합계 계산
+    const totalInheritedAssets = heirs.reduce((sum, heir) => sum + heir.assetValue, 0);
 
-        // 결과 표시
-         result.innerHTML = `
+    // 결과 표시
+    result.innerHTML = `
         <h3>계산 결과 (전체 모드)</h3>
         <p><strong>상속 재산 합계:</strong> ${formatNumberWithCommas(totalInheritedAssets.toString())} 원</p>
         ${heirs.map(heir => `
