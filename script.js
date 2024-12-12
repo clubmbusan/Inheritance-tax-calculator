@@ -185,17 +185,20 @@ document.addEventListener('DOMContentLoaded', () => {
         const relationshipValue = relationship.value;
         let exemption = 500000000; // 기본 공제
 
-        // 관계에 따른 공제 계산
-        if (relationshipValue === 'spouse') {
-            exemption += 3000000000; // 배우자 공제
-        } else if (relationshipValue === 'adultChild') {
-            exemption += 50000000; // 성년 자녀 공제
-        } else if (relationshipValue === 'minorChild') {
-            const age = parseInt(document.getElementById('childAge').value || '0', 10); // 미성년 자녀 나이
-            exemption += Math.max(20 - age, 0) * 20000000; // 미성년 자녀 추가 공제
-        } else {
-            exemption += 10000000; // 기타 공제
-        }
+          // 관계에 따른 공제 계산
+         if (relationshipValue === 'spouse') {
+         exemption += 3000000000; // 배우자 공제: 35억
+         } else if (relationshipValue === 'adultChild') {
+         exemption += 500000000; // 성년 자녀 공제: 5억 5천만 원
+         } else if (relationshipValue === 'minorChild') {
+         exemption += 500000000 + 20000000; // 미성년 자녀 공제: 기본 5억 + 추가 2천만 원
+         } else if (relationshipValue === 'parent') {
+         exemption += 500000000; // 부모 공제: 5억 5천만 원
+         } else if (relationshipValue === 'sibling') {
+         exemption += 500000000; // 형제자매 공제: 5억 5천만 원
+         } else {
+         exemption += 10000000; // 기타 공제: 1천만 원
+         }
 
         const taxableAmount = Math.max(totalAssetValue - exemption, 0); // 과세 금액 계산
         const tax = calculateTax(taxableAmount); // 상속세 계산
