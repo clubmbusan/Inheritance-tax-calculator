@@ -187,15 +187,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
           // 관계에 따른 공제 계산
          if (relationshipValue === 'spouse') {
-         exemption += 3000000000; // 배우자 공제: 35억
+         exemption += 3000000000; // 배우자 공제: 30억
          } else if (relationshipValue === 'adultChild') {
-         exemption += 500000000; // 성년 자녀 공제: 5억 5천만 원
+         exemption += 50000000; // 성년 자녀 공제: 5천만 원
          } else if (relationshipValue === 'minorChild') {
-         exemption += 500000000 + 20000000; // 미성년 자녀 공제: 기본 5억 + 추가 2천만 원
+         exemption += 20000000; // 미성년 자녀 공제: 2천만 원
          } else if (relationshipValue === 'parent') {
-         exemption += 500000000; // 부모 공제: 5억 5천만 원
+         exemption += 50000000; // 부모 공제: 5천만 원
          } else if (relationshipValue === 'sibling') {
-         exemption += 500000000; // 형제자매 공제: 5억 5천만 원
+         exemption += 50000000; // 형제자매 공제: 5천만 원
          } else {
          exemption += 10000000; // 기타 공제: 1천만 원
          }
@@ -215,29 +215,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 전체 모드 계산 함수
     function calculateGroupMode(totalAssetValue) {
-        const heirs = Array.from(document.querySelectorAll('.heir-entry')).map(heir => {
-            const name = heir.querySelector('input[type="text"]').value;
-            const relationship = heir.querySelector('select').value;
-            const share = parseFloat(heir.querySelector('input[type="number"]').value) || 0;
-            const heirAssetValue = (totalAssetValue * share) / 100;
+      const heirs = Array.from(document.querySelectorAll('.heir-entry')).map(heir => {
+         const name = heir.querySelector('input[type="text"]').value;
+         const relationship = heir.querySelector('select').value;
+         const share = parseFloat(heir.querySelector('input[type="number"]').value) || 0;
+         const heirAssetValue = (totalAssetValue * share) / 100;
 
-            let exemption = 500000000; // 기본 공제
-            if (relationship === 'spouse') {
-                exemption += 3000000000; // 배우자 공제
-            } else if (relationship === 'adultChild') {
-                exemption += 50000000; // 성년 자녀 공제
-            } else if (relationship === 'minorChild') {
-                const age = parseInt(heir.querySelector('.childAge').value || '0', 10); // 미성년 자녀 나이
-                exemption += Math.max(20 - age, 0) * 20000000; // 미성년 자녀 추가 공제
-            } else {
-                exemption += 10000000; // 기타 공제
-            }
+        let exemption = 500000000; // 기본 공제
 
-            const taxableAmount = Math.max(heirAssetValue - exemption, 0); // 과세 금액 계산
-            const tax = calculateTax(taxableAmount); // 상속세 계산
+        if (relationship === 'spouse') {
+           exemption += 3000000000; // 배우자 공제: 30억
+        } else if (relationship === 'adultChild') {
+           exemption +=  50000000; // 성년 자녀 공제: 5천만 원
+        } else if (relationship === 'minorChild') {
+           exemption += 20000000; // 미성년 자녀 공제: 2천만 원 
+        } else if (relationship === 'parent') {
+           exemption += 50000000; // 부모 공제: 5천만 원
+        } else if (relationship === 'sibling') {
+           exemption += 50000000; // 형제자매 공제: 5천만 원
+        } else {
+           exemption += 10000000; // 기타 공제: 1천만 원
+        }
 
-            return { name, share, assetValue: heirAssetValue, exemption, taxableAmount, tax };
-        });
+         const taxableAmount = Math.max(heirAssetValue - exemption, 0); // 과세 금액 계산
+         const tax = calculateTax(taxableAmount); // 상속세 계산
+
+         return { name, share, assetValue: heirAssetValue, exemption, taxableAmount, tax };
+    });
+
 
         // 결과 표시
         result.innerHTML = `
