@@ -1,5 +1,34 @@
+function updateAssetFields(assetType, container) {
+    const cashField = container.querySelector('.cashField');
+    const realEstateField = container.querySelector('.realEstateField');
+    const stockQuantityField = container.querySelector('.stockQuantityField');
+    const stockPriceField = container.querySelector('.stockPriceField');
+    const stockTotalField = container.querySelector('.stockTotalField');
+    const othersField = container.querySelector('.othersField');
+
+    // 모든 필드 숨기기
+    cashField.style.display = 'none';
+    realEstateField.style.display = 'none';
+    stockQuantityField.style.display = 'none';
+    stockPriceField.style.display = 'none';
+    stockTotalField.style.display = 'none';
+    othersField.style.display = 'none';
+
+    // 선택된 재산 유형에 따라 필드 표시
+    if (assetType === 'cash') {
+        cashField.style.display = 'block';
+    } else if (assetType === 'realEstate') {
+        realEstateField.style.display = 'block';
+    } else if (assetType === 'stock') {
+        stockQuantityField.style.display = 'block';
+        stockPriceField.style.display = 'block';
+        stockTotalField.style.display = 'block';
+    } else if (assetType === 'others') {
+        othersField.style.display = 'block';
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-    // 주요 DOM 요소
     const inheritanceType = document.getElementById('inheritanceType');
     const personalSection = document.getElementById('personalSection');
     const groupSection = document.getElementById('groupSection');
@@ -25,8 +54,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // 초기화: 모든 .assetValue 필드에 이벤트 등록
+    document.querySelectorAll('.assetValue').forEach(addCommaFormatting);
+
     // 재산 항목 생성
-    addAssetButton.addEventListener('click', () => {
+    function createAssetEntry() {
         const newAsset = document.createElement('div');
         newAsset.className = 'asset-entry';
         newAsset.innerHTML = `
@@ -38,55 +70,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 <option value="others">기타</option>
             </select>
             <div class="assetFields">
-                <input type="text" class="cashField assetValue" placeholder="금액 (원)" style="display: none;">
+                <input type="text" class="cashField assetValue" placeholder="금액 (원)" style="display: block;">
                 <input type="text" class="realEstateField assetValue" placeholder="평가액 (원)" style="display: none;">
                 <input type="number" class="stockQuantityField" placeholder="주식 수량" style="display: none;">
-                <input type="text" class="stockPriceField assetValue" placeholder="주당 가격 (원)" style="display: none;">
+                <input type="text" class="stockPriceField" placeholder="주당 가격 (원)" style="display: none;">
                 <input type="text" class="stockTotalField assetValue" placeholder="금액 (원)" style="display: none;" readonly>
                 <input type="text" class="othersField assetValue" placeholder="금액 (원)" style="display: none;">
             </div>
         `;
         assetContainer.appendChild(newAsset);
-
-        // 필드에 이벤트 등록
-        const assetTypeSelect = newAsset.querySelector('.assetType');
-        assetTypeSelect.addEventListener('change', () => {
-            updateAssetFields(assetTypeSelect.value, newAsset);
-        });
-
-        const fields = newAsset.querySelectorAll('.assetValue');
-        fields.forEach(addCommaFormatting);
-    });
-
-    // 재산 유형 필드 표시/숨김 함수
-    function updateAssetFields(assetType, container) {
-        const cashField = container.querySelector('.cashField');
-        const realEstateField = container.querySelector('.realEstateField');
-        const stockQuantityField = container.querySelector('.stockQuantityField');
-        const stockPriceField = container.querySelector('.stockPriceField');
-        const stockTotalField = container.querySelector('.stockTotalField');
-        const othersField = container.querySelector('.othersField');
-
-        // 모든 필드 숨기기
-        [cashField, realEstateField, stockQuantityField, stockPriceField, stockTotalField, othersField].forEach(field => {
-            if (field) field.style.display = 'none';
-        });
-
-        // 선택된 유형에 따라 필드 표시
-        if (assetType === 'cash' && cashField) {
-            cashField.style.display = 'block';
-        } else if (assetType === 'realEstate' && realEstateField) {
-            realEstateField.style.display = 'block';
-        } else if (assetType === 'stock') {
-            if (stockQuantityField) stockQuantityField.style.display = 'block';
-            if (stockPriceField) stockPriceField.style.display = 'block';
-            if (stockTotalField) stockTotalField.style.display = 'block';
-        } else if (assetType === 'others' && othersField) {
-            othersField.style.display = 'block';
-        }
-    }
-});
-
 
         // 추가 필드에 이벤트 등록
         addCommaFormatting(newAsset.querySelector('.cashField'));
@@ -98,7 +90,6 @@ document.addEventListener('DOMContentLoaded', () => {
         assetTypeSelect.addEventListener('change', () => {
             updateAssetFields(assetTypeSelect.value, newAsset);
         });
-
         // 주식 계산 로직
         const stockQuantityField = newAsset.querySelector('.stockQuantityField');
         const stockPriceField = newAsset.querySelector('.stockPriceField');
@@ -145,7 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
             groupSection.style.display = 'block';
         }
     });
-    
+
     // 계산 로직
     calculateButton.addEventListener('click', () => {
         const totalAssetValue = Array.from(document.querySelectorAll('.assetValue')).reduce((sum, field) => {
