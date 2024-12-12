@@ -245,18 +245,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
         // 결과 표시
-        result.innerHTML = `
-            <h3>계산 결과 (전체 모드)</h3>
-            ${heirs.map(heir => `
-                <p>
-                    <strong>${heir.name}</strong>: ${formatNumberWithCommas(heir.assetValue.toString())} 원<br>
-                    공제 금액: ${formatNumberWithCommas(heir.exemption.toString())} 원<br>
-                    과세 금액: ${formatNumberWithCommas(heir.taxableAmount.toString())} 원<br>
-                    상속세: ${formatNumberWithCommas(heir.tax.toString())} 원
-                </p>
-            `).join('')}
-        `;
-    }
+         result.innerHTML = `
+        <h3>계산 결과 (전체 모드)</h3>
+        <p><strong>상속 재산 합계:</strong> ${formatNumberWithCommas(totalInheritedAssets.toString())} 원</p>
+        ${heirs.map(heir => `
+            <p>
+                <strong>${heir.name}</strong>: ${formatNumberWithCommas(heir.assetValue.toString())} 원<br>
+                공제 금액: ${formatNumberWithCommas(heir.exemption.toString())} 원<br>
+                과세 금액: ${formatNumberWithCommas(heir.taxableAmount.toString())} 원<br>
+                상속세: ${formatNumberWithCommas(heir.tax.toString())} 원
+            </p>
+        `).join('')}
+    `;
+}
 
     // 상속세 계산 함수 (누진 공제 반영)
     function calculateTax(taxableAmount) {
