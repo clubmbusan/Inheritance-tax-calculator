@@ -25,7 +25,40 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 필드 표시/숨김 함수
+    // 재산 항목 생성
+    addAssetButton.addEventListener('click', () => {
+        const newAsset = document.createElement('div');
+        newAsset.className = 'asset-entry';
+        newAsset.innerHTML = `
+            <label>재산 유형:</label>
+            <select class="assetType">
+                <option value="cash">현금</option>
+                <option value="realEstate">부동산</option>
+                <option value="stock">주식</option>
+                <option value="others">기타</option>
+            </select>
+            <div class="assetFields">
+                <input type="text" class="cashField assetValue" placeholder="금액 (원)" style="display: none;">
+                <input type="text" class="realEstateField assetValue" placeholder="평가액 (원)" style="display: none;">
+                <input type="number" class="stockQuantityField" placeholder="주식 수량" style="display: none;">
+                <input type="text" class="stockPriceField assetValue" placeholder="주당 가격 (원)" style="display: none;">
+                <input type="text" class="stockTotalField assetValue" placeholder="금액 (원)" style="display: none;" readonly>
+                <input type="text" class="othersField assetValue" placeholder="금액 (원)" style="display: none;">
+            </div>
+        `;
+        assetContainer.appendChild(newAsset);
+
+        // 필드에 이벤트 등록
+        const assetTypeSelect = newAsset.querySelector('.assetType');
+        assetTypeSelect.addEventListener('change', () => {
+            updateAssetFields(assetTypeSelect.value, newAsset);
+        });
+
+        const fields = newAsset.querySelectorAll('.assetValue');
+        fields.forEach(addCommaFormatting);
+    });
+
+    // 재산 유형 필드 표시/숨김 함수
     function updateAssetFields(assetType, container) {
         const cashField = container.querySelector('.cashField');
         const realEstateField = container.querySelector('.realEstateField');
@@ -35,12 +68,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const othersField = container.querySelector('.othersField');
 
         // 모든 필드 숨기기
-        if (cashField) cashField.style.display = 'none';
-        if (realEstateField) realEstateField.style.display = 'none';
-        if (stockQuantityField) stockQuantityField.style.display = 'none';
-        if (stockPriceField) stockPriceField.style.display = 'none';
-        if (stockTotalField) stockTotalField.style.display = 'none';
-        if (othersField) othersField.style.display = 'none';
+        [cashField, realEstateField, stockQuantityField, stockPriceField, stockTotalField, othersField].forEach(field => {
+            if (field) field.style.display = 'none';
+        });
 
         // 선택된 유형에 따라 필드 표시
         if (assetType === 'cash' && cashField) {
@@ -55,45 +85,8 @@ document.addEventListener('DOMContentLoaded', () => {
             othersField.style.display = 'block';
         }
     }
+});
 
-    // 상단 드롭다운 초기화 및 이벤트 리스너 추가
-    const topAssetTypeSelect = document.querySelector('.topAssetType'); // 상단 드롭다운 클래스
-    const topAssetContainer = document.querySelector('.topAssetContainer'); // 상단 입력 필드 컨테이너
-
-    if (topAssetTypeSelect && topAssetContainer) {
-        topAssetTypeSelect.addEventListener('change', () => {
-            updateAssetFields(topAssetTypeSelect.value, topAssetContainer);
-        });
-
-        // 초기 선택 상태에 따른 필드 표시
-        updateAssetFields(topAssetTypeSelect.value, topAssetContainer);
-    }
-
-    // 초기화: 모든 .assetValue 필드에 이벤트 등록
-    document.querySelectorAll('.assetValue').forEach(addCommaFormatting);
-
-    // 재산 항목 생성
-    function createAssetEntry() {
-        const newAsset = document.createElement('div');
-        newAsset.className = 'asset-entry';
-        newAsset.innerHTML = `
-            <label>재산 유형:</label>
-            <select class="assetType">
-                <option value="cash">현금</option>
-                <option value="realEstate">부동산</option>
-                <option value="stock">주식</option>
-                <option value="others">기타</option>
-            </select>
-            <div class="assetFields">
-                <input type="text" class="cashField assetValue" placeholder="금액 (원)" style="display: block;">
-                <input type="text" class="realEstateField assetValue" placeholder="평가액 (원)" style="display: none;">
-                <input type="number" class="stockQuantityField" placeholder="주식 수량" style="display: none;">
-                <input type="text" class="stockPriceField" placeholder="주당 가격 (원)" style="display: none;">
-                <input type="text" class="stockTotalField assetValue" placeholder="금액 (원)" style="display: none;" readonly>
-                <input type="text" class="othersField assetValue" placeholder="금액 (원)" style="display: none;">
-            </div>
-        `;
-        assetContainer.appendChild(newAsset);
 
         // 추가 필드에 이벤트 등록
         addCommaFormatting(newAsset.querySelector('.cashField'));
