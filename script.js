@@ -24,6 +24,43 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // 재산 유형에 따라 필드를 동적으로 표시 (여기에 추가)
+    function handleAssetTypeChange(assetTypeSelect) {
+        const assetFields = assetTypeSelect.closest('.asset-entry').querySelector('.assetFields');
+        const cashField = assetFields.querySelector('.cashField');
+        const realEstateField = assetFields.querySelector('.realEstateField');
+        const stockQuantityField = assetFields.querySelector('.stockQuantityField');
+        const stockPriceField = assetFields.querySelector('.stockPriceField');
+        const stockTotalField = assetFields.querySelector('.stockTotalField');
+        const othersField = assetFields.querySelector('.othersField');
+
+        // 모든 필드 숨기기
+        cashField.style.display = 'none';
+        realEstateField.style.display = 'none';
+        stockQuantityField.style.display = 'none';
+        stockPriceField.style.display = 'none';
+        stockTotalField.style.display = 'none';
+        othersField.style.display = 'none';
+
+        // 선택된 유형에 따라 표시
+        switch (assetTypeSelect.value) {
+            case 'cash':
+                cashField.style.display = 'block';
+                break;
+            case 'realEstate':
+                realEstateField.style.display = 'block';
+                break;
+            case 'stock':
+                stockQuantityField.style.display = 'block';
+                stockPriceField.style.display = 'block';
+                stockTotalField.style.display = 'block';
+                break;
+            case 'others':
+                othersField.style.display = 'block';
+                break;
+        }
+    }
+
     // 초기화: 모든 .assetValue 필드에 이벤트 등록
     document.querySelectorAll('.assetValue').forEach(addCommaFormatting);
 
