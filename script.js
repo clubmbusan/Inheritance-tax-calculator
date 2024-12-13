@@ -167,8 +167,8 @@ document.addEventListener('DOMContentLoaded', () => {
             groupSection.style.display = 'block';
         }
     });
-
-       // 계산 버튼 이벤트
+    
+    // 계산 버튼 이벤트
     calculateButton.addEventListener('click', () => {
         const totalAssetValue = Array.from(document.querySelectorAll('.assetValue')).reduce((sum, field) => {
             const value = parseInt(field.value.replace(/,/g, '') || '0', 10);
@@ -191,93 +191,102 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const relationshipValue = relationship.value;
-        let exemption = 500000000; // 기본 공제
+        let baseExemption = 500000000; // 기본 공제: 5억 원
+        let additionalExemption = 0; // 관계에 따른 추가 공제
 
-          // 관계에 따른 공제 계산
-         if (relationshipValue === 'spouse') {
-         exemption += 3000000000; // 배우자 공제: 30억
-         } else if (relationshipValue === 'adultChild') {
-         exemption += 50000000; // 성년 자녀 공제: 5천만 원
-         } else if (relationshipValue === 'minorChild') {
-         exemption += 20000000; // 미성년 자녀 공제: 2천만 원
-         } else if (relationshipValue === 'parent') {
-         exemption += 50000000; // 부모 공제: 5천만 원
-         } else if (relationshipValue === 'sibling') {
-         exemption += 50000000; // 형제자매 공제: 5천만 원
-         } else {
-         exemption += 10000000; // 기타 공제: 1천만 원
-         }
+        // 관계에 따른 추가 공제 계산
+        if (relationshipValue === 'spouse') {
+            additionalExemption = 3000000000; // 배우자: 추가 공제 30억 원
+        } else if (relationshipValue === 'adultChild') {
+            additionalExemption = 50000000; // 성년 자녀: 추가 공제 5천만 원
+        } else if (relationshipValue === 'minorChild') {
+            additionalExemption = 20000000; // 미성년 자녀: 추가 공제 2천만 원
+        } else if (relationshipValue === 'parent') {
+            additionalExemption = 50000000; // 부모: 추가 공제 5천만 원
+        } else if (relationshipValue === 'sibling') {
+            additionalExemption = 50000000; // 형제자매: 추가 공제 5천만 원
+        } else {
+            additionalExemption = 10000000; // 기타: 추가 공제 1천만 원
+        }
 
-        const taxableAmount = Math.max(totalAssetValue - exemption, 0); // 과세 금액 계산
-        const tax = calculateTax(taxableAmount); // 상속세 계산
+        // 총 공제 금액 = 기본 공제 + 추가 공제
+        const totalExemption = baseExemption + additionalExemption;
 
-        // 결과 표시
+        // 과세 금액 = 상속 재산 - 총 공제 금액
+        const taxableAmount = Math.max(totalAssetValue - totalExemption, 0);
+
+        // 누진세와 누진 공제 계산
+        const tax = calculateTax(taxableAmount);
+
+        // 결과 출력
         result.innerHTML = `
             <h3>계산 결과 (개인 모드)</h3>
             <p>총 재산 금액: ${formatNumberWithCommas(totalAssetValue.toString())} 원</p>
-            <p>공제 금액: ${formatNumberWithCommas(exemption.toString())} 원</p>
+            <p>기본 공제: ${formatNumberWithCommas(baseExemption.toString())} 원</p>
+            <p>추가 공제: ${formatNumberWithCommas(additionalExemption.toString())} 원</p>
+            <p>총 공제 금액: ${formatNumberWithCommas(totalExemption.toString())} 원</p>
             <p>과세 금액: ${formatNumberWithCommas(taxableAmount.toString())} 원</p>
             <p>상속세: ${formatNumberWithCommas(tax.toString())} 원</p>
         `;
     }
 
     // 전체 모드 계산 함수
- function calculateGroupMode(totalAssetValue) {
-    const heirs = Array.from(document.querySelectorAll('.heir-entry')).map((heir, index) => {
-        const name = heir.querySelector('input[type="text"]').value || `상속인 ${index + 1}`;
-        const relationship = heir.querySelector('select').value || "기타";
-        const shareField = heir.querySelector('input[type="number"]');
-        const share = parseFloat(shareField.value) || 0;
+    function calculateGroupMode(totalAssetValue) {
+        const heirs = Array.from(document.querySelectorAll('.heir-entry')).map((heir, index) => {
+            const name = heir.querySelector('input[type="text"]').value || `상속인 ${index + 1}`;
+            const relationship = heir.querySelector('select').value || "기타";
+            const shareField = heir.querySelector('input[type="number"]');
+            const share = parseFloat(shareField.value) || 0;
 
-        // 상속 비율이 입력되지 않은 경우 경고 표시
-        if (!shareField.value || share === 0) {
-            alert(`${name}의 상속 비율이 입력되지 않았습니다. 비율을 입력 후 다시 시도해주세요.`);
-            throw new Error("상속 비율 누락");
-        }
+            // 상속 비율이 입력되지 않은 경우 경고 표시
+            if (!shareField.value || share === 0) {
+                alert(`${name}의 상속 비율이 입력되지 않았습니다. 비율을 입력 후 다시 시도해주세요.`);
+                throw new Error("상속 비율 누락");
+            }
 
-        // 상속인의 상속 금액 계산
-        const heirAssetValue = (totalAssetValue * share) / 100;
+            // 상속인의 상속 금액 계산
+            const heirAssetValue = (totalAssetValue * share) / 100;
 
-        // 공제 계산
-        let exemption = 500000000; // 기본 공제
+            // 공제 계산
+            let exemption = 500000000; // 기본 공제
 
-        if (relationship === 'spouse') {
-            exemption += 3000000000; // 배우자 공제
-        } else if (relationship === 'adultChild') {
-            exemption += 50000000; // 성년 자녀 공제
-        } else if (relationship === 'minorChild') {
-            exemption += 20000000; // 미성년 자녀 공제
-        } else if (relationship === 'parent') {
-            exemption += 50000000; // 부모 공제
-        } else if (relationship === 'sibling') {
-            exemption += 10000000; // 형제자매 공제
-        } else {
-            exemption += 10000000; // 기타 공제
-        }
+            if (relationship === 'spouse') {
+                exemption += 3000000000; // 배우자 공제
+            } else if (relationship === 'adultChild') {
+                exemption += 50000000; // 성년 자녀 공제
+            } else if (relationship === 'minorChild') {
+                exemption += 20000000; // 미성년 자녀 공제
+            } else if (relationship === 'parent') {
+                exemption += 50000000; // 부모 공제
+            } else if (relationship === 'sibling') {
+                exemption += 10000000; // 형제자매 공제
+            } else {
+                exemption += 10000000; // 기타 공제
+            }
 
-        const taxableAmount = Math.max(heirAssetValue - exemption, 0);
-        const tax = calculateTax(taxableAmount);
+            const taxableAmount = Math.max(heirAssetValue - exemption, 0);
+            const tax = calculateTax(taxableAmount);
 
-        return { name, share, assetValue: heirAssetValue, exemption, taxableAmount, tax };
-    });
+            return { name, share, assetValue: heirAssetValue, exemption, taxableAmount, tax };
+        });
 
-    const totalInheritedAssets = heirs.reduce((sum, heir) => sum + heir.assetValue, 0);
+        const totalInheritedAssets = heirs.reduce((sum, heir) => sum + heir.assetValue, 0);
 
-    result.innerHTML = `
-        <h3>계산 결과 (전체 모드)</h3>
-        <p><strong>상속 재산 합계:</strong> ${formatNumberWithCommas(totalInheritedAssets.toString())} 원</p>
-        ${heirs.map(heir => `
-            <p>
-                <strong>${heir.name}</strong>: ${formatNumberWithCommas(heir.assetValue.toString())} 원<br>
-                공제 금액: ${formatNumberWithCommas(heir.exemption.toString())} 원<br>
-                과세 금액: ${formatNumberWithCommas(heir.taxableAmount.toString())} 원<br>
-                상속세: ${formatNumberWithCommas(heir.tax.toString())} 원
-            </p>
-        `).join('')}
-    `;
-}
+        result.innerHTML = `
+            <h3>계산 결과 (전체 모드)</h3>
+            <p><strong>상속 재산 합계:</strong> ${formatNumberWithCommas(totalInheritedAssets.toString())} 원</p>
+            ${heirs.map(heir => `
+                <p>
+                    <strong>${heir.name}</strong>: ${formatNumberWithCommas(heir.assetValue.toString())} 원<br>
+                    공제 금액: ${formatNumberWithCommas(heir.exemption.toString())} 원<br>
+                    과세 금액: ${formatNumberWithCommas(heir.taxableAmount.toString())} 원<br>
+                    상속세: ${formatNumberWithCommas(heir.tax.toString())} 원
+                </p>
+            `).join('')}
+        `;
+    }
 
-    // 상속세 계산 함수 (누진 공제 반영)
+    // 누진 공제 및 누진세 계산 함수
     function calculateTax(taxableAmount) {
         const taxBrackets = [
             { limit: 100000000, rate: 0.1, deduction: 0 },
@@ -301,3 +310,4 @@ document.addEventListener('DOMContentLoaded', () => {
         return parseInt(value.replace(/[^0-9]/g, '') || '0', 10).toLocaleString();
     }
 });
+  
