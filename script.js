@@ -283,6 +283,7 @@ function calculatePersonalMode(totalAssetValue) {
 
     // 누진 공제 및 누진세 계산 함수
     function calculateTax(taxableAmount) {
+        console.log('Received taxableAmount in calculateTax:', taxableAmount); // 전달 값 확인
         const taxBrackets = [
             { limit: 100000000, rate: 0.1, deduction: 0 },
             { limit: 500000000, rate: 0.2, deduction: 10000000 },
@@ -293,6 +294,8 @@ function calculatePersonalMode(totalAssetValue) {
 
         for (const bracket of taxBrackets) {
             if (taxableAmount <= bracket.limit) {
+                console.log('Tax Bracket:', bracket);
+                console.log('Calculated Tax at Bracket:', calculatedTax); // 계산 결과
                 return Math.max((taxableAmount * bracket.rate) - bracket.deduction, 0);
             }
         }
