@@ -183,52 +183,44 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // 개인 모드 계산 함수
-    function calculatePersonalMode(totalAssetValue) {
-        const relationship = document.getElementById('relationshipPersonal');
-        if (!relationship) {
-            console.error('관계 선택 요소가 없습니다.');
-            return;
-        }
-
-        const relationshipValue = relationship.value;
-        let baseExemption = 500000000; // 기본 공제: 5억 원
-        let additionalExemption = 0; // 관계에 따른 추가 공제
-
-        // 관계에 따른 추가 공제 계산
-        if (relationshipValue === 'spouse') {
-            additionalExemption = 3000000000; // 배우자: 추가 공제 30억 원
-        } else if (relationshipValue === 'adultChild') {
-            additionalExemption = 50000000; // 성년 자녀: 추가 공제 5천만 원
-        } else if (relationshipValue === 'minorChild') {
-            additionalExemption = 20000000; // 미성년 자녀: 추가 공제 2천만 원
-        } else if (relationshipValue === 'parent') {
-            additionalExemption = 50000000; // 부모: 추가 공제 5천만 원
-        } else if (relationshipValue === 'sibling') {
-            additionalExemption = 50000000; // 형제자매: 추가 공제 5천만 원
-        } else {
-            additionalExemption = 10000000; // 기타: 추가 공제 1천만 원
-        }
-
-        // 총 공제 금액 = 기본 공제 + 추가 공제
-        const totalExemption = baseExemption + additionalExemption;
-
-        // 과세 금액 = 상속 재산 - 총 공제 금액
-        const taxableAmount = Math.max(totalAssetValue - totalExemption, 0);
-
-        // 누진세와 누진 공제 계산
-        const tax = calculateTax(taxableAmount);
-
-        // 결과 출력
-        result.innerHTML = `
-            <h3>계산 결과 (개인 모드)</h3>
-            <p>총 재산 금액: ${formatNumberWithCommas(totalAssetValue.toString())} 원</p>
-            <p>기본 공제: ${formatNumberWithCommas(baseExemption.toString())} 원</p>
-            <p>추가 공제: ${formatNumberWithCommas(additionalExemption.toString())} 원</p>
-            <p>총 공제 금액: ${formatNumberWithCommas(totalExemption.toString())} 원</p>
-            <p>과세 금액: ${formatNumberWithCommas(taxableAmount.toString())} 원</p>
-            <p>상속세: ${formatNumberWithCommas(tax.toString())} 원</p>
-        `;
+function calculatePersonalMode(totalAssetValue) {
+    const relationship = document.getElementById('relationshipPersonal');
+    if (!relationship) {
+        console.error('관계 선택 요소가 없습니다.');
+        return;
     }
+
+    const relationshipValue = relationship.value;
+    let exemption = 500000000; // 기본 공제: 5억 원
+
+    // 관계에 따른 추가 공제 계산
+    if (relationshipValue === 'spouse') {
+        exemption += 3000000000; // 배우자: 추가 공제 30억 원
+    } else if (relationshipValue === 'adultChild') {
+        exemption += 50000000; // 성년 자녀: 추가 공제 5천만 원
+    } else if (relationshipValue === 'minorChild') {
+        exemption += 20000000; // 미성년 자녀: 추가 공제 2천만 원
+    } else if (relationshipValue === 'parent') {
+        exemption += 50000000; // 부모: 추가 공제 5천만 원
+    } else if (relationshipValue === 'sibling') {
+        exemption += 50000000; // 형제자매: 추가 공제 5천만 원
+    } else {
+        exemption += 10000000; // 기타: 추가 공제 1천만 원
+    }
+
+    // 과세 금액 계산
+    const taxableAmount = Math.max(totalAssetValue - exemption, 0); // 과세 금액
+    const tax = calculateTax(taxableAmount); // 상속세 계산
+
+    // 결과 출력
+    result.innerHTML = `
+        <h3>계산 결과 (개인 모드)</h3>
+        <p>총 재산 금액: ${formatNumberWithCommas(totalAssetValue.toString())} 원</p>
+        <p>공제 금액: ${formatNumberWithCommas(exemption.toString())} 원</p>
+        <p>과세 금액: ${formatNumberWithCommas(taxableAmount.toString())} 원</p>
+        <p>상속세: ${formatNumberWithCommas(tax.toString())} 원</p>
+    `;
+}
 
     // 전체 모드 계산 함수
     function calculateGroupMode(totalAssetValue) {
