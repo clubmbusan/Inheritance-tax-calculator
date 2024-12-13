@@ -287,3 +287,4 @@ function calculateTax(taxableAmount) {
 function formatNumberWithCommas(value) {
     return parseInt(value.replace(/[^0-9]/g, '') || '0', 10).toLocaleString();
 }
+});
