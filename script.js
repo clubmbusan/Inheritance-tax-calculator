@@ -184,8 +184,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 개인 모드 계산 함수
 function calculatePersonalMode(totalAssetValue) {
-    console.log('--- Personal Mode Calculation Start ---'); // 디버깅 시작 지점
-
     const relationship = document.getElementById('relationshipPersonal');
     if (!relationship) {
         console.error('관계 선택 요소가 없습니다.');
@@ -193,33 +191,30 @@ function calculatePersonalMode(totalAssetValue) {
     }
 
     const relationshipValue = relationship.value;
-    console.log('Relationship Value:', relationshipValue);
-
-    let exemption = 500000000; // 기본 공제
-    console.log('Initial Exemption (Basic):', exemption);
+    let exemption = 500000000; // 기본 공제: 5억 원
 
     // 관계에 따른 추가 공제
     if (relationshipValue === 'spouse') {
-        exemption += 3000000000;
+        exemption += 3000000000; // 배우자: 30억 원
     } else if (relationshipValue === 'adultChild') {
-        exemption += 50000000;
+        exemption += 50000000; // 성년 자녀: 5천만 원
     } else if (relationshipValue === 'minorChild') {
-        exemption += 20000000;
+        exemption += 20000000; // 미성년 자녀: 2천만 원
     } else if (relationshipValue === 'parent') {
-        exemption += 50000000;
+        exemption += 50000000; // 부모: 5천만 원
     } else if (relationshipValue === 'sibling') {
-        exemption += 50000000;
+        exemption += 50000000; // 형제자매: 5천만 원
     } else {
-        exemption += 10000000;
+        exemption += 10000000; // 기타: 1천만 원
     }
-    console.log('Total Exemption After Additional:', exemption);
 
+    // 과세 금액 계산
     const taxableAmount = Math.max(totalAssetValue - exemption, 0);
-    console.log('Taxable Amount:', taxableAmount);
 
-    const tax = calculateTax(taxableAmount);
-    console.log('Final Tax Calculated:', tax);
+    // 누진 공제 적용
+    const tax = calculateTax(taxableAmount); // 공통 함수 호출
 
+    // 결과 출력
     result.innerHTML = `
         <h3>계산 결과 (개인 모드)</h3>
         <p>총 재산 금액: ${formatNumberWithCommas(totalAssetValue.toString())} 원</p>
@@ -227,8 +222,6 @@ function calculatePersonalMode(totalAssetValue) {
         <p>과세 금액: ${formatNumberWithCommas(taxableAmount.toString())} 원</p>
         <p>상속세: ${formatNumberWithCommas(tax.toString())} 원</p>
     `;
-
-    console.log('--- Personal Mode Calculation End ---'); // 디버깅 종료 지점
 }
 
     // 전체 모드 계산 함수
