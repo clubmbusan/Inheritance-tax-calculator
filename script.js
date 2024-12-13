@@ -209,7 +209,8 @@ function calculatePersonalMode(totalAssetValue) {
     }
 
     // 과세 금액 계산
-    const taxableAmount = Math.max(totalAssetValue - exemption, 0);
+    const tax = calculateTax(taxableAmount); // 누진 공제 함수 호출
+    console.log('Calculated Tax (With Progressive Deduction):', tax);
 
     // 공통 누진 공제 함수 호출
     const tax = calculateTax(taxableAmount);
