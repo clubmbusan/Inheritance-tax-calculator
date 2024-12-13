@@ -193,24 +193,26 @@ function calculatePersonalMode(totalAssetValue) {
     const relationshipValue = relationship.value;
     let exemption = 500000000; // 기본 공제: 5억 원
 
-    // 관계에 따른 추가 공제 계산
+    // 관계에 따른 추가 공제
     if (relationshipValue === 'spouse') {
-        exemption += 3000000000; // 배우자: 추가 공제 30억 원
+        exemption += 3000000000; // 배우자: 30억 원
     } else if (relationshipValue === 'adultChild') {
-        exemption += 50000000; // 성년 자녀: 추가 공제 5천만 원
+        exemption += 50000000; // 성년 자녀: 5천만 원
     } else if (relationshipValue === 'minorChild') {
-        exemption += 20000000; // 미성년 자녀: 추가 공제 2천만 원
+        exemption += 20000000; // 미성년 자녀: 2천만 원
     } else if (relationshipValue === 'parent') {
-        exemption += 50000000; // 부모: 추가 공제 5천만 원
+        exemption += 50000000; // 부모: 5천만 원
     } else if (relationshipValue === 'sibling') {
-        exemption += 50000000; // 형제자매: 추가 공제 5천만 원
+        exemption += 50000000; // 형제자매: 5천만 원
     } else {
-        exemption += 10000000; // 기타: 추가 공제 1천만 원
+        exemption += 10000000; // 기타: 1천만 원
     }
 
     // 과세 금액 계산
-    const taxableAmount = Math.max(totalAssetValue - exemption, 0); // 과세 금액
-    const tax = calculateIndividualTaxWithProgressiveDeduction(taxableAmount); // 개인 모드 전용 상속세 계산
+    const taxableAmount = Math.max(totalAssetValue - exemption, 0);
+
+    // 공통 누진 공제 함수 호출
+    const tax = calculateTax(taxableAmount);
 
     // 결과 출력
     result.innerHTML = `
