@@ -281,26 +281,23 @@ function calculatePersonalMode(totalAssetValue) {
     }
 
     // 누진 공제 및 누진세 계산 함수
-    function calculateTax(taxableAmount) {
-        console.log('Received taxableAmount in calculateTax:', taxableAmount); // 전달 값 확인
-        const taxBrackets = [
-            { limit: 100000000, rate: 0.1, deduction: 0 },
-            { limit: 500000000, rate: 0.2, deduction: 10000000 },
-            { limit: 1000000000, rate: 0.3, deduction: 60000000 },
-            { limit: 3000000000, rate: 0.4, deduction: 160000000 },
-            { limit: Infinity, rate: 0.5, deduction: 460000000 }
-        ];
+   function calculateProgressiveDeduction(taxableAmount) {
+    const taxBrackets = [
+        { limit: 100000000, rate: 0.1, deduction: 0 },
+        { limit: 500000000, rate: 0.2, deduction: 10000000 },
+        { limit: 1000000000, rate: 0.3, deduction: 60000000 },
+        { limit: 3000000000, rate: 0.4, deduction: 160000000 },
+        { limit: Infinity, rate: 0.5, deduction: 460000000 }
+    ];
 
-        for (const bracket of taxBrackets) {
-            if (taxableAmount <= bracket.limit) {
-                console.log('Tax Bracket:', bracket);
-                console.log('Calculated Tax at Bracket:', calculatedTax); // 계산 결과
-                return Math.max((taxableAmount * bracket.rate) - bracket.deduction, 0);
-            }
+    for (const bracket of taxBrackets) {
+        if (taxableAmount <= bracket.limit) {
+            return Math.max((taxableAmount * bracket.rate) - bracket.deduction, 0);
         }
-
-        return 0;
     }
+
+    return 0; // 과세 금액이 없을 경우
+}
 
     // 숫자 포맷 함수
     function formatNumberWithCommas(value) {
