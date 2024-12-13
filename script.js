@@ -210,7 +210,7 @@ function calculatePersonalMode(totalAssetValue) {
 
     // 과세 금액 계산
     const taxableAmount = Math.max(totalAssetValue - exemption, 0); // 과세 금액
-    const tax = calculateTax(taxableAmount); // 상속세 계산
+    const tax = calculateIndividualTaxWithProgressiveDeduction(taxableAmount); // 개인 모드 전용 상속세 계산
 
     // 결과 출력
     result.innerHTML = `
