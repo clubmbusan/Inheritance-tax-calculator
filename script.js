@@ -49,54 +49,61 @@ inheritanceType.addEventListener('change', () => {
             break;
     }
 });
+    
+     // 자산 유형 변경 처리
+    function handleAssetTypeChange(assetTypeSelect) {
+    const assetEntry = assetTypeSelect.closest('.asset-entry');
+    if (!assetEntry) {
+        console.error('assetTypeSelect의 상위 .asset-entry 요소를 찾을 수 없습니다.');
+        return; // 더 이상 진행하지 않음
+    }
 
-// 초기화 호출
+    const assetFields = assetEntry.querySelector('.assetFields');
+    const fields = {
+        cashField: assetFields.querySelector('.cashField'),
+        realEstateField: assetFields.querySelector('.realEstateField'),
+        stockQuantityField: assetFields.querySelector('.stockQuantityField'),
+        stockPriceField: assetFields.querySelector('.stockPriceField'),
+        stockTotalField: assetFields.querySelector('.stockTotalField'),
+        othersField: assetFields.querySelector('.othersField'),
+    };
+
+    // 모든 필드 숨기기 (기존 코드는 삭제됨)
+    Object.values(fields).forEach(field => {
+        if (field) field.style.display = 'none';
+    });
+
+    // 선택된 유형에 따라 표시
+    switch (assetTypeSelect.value) {
+        case 'cash':
+            fields.cashField.style.display = 'block';
+            break;
+        case 'realEstate':
+            fields.realEstateField.style.display = 'block';
+            break;
+        case 'stock':
+            fields.stockQuantityField.style.display = 'block';
+            fields.stockPriceField.style.display = 'block';
+            fields.stockTotalField.style.display = 'block';
+            break;
+        case 'others':
+            fields.othersField.style.display = 'block';
+            break;
+        default:
+            console.error('알 수 없는 자산 유형입니다:', assetTypeSelect.value);
+            break;
+    }
+}
+
+    // 모든 assetType에 이벤트 리스너 추가
+document.querySelectorAll('.assetType').forEach(select => {
+    select.addEventListener('change', () => handleAssetTypeChange(select));
+});
+
+    // 초기화 호출
 initializeDefaultView();
     
-   // 자산 유형 변경 처리
-    function handleAssetTypeChange(assetTypeSelect) {
-        const assetEntry = assetTypeSelect.closest('.asset-entry');
-        if (!assetEntry) {
-            console.error('assetTypeSelect의 상위 .asset-entry 요소를 찾을 수 없습니다.');
-            return; // 더 이상 진행하지 않음
-        }
-
-        const assetFields = assetEntry.querySelector('.assetFields');
-        const cashField = assetFields.querySelector('.cashField');
-        const realEstateField = assetFields.querySelector('.realEstateField');
-        const stockQuantityField = assetFields.querySelector('.stockQuantityField');
-        const stockPriceField = assetFields.querySelector('.stockPriceField');
-        const stockTotalField = assetFields.querySelector('.stockTotalField');
-        const othersField = assetFields.querySelector('.othersField');
-
-        // 모든 필드 숨기기
-        cashField.style.display = 'none';
-        realEstateField.style.display = 'none';
-        stockQuantityField.style.display = 'none';
-        stockPriceField.style.display = 'none';
-        stockTotalField.style.display = 'none';
-        othersField.style.display = 'none';
-
-        // 선택된 유형에 따라 표시
-        switch (assetTypeSelect.value) {
-            case 'cash':
-                cashField.style.display = 'block';
-                break;
-            case 'realEstate':
-                realEstateField.style.display = 'block';
-                break;
-            case 'stock':
-                stockQuantityField.style.display = 'block';
-                stockPriceField.style.display = 'block';
-                stockTotalField.style.display = 'block';
-                break;
-            case 'others':
-                othersField.style.display = 'block';
-                break;
-        }
-    }
-    
-  // "다시 하기" 버튼 이벤트 리스너
+ // "다시 하기" 버튼 이벤트 리스너
 document.querySelectorAll('.removeAssetButton').forEach((button) => {
     button.addEventListener('click', (event) => {
         event.preventDefault();
@@ -131,7 +138,7 @@ document.querySelectorAll('.removeAssetButton').forEach((button) => {
     });
 }); 
 
-    // 초기화: 모든 .assetValue 필드에 콤마 이벤트 등록
+      // 초기화: 모든 .assetValue 필드에 콤마 이벤트 등록
 document.querySelectorAll('.assetValue').forEach(addCommaFormatting);
 
 // 초기 주식 입력 필드에 콤마 이벤트 등록 (초기 필드)
@@ -140,7 +147,7 @@ if (initialStockPriceField) {
     addCommaFormatting(initialStockPriceField); // 초기 필드 이벤트 등록
 }
 
-// 재산 추가 버튼 클릭 이벤트
+    // 재산 추가 버튼 클릭 이벤트
 document.getElementById('addAssetButton').addEventListener('click', () => {
     createAssetEntry();
 
@@ -154,8 +161,38 @@ document.getElementById('addAssetButton').addEventListener('click', () => {
         newAssetTypeSelect.addEventListener('change', () => handleAssetTypeChange(newAssetTypeSelect));
     }
 });
+
+    // 재산 항목 생성
+function createAssetEntry() {
+    const newAsset = document.createElement('div');
+    newAsset.className = 'asset-entry';
+    newAsset.innerHTML = `
+        <label>재산 유형:</label>
+        <select class="assetType">
+            <option value="cash">현금</option>
+            <option value="realEstate">부동산</option>
+            <option value="stock">주식</option>
+            <option value="others">기타</option>
+        </select>
+        <div class="assetFields">
+            <input type="text" class="cashField assetValue" placeholder="금액 (원)" style="display: block;">
+            <input type="text" class="realEstateField assetValue" placeholder="평가액 (원)" style="display: none;">
+            <input type="number" class="stockQuantityField" placeholder="주식 수량" style="display: none;">
+            <input type="text" class="stockPriceField" placeholder="주당 가격 (원)" style="display: none;">
+            <input type="text" class="stockTotalField assetValue" placeholder="금액 (원)" style="display: none;" readonly>
+            <input type="text" class="othersField assetValue" placeholder="금액 (원)" style="display: none;">
+        </div>
+    `;
+
+    // 새롭게 생성된 항목을 DOM에 추가
+    assetContainer.appendChild(newAsset);
+
+     // 자산 유형 변경 이벤트 리스너 등록
+    const assetTypeSelect = newAsset.querySelector('.assetType');
+    assetTypeSelect.addEventListener('change', () => handleAssetTypeChange(assetTypeSelect));
+}
     
-// 숫자에 콤마를 추가하는 함수
+ // 숫자에 콤마를 추가하는 함수
 function formatNumberWithCommas(value) {
     return parseInt(value.replace(/[^0-9]/g, '') || '0', 10).toLocaleString();
 }
@@ -168,12 +205,7 @@ function addCommaFormatting(inputField) {
             inputField.value = formatNumberWithCommas(numericValue); // 콤마 추가
         }
     });
-}
-
-// 모든 assetType에 이벤트 리스너 추가
-document.querySelectorAll('.assetType').forEach(select => {
-    select.addEventListener('change', () => handleAssetTypeChange(select));
-});
+} 
 
 // 주식 총 금액 계산
 document.addEventListener('input', () => {
@@ -299,32 +331,6 @@ addBusinessGroupHeirButton.addEventListener('click', () => {
     businessGroupHeirContainer.appendChild(newHeirEntry);
    });
 
-// 재산 항목 생성
-function createAssetEntry() {
-    const newAsset = document.createElement('div');
-    newAsset.className = 'asset-entry';
-    newAsset.innerHTML = `
-        <label>재산 유형:</label>
-        <select class="assetType">
-            <option value="cash">현금</option>
-            <option value="realEstate">부동산</option>
-            <option value="stock">주식</option>
-            <option value="others">기타</option>
-        </select>
-        <div class="assetFields">
-            <input type="text" class="cashField assetValue" placeholder="금액 (원)" style="display: block;">
-            <input type="text" class="realEstateField assetValue" placeholder="평가액 (원)" style="display: none;">
-            <input type="number" class="stockQuantityField" placeholder="주식 수량" style="display: none;">
-            <input type="text" class="stockPriceField" placeholder="주당 가격 (원)" style="display: none;">
-            <input type="text" class="stockTotalField assetValue" placeholder="금액 (원)" style="display: none;" readonly>
-            <input type="text" class="othersField assetValue" placeholder="금액 (원)" style="display: none;">
-        </div>
-    `;
-    assetContainer.appendChild(newAsset);
-
-    const assetTypeSelect = newAsset.querySelector('.assetType');
-    assetTypeSelect.addEventListener('change', () => handleAssetTypeChange(assetTypeSelect));
-}
 
 // 재산 유형에 따라 필드를 동적으로 표시
 function handleAssetTypeChange(assetTypeSelect) {
@@ -527,104 +533,192 @@ function calculateGroupMode(totalAssetValue) {
     `;
 }
 
-  // 가업 개인 상속 계산 함수
-function calculateBusinessPersonalMode(totalAssetValue) {
-    const heirType = document.getElementById('businessHeirTypePersonal').value;
-    let exemption = 6000000000; // 기본 공제 (60억 원)
+  // 가업 개인 상속 계산을 위한 숫자에 콤마를 추가하는 함수
+  function formatNumberWithCommas(value) {
+      if (value === null || value === undefined) {
+          return '0'; // 기본값 반환
+      }
+      if (typeof value === 'number') {
+          value = value.toString(); // 숫자를 문자열로 변환
+      }
+      return parseInt(value.replace(/[^0-9]/g, '') || '0', 10).toLocaleString();
+  }
 
-    if (heirType === 'minor') {
-        exemption += 30000000; // 미성년 후계자 공제
+    // 가업 개인 상속 함수
+    function calculateBusinessPersonalMode(totalAssetValue) {
+    // 관계와 후계자 유형을 명확히 분리
+    const relationship = document.querySelector('#relationshipPersonalBusiness')?.value || 'other';
+    const heirType = document.querySelector('#businessHeirTypePersonal')?.value || 'other';
+  
+    // 가업 공제 계산
+    let gaupExemption = 0;
+
+    if (heirType === 'adultChild') {
+        if (totalAssetValue <= 5000000000) {
+            gaupExemption = Math.min(totalAssetValue, 2000000000);
+        } else if (totalAssetValue <= 10000000000) {
+            gaupExemption = Math.min(totalAssetValue, 5000000000);
+        } else {
+            gaupExemption = Math.min(totalAssetValue, 10000000000);
+        }
+    } else if (heirType === 'minorChild') {
+        gaupExemption = totalAssetValue * 0.6;
     } else if (heirType === 'other') {
-        exemption = 0; // 기타 후계자는 공제 없음
+        gaupExemption = totalAssetValue * 0.3;
+    } else {
+        // 잘못된 후계자 유형이 들어왔을 경우 기본값 설정
+        console.error('잘못된 후계자 유형 선택:', heirType);
+        heirType = 'other'; // 기본값 설정
     }
 
-    const taxableAmount = Math.max(totalAssetValue - exemption, 0);
+    // 관계 공제 계산
+    const exemptions = calculateExemptions(totalAssetValue, relationship, gaupExemption);
+
+    // `relationshipExemption` 가져오기
+    const { relationshipExemption } = exemptions;
+
+    // 총 공제 금액 계산
+    const totalExemption = gaupExemption + relationshipExemption;
+
+    // 과세 금액 계산
+    const taxableAmount = Math.max(totalAssetValue - totalExemption, 0);
+
+    // 상속세 계산
     const tax = calculateTax(taxableAmount);
 
+    // 결과 출력
     document.getElementById('result').innerHTML = `
         <h3>계산 결과 (가업 개인 상속)</h3>
-        <p>총 재산 금액: ${formatNumberWithCommas(totalAssetValue.toString())} 원</p>
-        <p>공제 금액: ${formatNumberWithCommas(exemption.toString())} 원</p>
-        <p>과세 금액: ${formatNumberWithCommas(taxableAmount.toString())} 원</p>
-        <p>상속세: ${formatNumberWithCommas(tax.toString())} 원</p>
+        <p>총 재산 금액: ${totalAssetValue.toLocaleString()} 원</p>
+        <p><strong>공제 내역:</strong></p>
+        <ul>
+            <li>가업 공제: ${gaupExemption.toLocaleString()} 원</li>
+            <li>관계 공제: ${relationshipExemption.toLocaleString()} 원 (${relationship})</li>
+        </ul>
+        <p><strong>총 공제 금액:</strong> ${totalExemption.toLocaleString()} 원</p>
+        <p>과세 금액: ${taxableAmount.toLocaleString()} 원</p>
+        <p>상속세: ${tax.toLocaleString()} 원</p>
     `;
 }
 
-// 가업 단체 상속 계산 함수
-function calculateBusinessGroupMode(totalAssetValue) {
+    
+  // 가업 개인 단체 함수
+    function calculateBusinessGroupMode(totalAssetValue) {
     const heirs = Array.from(document.querySelectorAll('.heir-entry')).map((heir, index) => {
         const name = heir.querySelector('input[type="text"]').value || `상속인 ${index + 1}`;
-        const relationship = heir.querySelector('select').value || "기타";
-        const shareField = heir.querySelector('input[type="number"]');
-        const share = parseFloat(shareField.value) || 0;
+        const heirType = heir.querySelector('.heirType')?.value || 'other';
+        const relationship = heir.querySelector('.relationship')?.value || 'other';
+        const sharePercentage = parseFloat(heir.querySelector('.sharePercentageField').value || '0');
 
-        if (!shareField.value || share === 0) {
-            alert(`${name}의 상속 비율이 입력되지 않았습니다. 비율을 입력 후 다시 시도해주세요.`);
-            throw new Error("상속 비율 누락");
+        if (sharePercentage <= 0 || isNaN(sharePercentage)) {
+            console.error(`${name}의 상속 비율이 올바르지 않습니다.`);
+            return null;
         }
 
-        const heirAssetValue = (totalAssetValue * share) / 100;
+        const heirAssetValue = (totalAssetValue * sharePercentage) / 100;
 
         // 가업 공제 계산
-        let businessExemption = 0;
-        if (relationship === 'spouse') {
-            businessExemption = Math.min(heirAssetValue, 3000000000); // 배우자: 최대 30억
-        } else if (relationship === 'adultChild') {
-            businessExemption = Math.min(heirAssetValue * 0.5, 2000000000); // 성년 자녀: 최대 20억
-        } else if (relationship === 'minorChild') {
-            businessExemption = heirAssetValue * 0.6; // 미성년 자녀: 60% 공제
-        } else {
-            businessExemption = heirAssetValue * 0.3; // 기타: 30% 공제
-        }
+        const gaupExemption = calculateGaupExemption(heirAssetValue, heirType);
 
-        const taxableAmount = Math.max(heirAssetValue - businessExemption, 0);
+        // 관계 공제 계산
+        const exemptions = calculateExemptions(heirAssetValue, relationship);
+        const relationshipExemption = exemptions.relationshipExemption;
+
+        // 총 공제 금액 계산
+        const totalExemption = gaupExemption + relationshipExemption;
+
+        // 과세 금액 계산
+        const taxableAmount = Math.max(heirAssetValue - totalExemption, 0);
+
+        // 상속세 계산
         const tax = calculateTax(taxableAmount);
 
-        return { name, share, assetValue: heirAssetValue, businessExemption, taxableAmount, tax };
-    });
+        return {
+            name,
+            heirAssetValue,
+            gaupExemption,
+            relationshipExemption,
+            totalExemption,
+            taxableAmount,
+            tax,
+        };
+    }).filter(Boolean);
 
     // 결과 출력
-    const totalInheritedAssets = heirs.reduce((sum, heir) => sum + heir.assetValue, 0);
+    const totalInheritedAssets = heirs.reduce((sum, heir) => sum + heir.heirAssetValue, 0);
+    const totalExemption = heirs.reduce((sum, heir) => sum + heir.totalExemption, 0);
+    const totalTax = heirs.reduce((sum, heir) => sum + heir.tax, 0);
 
     document.getElementById('result').innerHTML = `
         <h3>계산 결과 (가업 단체 상속)</h3>
-        <p><strong>상속 재산 합계:</strong> ${formatNumberWithCommas(totalInheritedAssets.toString())} 원</p>
+        <p><strong>총 상속 재산:</strong> ${formatNumberWithCommas(totalInheritedAssets.toString())} 원</p>
+        <p><strong>총 공제 금액:</strong> ${formatNumberWithCommas(totalExemption.toString())} 원</p>
+        <p><strong>총 상속세:</strong> ${formatNumberWithCommas(totalTax.toString())} 원</p>
         ${heirs.map(heir => `
             <p>
-                <strong>${heir.name}</strong>: ${heir.assetValue.toLocaleString()} 원<br>
-                가업 공제 금액: ${heir.businessExemption.toLocaleString()} 원<br>
-                과세 금액: ${heir.taxableAmount.toLocaleString()} 원<br>
-                상속세: ${heir.tax.toLocaleString()} 원
+                <strong>${heir.name}</strong>:<br>
+                - 상속 재산: ${formatNumberWithCommas(heir.heirAssetValue.toString())} 원<br>
+                - 가업 공제: ${formatNumberWithCommas(heir.gaupExemption.toString())} 원<br>
+                - 관계 공제: ${formatNumberWithCommas(heir.relationshipExemption.toString())} 원<br>
+                - 총 공제 금액: ${formatNumberWithCommas(heir.totalExemption.toString())} 원<br>
+                - 과세 금액: ${formatNumberWithCommas(heir.taxableAmount.toString())} 원<br>
+                - 상속세: ${formatNumberWithCommas(heir.tax.toString())} 원
             </p>
         `).join('')}
     `;
 }
 
-// 6. 계산 버튼 이벤트 (하단 배치)
-    calculateButton.addEventListener('click', () => {
-        const totalAssetValue = Array.from(document.querySelectorAll('.assetValue')).reduce((sum, field) => {
-            const value = parseInt(field.value.replace(/,/g, '') || '0', 10);
-            return sum + value;
-        }, 0);
+// 유효성 검사 함수
+function validateHeirRelationship(heirType, relationship) {
+    const validPairs = {
+        adultChild: ['adultChild'], // 성년 자녀 후계자 -> 성년 자녀 관계만 허용
+        minorChild: ['minorChild'], // 미성년 자녀 후계자 -> 미성년 자녀 관계만 허용
+        other: ['spouse', 'parent', 'sibling', 'other'], // 기타 후계자 -> 부모, 형제자매, 기타만 허용
+    };
 
-        switch (inheritanceType.value) {
-            case 'personal': // 개인 상속
-                calculatePersonalMode(totalAssetValue);
-                break;
-            case 'group': // 단체 상속
-                calculateGroupMode(totalAssetValue);
-                break;
-            case 'businessPersonal': // 가업 개인 상속
-                calculateBusinessPersonalMode(totalAssetValue);
-                break;
-            case 'businessGroup': // 가업 단체 상속
-                calculateBusinessGroupMode(totalAssetValue);
-                break;
-            default:
-                console.error('잘못된 계산 요청');
-                break;
-        }
-    });
+    if (!validPairs[heirType]?.includes(relationship)) {
+        return false; // 잘못된 조합
+    }
+
+    return true;
+}
+
+// 계산 버튼 이벤트
+calculateButton.addEventListener('click', () => {
+    const relationship = document.querySelector('#relationshipPersonalBusiness')?.value || 'other';
+    const heirType = document.querySelector('#businessHeirTypePersonal')?.value || 'other';
+
+    // 유효성 검사 실행
+    if (!validateHeirRelationship(heirType, relationship)) {
+        alert('선택한 후계자 유형과 관계가 맞지 않습니다. 올바른 조합을 선택해주세요.');
+        return; // 계산 중단
+    }
+
+    // 총 재산 금액 계산
+    const totalAssetValue = Array.from(document.querySelectorAll('.assetValue')).reduce((sum, field) => {
+        const value = parseInt(field.value.replace(/,/g, '') || '0', 10);
+        return sum + value;
+    }, 0);
+
+    // 상속 유형에 따라 계산 실행
+    switch (inheritanceType.value) {
+        case 'personal': // 개인 상속
+            calculatePersonalMode(totalAssetValue);
+            break;
+        case 'group': // 단체 상속
+            calculateGroupMode(totalAssetValue);
+            break;
+        case 'businessPersonal': // 가업 개인 상속
+            calculateBusinessPersonalMode(totalAssetValue);
+            break;
+        case 'businessGroup': // 가업 단체 상속
+            calculateBusinessGroupMode(totalAssetValue);
+            break;
+        default:
+            console.error('잘못된 계산 요청');
+            break;
+    }
+});
     
 // 숫자 포맷 함수
 document.addEventListener('input', (event) => {
