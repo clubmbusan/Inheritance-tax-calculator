@@ -314,11 +314,24 @@ function getNumericValue(field) {
 
 // 가업 단체 상속: 상속인 추가 버튼 이벤트
 addBusinessGroupHeirButton.addEventListener('click', () => {
+    // 새 상속인 입력 필드 생성
     const newHeirEntry = document.createElement('div');
-    newHeirEntry.className = 'heir-entry';
+    newHeirEntry.className = 'heir-entry-group';
     newHeirEntry.innerHTML = `
-        <input type="text" placeholder="이름">
-        <select>
+        <!-- 후계자 유형 -->
+        <select class="heirType">
+            <option value="" disabled selected>후계자 유형</option>
+            <option value="adultChild">성년 자녀</option>
+            <option value="minorChild">미성년 자녀</option>
+            <option value="other">기타</option>
+        </select>
+
+        <!-- 이름 -->
+        <input type="text" placeholder="이름" class="heirName">
+
+        <!-- 관계 -->
+        <select class="relationship">
+            <option value="" disabled selected>관계 선택</option>
             <option value="spouse">배우자</option>
             <option value="adultChild">성년 자녀</option>
             <option value="minorChild">미성년 자녀</option>
@@ -326,12 +339,23 @@ addBusinessGroupHeirButton.addEventListener('click', () => {
             <option value="sibling">형제자매</option>
             <option value="other">기타</option>
         </select>
-        <input type="text" class="sharePercentage" placeholder="상속 비율 (%)">
+
+        <!-- 상속 비율 -->
+        <input type="number" class="sharePercentageField" placeholder="상속 비율 (%)">
     `;
-    businessGroupHeirContainer.appendChild(newHeirEntry);
-   });
 
+    // 가업 단체 상속 섹션에 필드 추가
+    const businessGroupSection = document.getElementById('businessGroupSection');
+    const addButton = document.getElementById('addBusinessGroupHeirButton');
 
+    if (businessGroupSection && addButton) {
+        // 버튼 위에 새 상속인 필드를 삽입
+        businessGroupSection.insertBefore(newHeirEntry, addButton);
+    } else {
+        console.error('businessGroupSection 또는 addBusinessGroupHeirButton을 찾을 수 없습니다.');
+    }
+});
+    
 // 재산 유형에 따라 필드를 동적으로 표시
 function handleAssetTypeChange(assetTypeSelect) {
     const assetFields = assetTypeSelect.closest('.asset-entry').querySelector('.assetFields');
@@ -487,21 +511,24 @@ function calculateTotalExemptionDetailed(shareAmount, relationship, spouseShare 
     return exemptions;
 }
 
-// 단체 상속 계산 함수
+// 전체 상속 계산 함수
 function calculateGroupMode(totalAssetValue) {
-    const heirs = Array.from(document.querySelectorAll('.heir-entry')).map((heir) => {
-        const name = heir.querySelector('input[type="text"]').value || '상속인';
-        const relationship = heir.querySelector('select')?.value || 'other';
-        const sharePercentage = parseFloat(heir.querySelector('input[type="number"]').value || '0');
+    const heirContainer = document.querySelector('#groupSection #heirContainer'); // 그룹 상속 컨테이너 제한
+    const heirs = Array.from(heirContainer.querySelectorAll('.heir-entry')).map((heir) => {
+        const name = heir.querySelector('.heirName')?.value.trim() || '상속인';
+        const relationship = heir.querySelector('.relationship')?.value || 'other';
+        const sharePercentage = parseFloat(heir.querySelector('.sharePercentageField')?.value || '0');
 
+        // 상속 비율 유효성 검증
         if (sharePercentage <= 0 || isNaN(sharePercentage)) {
             console.error(`${name}의 상속 비율이 올바르지 않습니다.`);
-            return null; // 잘못된 항목 제외
+            return null;
         }
 
+        // 재산 분배 및 공제 계산
         const shareAmount = (totalAssetValue * sharePercentage) / 100;
         const { totalExemption, basicExemption, baseExemption, relationshipExemption } =
-            calculateExemptions(shareAmount, relationship, shareAmount);
+            calculateExemptions(shareAmount, relationship);
         const taxableAmount = Math.max(shareAmount - totalExemption, 0);
         const tax = calculateTax(taxableAmount);
 
@@ -512,13 +539,12 @@ function calculateGroupMode(totalAssetValue) {
             taxableAmount,
             tax,
         };
-     }).filter(Boolean); // 잘못된 항목 제거
-    
+    }).filter(Boolean); // 누락된 항목 제거
+
     // 결과 출력
     document.getElementById('result').innerHTML = `
         <h3>계산 결과 (전체 상속)</h3>
-        ${heirs.map(
-            (heir) => `
+        ${heirs.map(heir => `
             <p>
                 <strong>${heir.name}</strong>: ${heir.shareAmount.toLocaleString()} 원<br>
                 공제 내역:<br>
@@ -533,7 +559,7 @@ function calculateGroupMode(totalAssetValue) {
     `;
 }
 
-  // 가업 개인 상속 계산을 위한 숫자에 콤마를 추가하는 함수
+  // 가업 개인 상속 계산을 위한 숫자에 콤마를 추가하는 함수 (가업개인/단체 공통)
   function formatNumberWithCommas(value) {
       if (value === null || value === undefined) {
           return '0'; // 기본값 반환
@@ -543,6 +569,21 @@ function calculateGroupMode(totalAssetValue) {
       }
       return parseInt(value.replace(/[^0-9]/g, '') || '0', 10).toLocaleString();
   }
+
+    // 유효성 검사 함수 (가업개인/단체 공통)
+function validateHeirRelationship(heirType, relationship) {
+    const validPairs = {
+        adultChild: ['adultChild'], // 성년 자녀 후계자 -> 성년 자녀 관계만 허용
+        minorChild: ['minorChild'], // 미성년 자녀 후계자 -> 미성년 자녀 관계만 허용
+        other: ['spouse', 'parent', 'sibling', 'other'], // 기타 후계자 -> 부모, 형제자매, 기타만 허용
+    };
+
+    if (!validPairs[heirType]?.includes(relationship)) {
+        return false; // 잘못된 조합
+    }
+
+    return true;
+}
 
     // 가업 개인 상속 함수
     function calculateBusinessPersonalMode(totalAssetValue) {
@@ -601,37 +642,46 @@ function calculateGroupMode(totalAssetValue) {
     `;
 }
 
-    
-  // 가업 개인 단체 함수
-    function calculateBusinessGroupMode(totalAssetValue) {
-    const heirs = Array.from(document.querySelectorAll('.heir-entry')).map((heir, index) => {
-        const name = heir.querySelector('input[type="text"]').value || `상속인 ${index + 1}`;
+ // 가업 단체 상속 계산 함수
+function calculateBusinessGroupMode(totalAssetValue) {
+    console.log('--- 가업 단체 상속 계산 시작 ---');
+    console.log('총 재산 금액:', totalAssetValue);
+
+    // 상속인 데이터 저장
+    const heirs = Array.from(document.querySelectorAll('.heir-entry-group')).map((heir, index) => {
+        console.log(`상속인 ${index + 1} 데이터 수집 시작`);
+
+        const name = heir.querySelector('.heirName')?.value || `상속인 ${index + 1}`;
         const heirType = heir.querySelector('.heirType')?.value || 'other';
         const relationship = heir.querySelector('.relationship')?.value || 'other';
-        const sharePercentage = parseFloat(heir.querySelector('.sharePercentageField').value || '0');
+        const sharePercentage = parseFloat(heir.querySelector('.sharePercentageField')?.value || '0');
 
-        if (sharePercentage <= 0 || isNaN(sharePercentage)) {
-            console.error(`${name}의 상속 비율이 올바르지 않습니다.`);
+        if (!name || sharePercentage <= 0 || isNaN(sharePercentage)) {
+            console.error(`${name}의 필수 데이터가 누락되었거나 상속 비율이 잘못되었습니다.`);
+            alert(`${name}의 데이터를 확인해주세요. 상속 비율은 0보다 커야 합니다.`);
             return null;
         }
 
+        // 상속 재산 계산
         const heirAssetValue = (totalAssetValue * sharePercentage) / 100;
+        console.log(`${name}의 상속 재산 금액:`, heirAssetValue);
 
         // 가업 공제 계산
         const gaupExemption = calculateGaupExemption(heirAssetValue, heirType);
+        console.log(`${name}의 가업 공제:`, gaupExemption);
 
         // 관계 공제 계산
-        const exemptions = calculateExemptions(heirAssetValue, relationship);
-        const relationshipExemption = exemptions.relationshipExemption;
+        const { relationshipExemption } = calculateExemptions(heirAssetValue, relationship);
 
-        // 총 공제 금액 계산
+        // 총 공제 계산
         const totalExemption = gaupExemption + relationshipExemption;
+        console.log(`${name}의 총 공제 금액:`, totalExemption);
 
         // 과세 금액 계산
         const taxableAmount = Math.max(heirAssetValue - totalExemption, 0);
-
-        // 상속세 계산
         const tax = calculateTax(taxableAmount);
+        console.log(`${name}의 과세 금액:`, taxableAmount);
+        console.log(`${name}의 상속세:`, tax);
 
         return {
             name,
@@ -644,43 +694,62 @@ function calculateGroupMode(totalAssetValue) {
         };
     }).filter(Boolean);
 
-    // 결과 출력
+    // 계산 결과 요약
     const totalInheritedAssets = heirs.reduce((sum, heir) => sum + heir.heirAssetValue, 0);
     const totalExemption = heirs.reduce((sum, heir) => sum + heir.totalExemption, 0);
     const totalTax = heirs.reduce((sum, heir) => sum + heir.tax, 0);
 
+    console.log('--- 최종 계산 결과 ---');
+    console.log('총 상속 재산:', totalInheritedAssets);
+    console.log('총 공제 금액:', totalExemption);
+    console.log('총 상속세:', totalTax);
+
+    // 결과 출력
     document.getElementById('result').innerHTML = `
         <h3>계산 결과 (가업 단체 상속)</h3>
-        <p><strong>총 상속 재산:</strong> ${formatNumberWithCommas(totalInheritedAssets.toString())} 원</p>
-        <p><strong>총 공제 금액:</strong> ${formatNumberWithCommas(totalExemption.toString())} 원</p>
-        <p><strong>총 상속세:</strong> ${formatNumberWithCommas(totalTax.toString())} 원</p>
+        <p><strong>총 상속 재산:</strong> ${formatNumberWithCommas(totalInheritedAssets)} 원</p>
+        <p><strong>총 공제 금액:</strong> ${formatNumberWithCommas(totalExemption)} 원</p>
+        <p><strong>총 상속세:</strong> ${formatNumberWithCommas(totalTax)} 원</p>
         ${heirs.map(heir => `
             <p>
                 <strong>${heir.name}</strong>:<br>
-                - 상속 재산: ${formatNumberWithCommas(heir.heirAssetValue.toString())} 원<br>
-                - 가업 공제: ${formatNumberWithCommas(heir.gaupExemption.toString())} 원<br>
-                - 관계 공제: ${formatNumberWithCommas(heir.relationshipExemption.toString())} 원<br>
-                - 총 공제 금액: ${formatNumberWithCommas(heir.totalExemption.toString())} 원<br>
-                - 과세 금액: ${formatNumberWithCommas(heir.taxableAmount.toString())} 원<br>
-                - 상속세: ${formatNumberWithCommas(heir.tax.toString())} 원
+                - 상속 재산: ${formatNumberWithCommas(heir.heirAssetValue)} 원<br>
+                - 가업 공제: ${formatNumberWithCommas(heir.gaupExemption)} 원<br>
+                - 관계 공제: ${formatNumberWithCommas(heir.relationshipExemption)} 원<br>
+                - 총 공제 금액: ${formatNumberWithCommas(heir.totalExemption)} 원<br>
+                - 과세 금액: ${formatNumberWithCommas(heir.taxableAmount)} 원<br>
+                - 상속세: ${formatNumberWithCommas(heir.tax)} 원
             </p>
         `).join('')}
     `;
 }
 
-// 유효성 검사 함수
-function validateHeirRelationship(heirType, relationship) {
-    const validPairs = {
-        adultChild: ['adultChild'], // 성년 자녀 후계자 -> 성년 자녀 관계만 허용
-        minorChild: ['minorChild'], // 미성년 자녀 후계자 -> 미성년 자녀 관계만 허용
-        other: ['spouse', 'parent', 'sibling', 'other'], // 기타 후계자 -> 부모, 형제자매, 기타만 허용
-    };
+/**
+ * 가업 공제 계산 함수
+ * @param {number} heirAssetValue - 상속인의 상속 재산 금액
+ * @param {string} heirType - 후계자 유형 (예: 'adultChild', 'minorChild', 'other')
+ * @returns {number} - 계산된 가업 공제 금액
+ */
+function calculateGaupExemption(heirAssetValue, heirType) {
+    let exemption = 0;
 
-    if (!validPairs[heirType]?.includes(relationship)) {
-        return false; // 잘못된 조합
+    switch (heirType) {
+        case 'adultChild': // 성년 자녀
+            exemption = Math.min(heirAssetValue * 0.2, 1000000000); // 상속 재산의 20% 또는 최대 10억
+            break;
+        case 'minorChild': // 미성년 자녀
+            exemption = Math.min(heirAssetValue * 0.3, 1500000000); // 상속 재산의 30% 또는 최대 15억
+            break;
+        case 'other': // 기타
+            exemption = Math.min(heirAssetValue * 0.1, 500000000); // 상속 재산의 10% 또는 최대 5억
+            break;
+        default:
+            console.error('유효하지 않은 후계자 유형:', heirType);
+            break;
     }
 
-    return true;
+    console.log(`가업 공제 계산 - 후계자 유형: ${heirType}, 공제 금액: ${exemption}`);
+    return exemption;
 }
 
 // 계산 버튼 이벤트
