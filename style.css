@@ -367,5 +367,49 @@ button {
     background-color: #45a049; /* 호버 시 더 어두운 녹색 */
 }
 
-
-
+<style>
+    select.heirType,
+    select.relationship,
+    .heirName,
+    .sharePercentageField {
+        height: 45px;
+        line-height: 45px;
+        border-radius: 8px;
+        padding: 0 10px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+    }
+    .heirType,
+    .relationship {
+        width: 180px;
+    }
+    .heirName {
+        width: 120px;
+        font-size: 14px;
+        border-radius: 8px;
+    }
+    .sharePercentageField {
+        width: 120px;
+        text-align: right;
+        padding-right: 10px;
+        font-size: 16px;
+        border-radius: 8px;
+        position: relative;
+    }
+    .sharePercentageField::after {
+        content: "%";
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #999;
+        font-size: 16px;
+    }
+    .heir-entry-group {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+</style>
