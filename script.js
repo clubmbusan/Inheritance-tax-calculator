@@ -459,9 +459,6 @@ function handleAssetTypeChange(assetTypeSelect) {
     }
 }
 
-// 재산 추가 버튼 이벤트
-addAssetButton.addEventListener('click', createAssetEntry);    
-
 // ✅ 개인 관계 공제 계산 로직 (배우자 추가 공제 포함)
 function calculateExemptions(totalInheritance, relationship, spouseShare = 0, parentAge = 0, minorChildAge = 0) {
     const basicExemption = 200000000; // 기초 공제 (2억 원)
