@@ -184,6 +184,17 @@ if (initialStockPriceField) {
     addCommaFormatting(initialStockPriceField); // 초기 필드 이벤트 등록
 }
 
+   // ✅ 모든 상속 비용 입력 필드에 자동으로 콤마 추가
+document.querySelectorAll('.inheritanceCostField').forEach((input) => {
+    input.addEventListener('input', function (event) {
+        let value = event.target.value.replace(/,/g, ''); // 기존 콤마 제거
+        if (value !== '') { // 빈 값이 아닐 경우에만 변환
+            value = parseFloat(value).toLocaleString(); // 숫자로 변환 후 콤마 추가
+        }
+        event.target.value = value; // 입력 필드에 반영
+    });
+});
+
     // 재산 추가 버튼 클릭 이벤트
 document.getElementById('addAssetButton').addEventListener('click', () => {
     createAssetEntry();
@@ -297,7 +308,7 @@ addHeirButton.addEventListener('click', () => {
     const newHeirEntry = document.createElement('div');
     newHeirEntry.className = 'heir-entry';
     newHeirEntry.innerHTML = `
-        <input type="text" placeholder="이름">
+        <input type="text" placeholder="이름" class="heirName">
         <select class="relationship">
             <option value="spouse">배우자</option>
             <option value="adultChild">자녀(성년)</option>
@@ -680,7 +691,7 @@ function calculateGroupMode(totalAssetValue) {
 
     // ✅ 개별 상속 계산
     heirs = heirs.map((heir) => {
-        const shareAmount = (totalAssetValue * heir.sharePercentage) / 100;
+          const shareAmount = (totalAssetValue * heir.sharePercentage) / 100;
 
         // ✅ 배우자의 관계 공제 = 5억 원 (배우자에게만 적용)
         let relationshipExemption = 0;
@@ -703,6 +714,17 @@ function calculateGroupMode(totalAssetValue) {
         const finalTaxableAmount = Math.max(shareAmount - relationshipExemption - basicExemption - spouseAdditionalExemption, 0);
         const tax = calculateTax(finalTaxableAmount);
 
+        // ✅ 디버깅 로그 추가 (각 상속인 정보 확인)
+    console.log(`🔍 [상속인 정보: ${name}]`);
+    console.log(`   - 관계: ${heir.relationship}`);
+    console.log(`   - 상속 금액: ${shareAmount.toLocaleString()} 원`);
+    console.log(`   - 기초 공제 적용 금액: ${basicExemption.toLocaleString()} 원`);
+    console.log(`   - 관계 공제 적용 금액: ${relationshipExemption.toLocaleString()} 원`);
+    console.log(`   - 배우자 추가 공제 적용 여부: ${spouseAdditionalExemption.toLocaleString()} 원`);
+    console.log(`   - 최종 과세 금액: ${finalTaxableAmount.toLocaleString()} 원`);
+    console.log(`   - 계산된 상속세: ${tax.toLocaleString()} 원`);
+    console.log("-------------------------------");
+       
         return {
             ...heir,
             name: heir.name,  // ✅ 이름이 제대로 표시되도록 수정
@@ -714,7 +736,7 @@ function calculateGroupMode(totalAssetValue) {
             tax
         };
     });
-    
+      
     // ✅ 결과 출력 (기초 공제 부분 수정)
     document.getElementById('result').innerHTML = `
          <h3>총 상속 금액: ${totalAssetValue.toLocaleString()} 원</h3>
@@ -943,8 +965,8 @@ function calculateBusinessGroupMode(totalAssetValue) {
     `;
 }
     
-    // 상속비용 모달
-  (function () {
+   // ✅ 상속비용 모달
+(function () {
     console.log("✅ 강제 실행 테스트 시작");
 
     let openModalButton = document.getElementById("openModal");
@@ -953,7 +975,7 @@ function calculateBusinessGroupMode(totalAssetValue) {
     let modal = document.getElementById("costModal");
     let overlay = document.getElementById("modalOverlay");
 
-    // 강제 확인
+    // ✅ 모달 요소 확인
     console.log("🔍 openModalButton:", openModalButton);
     console.log("🔍 modal:", modal);
     console.log("🔍 overlay:", overlay);
@@ -963,37 +985,45 @@ function calculateBusinessGroupMode(totalAssetValue) {
         return;
     }
 
-    // "상속비용" 버튼 클릭 시 모달 열기
+    // ✅ "상속비용" 버튼 클릭 시 모달 열기
     openModalButton.addEventListener("click", function () {
         console.log("✅ '상속비용' 버튼 클릭됨! 모달창 열기");
         modal.style.display = "block";
         overlay.style.display = "block";
     });
 
-    // "닫기" 버튼 클릭 시 모달 닫기
+    // ✅ "닫기" 버튼 클릭 시 모달 닫기
     closeModalButton.addEventListener("click", function () {
         console.log("✅ '닫기' 버튼 클릭됨! 모달창 닫기");
         modal.style.display = "none";
         overlay.style.display = "none";
     });
 
-    // "저장" 버튼 클릭 시 입력된 비용 계산 후 모달 닫기
+    // ✅ "저장" 버튼 클릭 시 입력된 비용을 합산하여 totalDeductibleCost에 저장
     saveCostButton.addEventListener("click", function () {
-        let funeralCost = parseInt(document.getElementById("funeralCost").value) || 0;
-        let legalFees = parseInt(document.getElementById("legalFees").value) || 0;
-        let unpaidTaxes = parseInt(document.getElementById("unpaidTaxes").value) || 0;
-        let debt = parseInt(document.getElementById("debt").value) || 0;
+        let funeralCost = parseFloat(document.getElementById("funeralCost").value.replace(/,/g, '')) || 0;
+        let legalFees = parseFloat(document.getElementById("legalFees").value.replace(/,/g, '')) || 0;
+        let unpaidTaxes = parseFloat(document.getElementById("unpaidTaxes").value.replace(/,/g, '')) || 0;
+        let debt = parseFloat(document.getElementById("debt").value.replace(/,/g, '')) || 0;
 
+        // ✅ 총 공제 금액 계산
         let totalDeductibleCost = funeralCost + legalFees + unpaidTaxes + debt;
+
+        // ✅ 디버깅 로그 출력
+        console.log("총 공제 금액:", totalDeductibleCost);
+
+        // ✅ 공제 금액을 alert으로 출력하여 확인
         alert(`총 공제 금액: ${totalDeductibleCost.toLocaleString()} 원`);
 
+        // ✅ 공제 금액을 window 객체에 저장하여 calculateButton에서 참조 가능하도록 설정
         window.totalDeductibleCost = totalDeductibleCost;
 
+        // ✅ 모달 닫기
         modal.style.display = "none";
         overlay.style.display = "none";
     });
 
-    // 오버레이 클릭 시 모달 닫기
+    // ✅ 오버레이 클릭 시 모달 닫기
     overlay.addEventListener("click", function () {
         console.log("✅ '오버레이' 클릭됨! 모달창 닫기");
         modal.style.display = "none";
@@ -1003,35 +1033,44 @@ function calculateBusinessGroupMode(totalAssetValue) {
     console.log("✅ 강제 실행 완료");
 })();
 
-// 계산 버튼 이벤트
-calculateButton.addEventListener('click', () => {
+// ✅ 계산 버튼 클릭 시 총 상속 금액에서 상속 비용을 공제하도록 수정
+document.getElementById('calculateButton').addEventListener('click', () => {
     const relationship = document.querySelector('#relationshipPersonalBusiness')?.value || 'other';
     const heirType = document.querySelector('#businessHeirTypePersonal')?.value || 'other';
 
-    // 유효성 검사 실행
+    // ✅ 유효성 검사 실행
     if (!validateHeirRelationship(heirType, relationship)) {
         alert('선택한 후계자 유형과 관계가 맞지 않습니다. 올바른 조합을 선택해주세요.');
         return; // 계산 중단
     }
 
-    // 총 재산 금액 계산
-    const totalAssetValue = Array.from(document.querySelectorAll('.assetValue')).reduce((sum, field) => {
-        const value = parseInt(field.value.replace(/,/g, '') || '0', 10);
+    // ✅ 총 재산 금액 계산 (상속 비용 공제 적용)
+    let totalAssetValue = Array.from(document.querySelectorAll('.assetValue')).reduce((sum, field) => {
+        const value = parseFloat(field.value.replace(/,/g, '')) || 0;
         return sum + value;
     }, 0);
 
-    // 상속 유형에 따라 계산 실행
-    switch (inheritanceType.value) {
-        case 'personal': // 개인 상속
+    // ✅ window.totalDeductibleCost에서 상속 비용을 가져와 차감
+    let totalDeductibleCost = window.totalDeductibleCost || 0;
+    totalAssetValue -= totalDeductibleCost;
+
+    // ✅ 음수 값 방지 (공제 후 0 이하가 되지 않도록 처리)
+    totalAssetValue = Math.max(totalAssetValue, 0);
+
+    console.log("💰 최종 상속 금액 (공제 적용 후):", totalAssetValue);
+
+    // ✅ 상속 유형에 따라 계산 실행
+    switch (document.getElementById('inheritanceType').value) {
+        case 'personal':
             calculatePersonalMode(totalAssetValue);
             break;
-        case 'group': // 단체 상속
+        case 'group':
             calculateGroupMode(totalAssetValue);
             break;
-        case 'businessPersonal': // 가업 개인 상속
+        case 'businessPersonal':
             calculateBusinessPersonalMode(totalAssetValue);
             break;
-        case 'businessGroup': // 가업 단체 상속
+        case 'businessGroup':
             calculateBusinessGroupMode(totalAssetValue);
             break;
         default:
