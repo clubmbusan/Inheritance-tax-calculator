@@ -942,6 +942,66 @@ function calculateBusinessGroupMode(totalAssetValue) {
         `).join('')}
     `;
 }
+    
+    // 상속비용 모달
+  (function () {
+    console.log("✅ 강제 실행 테스트 시작");
+
+    let openModalButton = document.getElementById("openModal");
+    let closeModalButton = document.getElementById("closeModal");
+    let saveCostButton = document.getElementById("saveCost");
+    let modal = document.getElementById("costModal");
+    let overlay = document.getElementById("modalOverlay");
+
+    // 강제 확인
+    console.log("🔍 openModalButton:", openModalButton);
+    console.log("🔍 modal:", modal);
+    console.log("🔍 overlay:", overlay);
+
+    if (!openModalButton || !modal || !overlay) {
+        console.error("❌ 모달 관련 요소를 찾을 수 없습니다. HTML을 확인하세요.");
+        return;
+    }
+
+    // "상속비용" 버튼 클릭 시 모달 열기
+    openModalButton.addEventListener("click", function () {
+        console.log("✅ '상속비용' 버튼 클릭됨! 모달창 열기");
+        modal.style.display = "block";
+        overlay.style.display = "block";
+    });
+
+    // "닫기" 버튼 클릭 시 모달 닫기
+    closeModalButton.addEventListener("click", function () {
+        console.log("✅ '닫기' 버튼 클릭됨! 모달창 닫기");
+        modal.style.display = "none";
+        overlay.style.display = "none";
+    });
+
+    // "저장" 버튼 클릭 시 입력된 비용 계산 후 모달 닫기
+    saveCostButton.addEventListener("click", function () {
+        let funeralCost = parseInt(document.getElementById("funeralCost").value) || 0;
+        let legalFees = parseInt(document.getElementById("legalFees").value) || 0;
+        let unpaidTaxes = parseInt(document.getElementById("unpaidTaxes").value) || 0;
+        let debt = parseInt(document.getElementById("debt").value) || 0;
+
+        let totalDeductibleCost = funeralCost + legalFees + unpaidTaxes + debt;
+        alert(`총 공제 금액: ${totalDeductibleCost.toLocaleString()} 원`);
+
+        window.totalDeductibleCost = totalDeductibleCost;
+
+        modal.style.display = "none";
+        overlay.style.display = "none";
+    });
+
+    // 오버레이 클릭 시 모달 닫기
+    overlay.addEventListener("click", function () {
+        console.log("✅ '오버레이' 클릭됨! 모달창 닫기");
+        modal.style.display = "none";
+        overlay.style.display = "none";
+    });
+
+    console.log("✅ 강제 실행 완료");
+})();
 
 // 계산 버튼 이벤트
 calculateButton.addEventListener('click', () => {
