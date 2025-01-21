@@ -195,7 +195,7 @@ document.querySelectorAll('.inheritanceCostField').forEach((input) => {
     });
 });
 
-    // 재산 추가 버튼 클릭 이벤트
+     // 재산 추가 버튼 클릭 이벤트
 document.getElementById('addAssetButton').addEventListener('click', () => {
     createAssetEntry();
 
@@ -459,6 +459,44 @@ function handleAssetTypeChange(assetTypeSelect) {
     }
 }
 
+    // ✅ 공용 함수: 금융재산 공제 계산 (현금 & 주식)
+function calculateFinancialExemption() {
+    let totalFinancialAssets = 0;
+
+    // 모든 자산을 검사하여 금융재산(현금 + 주식) 합산
+    document.querySelectorAll('.asset-entry').forEach(asset => {
+        let assetType = asset.querySelector('.assetType')?.value;
+        let assetValue = parseFloat(asset.querySelector('.assetValue')?.value.replace(/,/g, '')) || 0;
+        if (assetType === 'cash' || assetType === 'stock') {
+            totalFinancialAssets += assetValue;
+        }
+    });
+
+    // 금융재산 공제 계산: 금융재산의 20% (최대 2억)
+    let financialExemption = Math.min(totalFinancialAssets * 0.2, 200000000);
+
+    console.log("💰 총 금융재산:", totalFinancialAssets.toLocaleString(), "원");
+    console.log("📉 적용된 금융재산 공제:", financialExemption.toLocaleString(), "원");
+
+    return financialExemption;
+}
+   //금융재산 입력시 안내멘트
+ document.querySelectorAll('.assetValue, .stockQuantityField, .stockPriceField').forEach(input => {
+    input.addEventListener('focus', function () {
+        console.log("🔍 포커스 이벤트 시작");
+        
+        // 금융재산 공제 안내 팝업
+        alert("📢 금융재산 공제가 적용됩니다!");
+
+        // 확인 이후 로직 실행 여부 확인
+        console.log("✅ alert 이후 로직 실행");
+
+        // 입력 필드에 포커스 이동
+        this.focus();
+    });
+});
+
+
 // ✅ 개인 관계 공제 계산 로직 (배우자 추가 공제 포함)
 function calculateExemptions(totalInheritance, relationship, spouseShare = 0, parentAge = 0, minorChildAge = 0) {
     const basicExemption = 200000000; // 기초 공제 (2억 원)
@@ -602,6 +640,10 @@ function calculatePersonalMode(totalAssetValue) {
         }
     }
 
+    // ✅ 금융재산 공제 추가
+    let financialExemption = calculateFinancialExemption();
+    totalExemption += financialExemption; // 금융재산 공제 포함
+    
     // ✅ 배우자가 아닐 경우, 최종 공제액이 5억 미만이면 5억 보장 (일괄 공제)
     if (relationship !== 'spouse' && totalExemption < 500000000) {
         totalExemption = 500000000;
@@ -621,6 +663,7 @@ function calculatePersonalMode(totalAssetValue) {
     console.log("기초 공제:", basicExemption);
     console.log("관계 공제:", relationshipExemption);
     console.log("배우자 추가 공제:", spouseAdditionalExemption);
+    console.log("금융재산 공제:", financialExemption);
     console.log("최종 공제 금액:", totalExemption);
     console.log("과세 금액:", taxableAmount);
     console.log("상속세:", tax);
@@ -634,6 +677,7 @@ function calculatePersonalMode(totalAssetValue) {
             <li>기초 공제: ${basicExemption.toLocaleString()} 원</li> 
             <li>관계 공제: ${relationshipExemption.toLocaleString()} 원 (${relationship})</li>
             ${relationship === 'spouse' ? `<li>배우자 추가 공제: ${spouseAdditionalExemption.toLocaleString()} 원</li>` : ''}
+            <li>금융재산 공제: ${financialExemption.toLocaleString()} 원</li>
         </ul>
         <p><strong>최종 공제 금액:</strong> ${totalExemption.toLocaleString()} 원</p>
         <p>과세 금액: ${taxableAmount.toLocaleString()} 원</p>
@@ -683,6 +727,12 @@ function calculateGroupMode(totalAssetValue) {
         totalRelationshipExemption = 500000000;
     }
 
+     // ✅ 금융재산 공제 적용 (현금 + 주식)
+    let financialExemption = calculateFinancialExemption();
+    
+    // ✅ 최종 공제 금액 계산
+    let totalExemption = totalBasicExemption + totalRelationshipExemption + financialExemption;
+    
     // ✅ 과세 대상 금액 계산
     let taxableAmount = totalAssetValue - totalBasicExemption - totalRelationshipExemption;
 
@@ -739,6 +789,7 @@ function calculateGroupMode(totalAssetValue) {
          <h3>총 상속 금액: ${totalAssetValue.toLocaleString()} 원</h3>
          <h3>기초 공제: ${totalBasicExemption.toLocaleString()} 원</h3>
          <h3>관계 공제 합계: ${totalRelationshipExemption.toLocaleString()} 원</h3>
+         <h3>금융재산 공제: ${financialExemption.toLocaleString()} 원</h3>
          <h3>과세 금액: ${taxableAmount.toLocaleString()} 원</h3>
          ${heirs.map((heir) => `
              <p>
