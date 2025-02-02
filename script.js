@@ -750,7 +750,7 @@ if (spouse) {
 
     // ✅ 배우자 추가 공제 계산 (배우자 관계 공제 초과분 적용)
     let spouseExcessAmount = Math.max(spouseInheritanceAmount - spouseRelationshipExemption, 0);  
-    let spouseAdditionalExemption = Math.min(spouseExcessAmount * 1.5, 3000000000); 
+    let spouseAdditionalExemption = Math.min(spouseExcessAmount * 0.5, 3000000000); 
 
     // 🔥 배우자 추가 공제 적용
     spouseExemptions.additionalExemption = spouseAdditionalExemption;
