@@ -1506,7 +1506,8 @@ function calculateBusinessPersonalMode(totalAssetValue) {
         <p style="color: green; font-weight: bold;">✅ 요건 충족 여부: ${eligibilityMessage}</p>
     `;
 }
-  // ✅ 상속비용 모달
+  
+// ✅ 상속비용 모달
 (function () {
     console.log("✅ 강제 실행 테스트 시작");
 
@@ -1540,36 +1541,51 @@ function calculateBusinessPersonalMode(totalAssetValue) {
         overlay.style.display = "none";
     });
 
-// ✅ "저장" 버튼 클릭 시 비용을 공통 함수로 계산하고, 상속세 재계산
-saveCostButton.addEventListener("click", function () {
-    calculateInheritanceCosts(); // ✅ 공통 비용 계산 함수 호출
-    calculateGroupMode(); // ✅ 저장 후 상속세 재계산
+    // ✅ "저장" 버튼 클릭 시 입력된 비용을 합산하여 totalDeductibleCost에 저장
+    saveCostButton.addEventListener("click", function () {
+        let funeralCost = parseFloat(document.getElementById("funeralCost").value.replace(/,/g, '')) || 0;
+        let legalFees = parseFloat(document.getElementById("legalFees").value.replace(/,/g, '')) || 0;
+        let unpaidTaxes = parseFloat(document.getElementById("unpaidTaxes").value.replace(/,/g, '')) || 0;
+        let debt = parseFloat(document.getElementById("debt").value.replace(/,/g, '')) || 0;
 
-    console.log("✅ 저장된 상속 비용 합계:", inheritanceCosts);
+        // ✅ 총 공제 금액 계산
+        let totalDeductibleCost = funeralCost + legalFees + unpaidTaxes + debt;
 
-    // ✅ 공제 금액을 alert으로 출력하여 확인
-    alert(총 공제 금액: ${inheritanceCosts.toLocaleString()} 원);
+        // ✅ 디버깅 로그 출력
+        console.log("총 공제 금액:", totalDeductibleCost);
 
-    // ✅ 모달 닫기
-    modal.style.display = "none";
-    overlay.style.display = "none";
-});
+        // ✅ 공제 금액을 alert으로 출력하여 확인
+        alert(`총 공제 금액: ${totalDeductibleCost.toLocaleString()} 원`);
 
-// ✅ 오버레이 클릭 시 모달 닫기
-overlay.addEventListener("click", function () {
-    console.log("✅ '오버레이' 클릭됨! 모달창 닫기");
-    modal.style.display = "none";
-    overlay.style.display = "none";
-});
+        // ✅ 공제 금액을 window 객체에 저장하여 calculateButton에서 참조 가능하도록 설정
+        window.totalDeductibleCost = totalDeductibleCost;
 
-console.log("✅ 강제 실행 완료");
-})();  
+        // ✅ 모달 닫기
+        modal.style.display = "none";
+        overlay.style.display = "none";
+    });
 
-    // ✅ 계산 버튼 클릭 시 총 상속 금액에서 상속 비용을 공제하도록 수정
+    // ✅ 오버레이 클릭 시 모달 닫기
+    overlay.addEventListener("click", function () {
+        console.log("✅ '오버레이' 클릭됨! 모달창 닫기");
+        modal.style.display = "none";
+        overlay.style.display = "none";
+    });
+
+    console.log("✅ 강제 실행 완료");
+})();
+
+// ✅ 계산 버튼 클릭 시 총 상속 금액에서 상속 비용을 공제하도록 수정
 document.getElementById('calculateButton').addEventListener('click', () => {
     const relationship = document.querySelector('#relationshipPersonalBusiness')?.value || 'other';
     const heirType = document.querySelector('#businessHeirTypePersonal')?.value || 'other';
-   
+
+    // ✅ 유효성 검사 실행
+    if (!validateHeirRelationship(heirType, relationship)) {
+        alert('선택한 후계자 유형과 관계가 맞지 않습니다. 올바른 조합을 선택해주세요.');
+        return; // 계산 중단
+    }
+
     // ✅ 총 재산 금액 계산 (상속 비용 공제 적용)
     let totalAssetValue = Array.from(document.querySelectorAll('.assetValue')).reduce((sum, field) => {
         const value = parseFloat(field.value.replace(/,/g, '')) || 0;
@@ -1583,9 +1599,8 @@ document.getElementById('calculateButton').addEventListener('click', () => {
     // ✅ 음수 값 방지 (공제 후 0 이하가 되지 않도록 처리)
     totalAssetValue = Math.max(totalAssetValue, 0);
 
-    console.log("📌 최종 상속 금액 (공제 적용 후):", totalAssetValue);
-    console.log("📌 현재 선택된 상속 유형:", document.getElementById('inheritanceType').value); // 디버깅 추가
- 
+    console.log("💰 최종 상속 금액 (공제 적용 후):", totalAssetValue);
+
     // ✅ 상속 유형에 따라 계산 실행
     switch (document.getElementById('inheritanceType').value) {
         case 'personal':
@@ -1597,15 +1612,11 @@ document.getElementById('calculateButton').addEventListener('click', () => {
         case 'businessPersonal':
             calculateBusinessPersonalMode(totalAssetValue);
             break;
-        case 'other':  // ✅ 특수상속 추가
-            calculateSpecialInheritance();  
-            break;
-        case 'legal': // ✅ 법정 상속 추가
-            calculateLegalInheritance(totalAssetValue);
+        case 'businessGroup':
+            calculateBusinessGroupMode(totalAssetValue);
             break;
         default:
-            console.error('⚠️ 잘못된 계산 요청 - 올바른 상속 유형을 선택하세요.');
-            alert("⚠️ 올바른 상속 유형을 선택하세요.");
+            console.error('잘못된 계산 요청');
             break;
     }
 });
