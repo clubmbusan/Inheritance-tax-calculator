@@ -728,9 +728,10 @@ function calculateGroupMode() {
     let adjustedAssetValue = Math.max(0, totalAssetValue - inheritanceCosts);
     console.log(`📌 비용 차감 후 최종 상속 재산 금액: ${adjustedAssetValue.toLocaleString()} 원`);
 
-    // ✅ 금융 재산 공제 (총 금융자산의 20%, 최대 2억)
-    let maxFinancialExemption = Math.min((adjustedAssetValue * 0.2), 200000000); // 비용 차감 후 상속 금액 기준
-  
+    // ✅ 금융 재산 공제 (총 금융자산의 20%, 최대 2억) - adjustedAssetValue 기준으로 수정
+    let maxFinancialExemption = Math.min((adjustedAssetValue * 0.2), 200000000);
+    console.log(`📌 금융재산 공제: ${maxFinancialExemption.toLocaleString()} 원`);
+ 
     // ✅ 상속인 정보 가져오기 (객체 배열로 변환, 배우자 공제 이월 초기화 추가)
     let heirs = Array.from(heirContainer.querySelectorAll('.heir-entry')).map(heir => {
         const name = heir.querySelector('.heirName')?.value.trim() || '이름 없음';
