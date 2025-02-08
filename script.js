@@ -766,30 +766,33 @@ function calculateGroupMode() {
     let spouse = heirs.find(h => h.relationship === 'spouse');
     let spouseExemptions = { additionalExemption: 0 };
 
-    if (spouse) {
-    // ✅ 배우자 상속 금액 (비용 차감 후)
+   if (spouse) {
+    // ✅ 배우자 상속 금액 (비용 차감 후 기준)
     let spouseInheritanceAmount = (adjustedAssetValue * spouse.sharePercentage) / 100;
-    let spouseRelationshipExemption = 500000000; // 배우자 관계 공제 (5억)
+    console.log("📌 배우자 상속 금액 (비용 차감 후):", spouseInheritanceAmount.toLocaleString());
 
-// ✅ 배우자 추가 공제 계산: 배우자 상속 금액이 5억보다 큰 경우만 적용
+    // ✅ 배우자 관계 공제 (비용 차감 후 기준에서 5억 적용)
+    let spouseRelationshipExemption = Math.min(spouseInheritanceAmount, 500000000);
+    let remainingAmountAfterRelationship = spouseInheritanceAmount - spouseRelationshipExemption;
+
+    console.log("📌 관계 공제 후 남은 금액:", remainingAmountAfterRelationship.toLocaleString());
+
+    // ✅ 배우자 추가 공제 계산 (비용 차감 후 관계 공제 적용 후 최대 25억 한도)
     let spouseAdditionalExemption = 0;
-    if (spouseInheritanceAmount > spouseRelationshipExemption) {
-        spouseAdditionalExemption = Math.min(
-            spouseInheritanceAmount - spouseRelationshipExemption,
-            3000000000  // 최대 30억
-        );
-
-    // ✅ 🔍 계산 직후 로그 출력 (디버깅에 용이)
-    console.log("📌 배우자 추가 공제:", spouseAdditionalExemption.toLocaleString());
+    if (remainingAmountAfterRelationship > 0) {
+        spouseAdditionalExemption = Math.min(remainingAmountAfterRelationship, 2500000000);
     }
 
- // ✅ 배우자 공제 적용
- spouseExemptions.additionalExemption = spouseAdditionalExemption;
+    console.log("📌 수정된 배우자 추가 공제:", spouseAdditionalExemption.toLocaleString());
 
- // ✅ 배우자 상속 금액도 계산 직후 출력
- console.log("📌 배우자 상속 금액:", spouseInheritanceAmount.toLocaleString());
+    // ✅ 배우자 공제 합산 및 과세 표준 계산
+    let taxableAmount = spouseInheritanceAmount 
+                        - spouseRelationshipExemption 
+                        - spouseAdditionalExemption;
 
-   
+    taxableAmount = Math.max(0, taxableAmount);  // 과세 표준이 음수가 되지 않도록 보정
+    console.log("📌 최종 과세 표준:", taxableAmount.toLocaleString());
+  
     // ✅ 배우자 공제 이월 수정 (배우자 상속 금액에서 최소 공제(5억) 차감 후 이월)
     let spouseRemainingExemption = Math.max(spouseRelationshipExemption - spouseInheritanceAmount, 0); // 5억 차감 후 남은 공제액
 
@@ -930,30 +933,31 @@ let spouseAdditionalExemption = 0; // ✅ 배우자 추가 공제 기본값 초�
 
 // ✅ 배우자가 있을 경우, 실제 상속 금액 계산
 if (spouse) {
-    spouseInheritanceAmount = (totalAssetValue * spouse.sharePercentage) / 100;
+    spouseInheritanceAmount = (adjustedAssetValue * spouse.sharePercentage) / 100;  // ✅ 비용 차감 후 기준
     spouseFinancialExemption = (maxFinancialExemption * spouse.sharePercentage) / 100;
     spouseBasicExemption = (totalBasicExemption * spouse.sharePercentage) / 100;
 
-    // ✅ 배우자의 추가 공제 수정 (음수 값이 발생하지 않도록 보정)
-    if (spouseInheritanceAmount > spouseRelationshipExemption) {
-        spouseAdditionalExemption = Math.min(
-            spouseInheritanceAmount - spouseRelationshipExemption, 
-            3000000000 // 최대 30억
-        );
-    }
+    // ✅ 배우자 관계 공제 적용 (비용 차감 후 기준)
+    let spouseRelationshipExemption = Math.min(spouseInheritanceAmount, 500000000);
+    let spouseRemainingAfterRelationship = spouseInheritanceAmount - spouseRelationshipExemption;
+
+    console.log("📌 관계 공제 후 남은 금액:", spouseRemainingAfterRelationship.toLocaleString());
+
+    // ✅ 배우자 추가 공제 (최대 25억까지 적용)
+    let spouseAdditionalExemption = Math.min(spouseRemainingAfterRelationship, 2500000000);
+    console.log("📌 수정된 배우자 추가 공제 (최대 25억):", spouseAdditionalExemption.toLocaleString());
 
     spouseExemptions.additionalExemption = spouseAdditionalExemption;
 
+    // ✅ 과세 표준 계산
     let spouseRemainingAmount = spouseInheritanceAmount 
                                - spouseFinancialExemption 
-                               - spouseBasicExemption 
-                               - spouseRelationshipExemption;
+                               - spouseRelationshipExemption 
+                               - spouseAdditionalExemption;
     spouseRemainingAmount = Math.max(spouseRemainingAmount, 0);
 
-    if (spouseRemainingAmount > 0 && spouse.sharePercentage < 100) {
-        spouseExemptions.additionalExemption = Math.min(spouseRemainingAmount, 3000000000);
-    }
-}
+    console.log("📌 최종 과세 표준 (배우자):", spouseRemainingAmount.toLocaleString());
+  }
 
 // ✅ 배우자의 과세 표준 계산 (기초 공제 제외)
 let spouseFinalTaxableAmount = spouseInheritanceAmount  
@@ -1638,17 +1642,14 @@ document.getElementById('calculateButton').addEventListener('click', () => {
         const value = parseFloat(field.value.replace(/,/g, '')) || 0;
         return sum + value;
     }, 0);
-
     console.log(`📌 입력된 총 상속 재산 금액: ${totalAssetValue.toLocaleString()} 원`);
 
     // ✅ window.totalDeductibleCost에서 상속 비용을 가져옴 (없으면 0)
     let totalDeductibleCost = parseFloat(window.totalDeductibleCost) || 0;
-
     console.log(`📌 총 상속 비용 차감 금액: ${totalDeductibleCost.toLocaleString()} 원`);
 
     // ✅ 총 상속 금액에서 상속 비용을 차감
     let adjustedAssetValue = Math.max(totalAssetValue - totalDeductibleCost, 0); // 음수 방지
-
     console.log(`📌 상속 비용 차감 후 최종 상속 재산 금액: ${adjustedAssetValue.toLocaleString()} 원`);
 
     // ✅ 결과지 업데이트 (상속 비용 차감 반영)
@@ -1661,22 +1662,16 @@ document.getElementById('calculateButton').addEventListener('click', () => {
     // ✅ 상속 유형에 따라 계산 실행 (차감된 금액 적용)
     switch (document.getElementById('inheritanceType').value) {
         case 'personal':
-            calculatePersonalMode(adjustedAssetValue);
+            calculatePersonalMode(adjustedAssetValue);  // **adjustedAssetValue 전달**
             break;
         case 'group':
-            calculateGroupMode(adjustedAssetValue);
+            calculateGroupMode(adjustedAssetValue);  // **adjustedAssetValue 전달**
             break;
         case 'businessPersonal':
             calculateBusinessPersonalMode(adjustedAssetValue);
             break;
         case 'businessGroup':
             calculateBusinessGroupMode(adjustedAssetValue);
-            break;
-        case 'legal':
-            calculateLegalInheritance(adjustedAssetValue);
-            break;
-        case 'other':
-            calculateSpecialInheritance(adjustedAssetValue);
             break;
         default:
             console.error('❌ 잘못된 상속 유형 선택');
