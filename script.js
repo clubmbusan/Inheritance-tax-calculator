@@ -728,10 +728,9 @@ function calculateGroupMode() {
     let adjustedAssetValue = Math.max(0, totalAssetValue - inheritanceCosts);
     console.log(`📌 비용 차감 후 최종 상속 재산 금액: ${adjustedAssetValue.toLocaleString()} 원`);
 
-    // ✅ 금융 재산 공제 (총 금융자산의 20%, 최대 2억) - adjustedAssetValue 기준으로 수정
-    let maxFinancialExemption = Math.min((adjustedAssetValue * 0.2), 200000000);
-    console.log(`📌 금융재산 공제: ${maxFinancialExemption.toLocaleString()} 원`);
- 
+    // ✅ 금융 재산 공제 (총 금융자산의 20%, 최대 2억)
+    let maxFinancialExemption = Math.min(totalFinancialAssets * 0.2, 200000000); // 비용 차감 전 기준
+    
     // ✅ 상속인 정보 가져오기 (객체 배열로 변환, 배우자 공제 이월 초기화 추가)
     let heirs = Array.from(heirContainer.querySelectorAll('.heir-entry')).map(heir => {
         const name = heir.querySelector('.heirName')?.value.trim() || '이름 없음';
@@ -772,20 +771,24 @@ function calculateGroupMode() {
     let spouseInheritanceAmount = (adjustedAssetValue * spouse.sharePercentage) / 100;
     let spouseRelationshipExemption = 500000000; // 배우자 관계 공제 (5억)
 
-    // ✅ 배우자 추가 공제: 배우자 상속 금액이 5억보다 클 때만 적용
+// ✅ 배우자 추가 공제 계산: 배우자 상속 금액이 5억보다 큰 경우만 적용
     let spouseAdditionalExemption = 0;
     if (spouseInheritanceAmount > spouseRelationshipExemption) {
         spouseAdditionalExemption = Math.min(
             spouseInheritanceAmount - spouseRelationshipExemption,
             3000000000  // 최대 30억
         );
+
+    // ✅ 🔍 계산 직후 로그 출력 (디버깅에 용이)
+    console.log("📌 배우자 추가 공제:", spouseAdditionalExemption.toLocaleString());
     }
 
-    // ✅ 배우자 추가 공제 적용
-    spouseExemptions.additionalExemption = spouseAdditionalExemption;
+ // ✅ 배우자 공제 적용
+ spouseExemptions.additionalExemption = spouseAdditionalExemption;
 
-    console.log("📌 배우자 상속 금액:", spouseInheritanceAmount.toLocaleString());
-    console.log("📌 배우자 추가 공제:", spouseAdditionalExemption.toLocaleString());
+ // ✅ 배우자 상속 금액도 계산 직후 출력
+ console.log("📌 배우자 상속 금액:", spouseInheritanceAmount.toLocaleString());
+
    
     // ✅ 배우자 공제 이월 수정 (배우자 상속 금액에서 최소 공제(5억) 차감 후 이월)
     let spouseRemainingExemption = Math.max(spouseRelationshipExemption - spouseInheritanceAmount, 0); // 5억 차감 후 남은 공제액
