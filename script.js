@@ -772,11 +772,11 @@ function calculateGroupMode() {
     console.log("📌 배우자 상속 금액 (비용 차감 후):", spouseInheritanceAmount.toLocaleString());
 
     // ✅ 1. 기존 결과값에서 금융재산 공제 사용
-    let spouseFinancialExemption = existingFinancialExemptionValue;  // 기존 결과값에서 가져온 금융재산 공제 값
-    spouseFinancialExemption = Math.min(spouseInheritanceAmount, spouseFinancialExemption);  // 배우자 상속 금액보다 크지 않도록 제한
+    let spouseFinancialExemption = (maxFinancialExemption * spouse.sharePercentage) / 100;
+
     let remainingAfterFinancialExemption = spouseInheritanceAmount - spouseFinancialExemption;
     console.log("📌 금융재산 공제 후 남은 금액:", remainingAfterFinancialExemption.toLocaleString());
-
+       
     // ✅ 2. 배우자 관계 공제 적용 (비용 차감 후 기준에서 5억 적용)
     let spouseRelationshipExemption = Math.min(remainingAfterFinancialExemption, 500000000);
     let remainingAfterRelationship = remainingAfterFinancialExemption - spouseRelationshipExemption;
