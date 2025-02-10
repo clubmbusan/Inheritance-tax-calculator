@@ -1055,23 +1055,29 @@ function calculateInheritanceTax(taxableAmount) {
 
 // ✅ [법정 상속] 계산 함수
 function calculateLegalInheritance() {
-    // ✅ 입력된 재산 값 가져오기 (쉼표 제거 후 숫자로 변환)
+    console.log("✅ 법정 상속 계산 시작");
+
+    // ✅ 기존 입력된 재산 값 가져오기 (쉼표 제거 후 숫자로 변환)
     let cashValue = parseInt(document.getElementById("cashAmount")?.value.replace(/,/g, "")) || 0;
     let stockValue = parseInt(document.getElementById("stockTotal")?.value.replace(/,/g, "")) || 0;
     let realEstateValue = parseInt(document.getElementById("realEstateValue")?.value.replace(/,/g, "")) || 0;
     let othersValue = parseInt(document.getElementById("othersValue")?.value.replace(/,/g, "")) || 0;
 
     // ✅ 총 상속 재산 계산
-    let totalAssetValue = cashValue + stockValue + realEstateValue + othersValue;
+    let initialTotalAssetValue = cashValue + stockValue + realEstateValue + othersValue;
+    console.log("📌 초기 입력된 총 상속 재산 금액:", initialTotalAssetValue.toLocaleString(), "원");
 
-    // ✅ 비용 차감된 총 상속 금액 계산 (window.totalDeductibleCost 사용)
+    // ✅ 모든 재산의 합산 금액 계산 (추가된 재산 포함)
+    let totalAssetValue = calculateTotalAssetValue();
+    console.log("📌 최종 재산 합산 금액:", totalAssetValue.toLocaleString(), "원");
+
+    // ✅ 상속 비용 차감 후 최종 상속 금액 계산
     let inheritanceCosts = parseFloat(window.totalDeductibleCost) || 0;
-    console.log("📌 최종 상속 비용 (window.totalDeductibleCost):", inheritanceCosts.toLocaleString(), "원");
-
-    // ✅ 비용 차감된 총 상속 금액 계산
     let adjustedAssetValue = Math.max(0, totalAssetValue - inheritanceCosts);
-    console.log("📌 비용 차감 후 최종 상속 금액:", adjustedAssetValue.toLocaleString(), "원");
 
+    console.log("📌 최종 상속 비용 (window.totalDeductibleCost):", inheritanceCosts.toLocaleString(), "원");
+    console.log("📌 비용 차감 후 최종 상속 금액:", adjustedAssetValue.toLocaleString(), "원");
+   
     // ✅ 금융재산 공제 (현금 + 주식 20% 공제, 최대 2억 원)
     let totalFinancialExemption = Math.min((cashValue + stockValue) * 0.2, 200000000);
 
