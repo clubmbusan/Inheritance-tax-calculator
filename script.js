@@ -1465,9 +1465,13 @@ function calculateSpecialInheritance() {
     let inheritanceCosts = parseFloat(window.totalDeductibleCost) || 0;
     console.log("📌 최종 상속 비용 (window.totalDeductibleCost):", inheritanceCosts.toLocaleString(), "원");
   
-    // ✅ 과세 표준 및 상속세 계산
-    let taxableAmount = Math.max(0, totalInheritance - deduction - inheritanceCosts);
-    console.log("📌 과세 표준:", taxableAmount);
+    // ✅ 수정된 과세 표준 계산 (금융재산 공제 포함)
+    let taxableAmount = Math.max(0, adjustedAssetValue - deduction - financialExemption);
+    console.log("📌 수정된 과세 표준:", taxableAmount.toLocaleString(), "원");
+
+    // ✅ 최종 상속세 계산
+    let inheritanceTax = taxableAmount > 0 ? calculateProgressiveTax(taxableAmount) : 0;
+    console.log("📌 최종 상속세:", inheritanceTax.toLocaleString(), "원");
 
     // ✅ 공용 상속세 계산 함수 호출 (calculateProgressiveTax)
     let inheritanceTax = taxableAmount > 0 ? calculateProgressiveTax(taxableAmount) : 0;
@@ -1478,7 +1482,8 @@ document.getElementById("result").innerHTML = `
     <h3>특수상속 계산 결과</h3>
     <p>상속 유형: <strong>${otherAssetType.options[otherAssetType.selectedIndex].text}</strong></p>
     <p>총 상속 재산 (비용 차감): <strong>${(totalInheritance - inheritanceCosts).toLocaleString()} 원</strong></p>
-    <p>공제 금액: <strong>${deduction.toLocaleString()} 원</strong></p>
+    <p>공제 금액(특수 상속): <strong>${deduction.toLocaleString()} 원</strong></p>
+    ${financialExemption > 0 ? `<p>금융재산 공제: <strong>${financialExemption.toLocaleString()} 원</strong></p>` : ""}
     <p>과세 표준: <strong>${taxableAmount.toLocaleString()} 원</strong></p>
     <p>최종 상속세: <strong>${inheritanceTax.toLocaleString()} 원</strong></p>
     <p style="color: blue; font-weight: bold;">ℹ️ ${policyMessage}</p>
