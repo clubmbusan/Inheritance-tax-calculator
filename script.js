@@ -568,20 +568,23 @@ if (relationship === 'spouse') {
 // ✅ 최종 공제 계산 (변수 선언은 한 번만)
 let basicAndRelationshipExemption = basicExemption + relationshipExemption;
 
-// ✅ 기존에 선언된 generalExemptionAdjustment 변수를 재사용
-if (typeof generalExemptionAdjustment === 'undefined') {
-    generalExemptionAdjustment = 0;  // 초기화 (이미 선언된 경우 생략 가능)
-}
 
-if (relationship !== 'spouse') {
-    if (basicAndRelationshipExemption < 500000000) {
-        generalExemptionAdjustment = 500000000 - basicAndRelationshipExemption;  // 부족한 부분 보정
+// ✅ 최종 공제 계산 (배우자 추가 공제 포함)
+let totalExemption = 0;
+
+if (relationship === 'spouse') {
+    // 배우자: 금융재산 공제 + 관계 공제 + 배우자 추가 공제
+    totalExemption = financialExemption + relationshipExemption + spouseAdditionalExemption;
+} else {
+    // 배우자가 아닌 경우: 금융재산 공제 + 기초 공제 + 관계 공제 + 일괄공제 보정 (최소 7억 보장)
+    totalExemption = basicExemption + relationshipExemption + financialExemption;
+    if (totalExemption < 700000000) {
+        totalExemption = 700000000;
     }
 }
 
-// ✅ 최종 공제 금액 = 5억 (기초 + 관계 공제 보정) + 금융재산 공제
-let totalExemption = 500000000 + financialExemption;
-totalExemption = Math.min(totalExemption, totalAssetValue - inheritanceCosts); // 공제액이 상속 재산을 초과하지 않도록 제한
+// ✅ 상속 재산을 초과하는 공제 금액 제한
+totalExemption = Math.min(totalExemption, totalAssetValue - inheritanceCosts);
 
     // ✅ 과세 표준 계산
     const taxableAmount = Math.max(totalAssetValue - totalExemption, 0);
