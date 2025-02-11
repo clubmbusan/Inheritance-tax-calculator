@@ -1521,10 +1521,10 @@ function calculateSpecialInheritance() {
  `;
 }
 
- /**
- * ✅ 상속 비용 모달 
- */    
- (function () {
+  /**
+* ✅ 상속 비용 모달 
+ */       
+(function () {
     console.log("✅ 상속 비용 모달 스크립트 실행");
 
     let openModalButton = document.getElementById("openModal");
@@ -1548,23 +1548,31 @@ function calculateSpecialInheritance() {
 
     // ✅ 모달 열기
     openModalButton.addEventListener("click", function () {
+        modal.classList.add("active");
+        overlay.classList.add("active");
+
+        // ✅ 강제로 스타일 적용 (호환성 보장)
         modal.style.display = "block";
         overlay.style.display = "block";
+
+        console.log("✅ 오버레이 및 모달 열기 시도");
     });
 
     // ✅ 모달 닫기
     function closeModal() {
+        modal.classList.remove("active");
+        overlay.classList.remove("active");
+
+        // ✅ 스타일 초기화
         modal.style.display = "none";
         overlay.style.display = "none";
+
+        console.log("✅ 모달 및 오버레이 비활성화");
     }
 
+    // ✅ 닫기 버튼 및 오버레이 클릭 시 모달 닫기
     closeModalButton.addEventListener("click", closeModal);
     overlay.addEventListener("click", closeModal);
-
-    // ✅ 입력값 포맷팅 함수 (숫자만 입력 가능)
-    function formatCurrency(value) {
-        return value.toLocaleString() + " 원";
-    }
 
     // ✅ 실시간 비용 합계 계산 함수
     function updateTotalCost() {
@@ -1576,7 +1584,7 @@ function calculateSpecialInheritance() {
         let totalCost = funeralCost + legalFees + unpaidTaxes + debt;
 
         // ✅ 실시간 합계 업데이트
-        modalCostSummary.textContent = `총 필요 경비: ${formatCurrency(totalCost)}`;
+        modalCostSummary.textContent = `총 필요 경비: ${totalCost.toLocaleString()} 원`;
     }
 
     // ✅ 입력값 변경 시 실시간 합계 업데이트
@@ -1597,7 +1605,7 @@ function calculateSpecialInheritance() {
         window.totalDeductibleCost = totalDeductibleCost || 0;
 
         // ✅ "총 상속 비용" 업데이트
-        costSummary.textContent = `총 상속 비용: ${formatCurrency(totalDeductibleCost)}`;
+        costSummary.textContent = `총 상속 비용: ${totalDeductibleCost.toLocaleString()} 원`;
 
         // ✅ 모달 닫기
         closeModal();
