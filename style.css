@@ -483,3 +483,37 @@ button {
 
 .btn-close { background-color: #6c757d; }
 .btn-close:hover { background-color: #5a6268; }
+
+/* ✅ 관계 선택 필드 너비 조정 (기본) */
+.relationship {
+    width: 150px;
+    max-width: 100%;
+}
+
+/* ✅ 반응형 스타일 (모바일 전용) */
+@media screen and (max-width: 768px) {
+    /* 필요한 경우 유지할 스타일 */
+    .calculator {
+        padding: 15px;
+    }
+
+    button {
+        font-size: 14px;
+    }
+
+    /* 가로정렬로 강제 */
+    .heir-entry {
+        flex-direction: row !important;
+        flex-wrap: wrap; /* 화면이 좁을 때 줄바꿈을 허용하려면 wrap */
+    }
+
+    .heir-entry input,
+    .heir-entry select {
+        width: auto; /* 또는 원하는 너비 (예: 30%, 40%) */
+    }
+
+    /* 필요하면 relationship 너비 유지 */
+    .relationship {
+        width: 100px;
+    }
+}
